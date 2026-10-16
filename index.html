@@ -1,0 +1,1487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111218">
+<meta name="description" content="Run — lightweight rooms for conversations, shared tasks, and files. No accounts. Just connect.">
+<title>Run — make room for good work</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+  :root {
+    color-scheme: dark;
+    --bg: #111218;
+    --bg-elevated: #171820;
+    --panel: #1b1d26;
+    --panel-soft: #20222c;
+    --panel-hover: #252733;
+    --line: rgba(255,255,255,.085);
+    --line-strong: rgba(255,255,255,.14);
+    --text: #f4f3f8;
+    --muted: #9b9dac;
+    --subtle: #747786;
+    --accent: #c8f169;
+    --accent-ink: #1d2810;
+    --purple: #aaa2ff;
+    --purple-soft: rgba(170,162,255,.13);
+    --success: #a8ee9c;
+    --danger: #ff8c96;
+    --shadow: 0 26px 75px rgba(0,0,0,.25);
+    --radius-xl: 27px;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f4f5f2;
+    --bg-elevated: #ffffff;
+    --panel: #ffffff;
+    --panel-soft: #f6f7f3;
+    --panel-hover: #eff1e9;
+    --line: rgba(24,29,18,.09);
+    --line-strong: rgba(24,29,18,.16);
+    --text: #20221d;
+    --muted: #656a5d;
+    --subtle: #858a7d;
+    --accent: #3390ec;
+    --accent-ink: #ffffff;
+    --purple: #6f62db;
+    --purple-soft: rgba(111,98,219,.1);
+    --success: #2c813d;
+    --danger: #c73e4d;
+    --shadow: 0 22px 65px rgba(30,40,20,.09);
+  }
+  :root[data-theme="amoled"] {
+    color-scheme: dark;
+    --bg:#000000; --bg-elevated:#050505; --panel:#080808; --panel-soft:#101010; --panel-hover:#171717;
+    --line:rgba(255,255,255,.10); --line-strong:rgba(255,255,255,.17); --text:#f7f7f7;
+    --muted:#a3a3a3; --subtle:#777; --accent:#c8f169; --accent-ink:#18210a;
+    --purple:#aaa2ff; --purple-soft:rgba(170,162,255,.13); --success:#a8ee9c; --danger:#ff8c96;
+    --shadow:0 26px 75px rgba(0,0,0,.48);
+  }
+  html, body, .access-card, .chat-panel, .tasks-panel, .panel-head, .composer-wrap, .composer,
+  .text-input, .secondary-button, .icon-button, .modal, .mobile-tab, .room-toolbar, .task-form,
+  .task-item, .file-card, .topbar { transition:background-color .28s ease, color .28s ease, border-color .28s ease, box-shadow .28s ease; }
+  button, .primary-button, .secondary-button, .quiet-button, .icon-button, .mobile-tab { -webkit-tap-highlight-color:transparent; }
+  button:active { transform:scale(.97); }
+  .app-shell { padding-bottom:env(safe-area-inset-bottom); }
+  .ambient { transition:opacity .3s ease; }
+  :root[data-theme="amoled"] .ambient {opacity:.035;}
+  * { box-sizing: border-box; }
+  html { background: var(--bg); scroll-behavior: smooth; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: Manrope, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  button, input, textarea { font: inherit; }
+  button { cursor: pointer; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  a { color: inherit; }
+  .app-shell { min-height: 100vh; overflow: hidden; position: relative; }
+  .ambient { position: fixed; z-index: 0; pointer-events: none; width: 620px; height: 620px; border-radius: 50%; filter: blur(110px); opacity: .075; background: #b0ff65; top: -350px; right: -100px; }
+  .ambient::after { content:""; position:absolute; background:#9183ff; width:400px;height:400px;border-radius:50%;right:440px;top:340px;opacity:.7; }
+  .topbar { height: 82px; max-width: 1320px; margin: 0 auto; padding: 0 34px; display:flex; align-items:center; justify-content:space-between; position:relative; z-index:5; }
+  .brand { border:0; background:none; display:inline-flex; align-items:center; gap:11px; color:var(--text); padding:0; text-decoration:none; }
+  .brand-mark { width:35px; height:35px; border-radius:12px; display:grid; place-items:center; color:var(--accent-ink); background:var(--accent); box-shadow:0 6px 22px rgba(200,241,105,.16); }
+  .brand-mark svg { width:19px;height:19px; }
+  .brand-name { font-size:20px; font-weight:800; letter-spacing:-1px; }
+  .brand-name span { color:var(--accent); }
+  .topbar-right { display:flex; align-items:center; gap:12px; }
+  .top-note { color:var(--muted); font-size:12px; display:flex; align-items:center; gap:8px; }
+  .pulse-dot { width:7px;height:7px;background:var(--accent);border-radius:50%;box-shadow:0 0 0 4px rgba(200,241,105,.09); }
+  .icon-button { display:grid; place-items:center; width:40px;height:40px; padding:0; border:1px solid var(--line); background:var(--panel); color:var(--muted); border-radius:13px; transition: .18s ease; }
+  .icon-button:hover { color:var(--text);border-color:var(--line-strong);background:var(--panel-hover);transform:translateY(-1px); }
+  .icon-button svg { width:18px;height:18px; }
+  main { position:relative; z-index:1; }
+  .landing { max-width:1260px; margin:0 auto; padding:38px 34px 60px; }
+  .hero { display:grid; grid-template-columns:minmax(0,1.06fr) minmax(350px,.94fr); align-items:center; gap:50px; min-height:490px; }
+  .eyebrow { display:inline-flex; align-items:center; gap:9px; color:var(--accent); font-size:11px; font-weight:800; letter-spacing:1.7px; text-transform:uppercase; }
+  .eyebrow-line { height:1px;width:25px;background:var(--accent); }
+  h1 { max-width:620px; font-size:clamp(45px,6.15vw,77px); line-height:1.04; letter-spacing:-5px; margin:23px 0 19px; font-weight:700; }
+  h1 .highlight { color:var(--accent); }
+  .hero-copy { max-width:490px; color:var(--muted); font-size:15px; line-height:1.9; margin:0; }
+  .hero-chips { display:flex; flex-wrap:wrap; gap:9px; margin-top:29px; }
+  .chip { padding:8px 12px; border:1px solid var(--line); background:rgba(255,255,255,.018); color:var(--muted); display:inline-flex; align-items:center; gap:7px; border-radius:999px; font-size:11px; }
+  .chip svg { width:14px;height:14px;color:var(--accent); }
+  .access-card { border:1px solid var(--line-strong); background:linear-gradient(150deg,rgba(255,255,255,.048),rgba(255,255,255,.013) 60%),var(--bg-elevated); border-radius:var(--radius-xl); padding:27px; box-shadow:var(--shadow); position:relative; overflow:hidden; }
+  .access-card::before { content:""; position:absolute; width:230px;height:230px;right:-135px;top:-140px;border-radius:50%;background:var(--accent);opacity:.055;filter:blur(12px); }
+  .access-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:24px; position:relative; }
+  .access-title { margin:0; font-size:20px; letter-spacing:-.7px; }
+  .no-account { border:1px solid rgba(200,241,105,.22); color:var(--accent); background:rgba(200,241,105,.07); font-size:10px; letter-spacing:.6px; text-transform:uppercase; font-weight:800; border-radius:999px; padding:6px 9px; white-space:nowrap; }
+  .label { display:block; color:var(--muted); font-size:11px; margin:0 0 8px 2px; font-weight:700; }
+  .text-input { width:100%; min-width:0; background:var(--panel-soft); color:var(--text); border:1px solid var(--line); border-radius:13px; padding:13px 14px; outline:none; transition:border .18s,background .18s; }
+  .text-input::placeholder, textarea::placeholder { color:var(--subtle); }
+  .text-input:focus, textarea:focus { border-color:rgba(200,241,105,.52); background:var(--panel); }
+  .field { margin-bottom:18px; }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+  .primary-button, .secondary-button, .quiet-button { border:0; border-radius:13px; min-height:47px; padding:0 17px; display:inline-flex; align-items:center; justify-content:center; gap:9px; font-weight:800; font-size:12px; transition:transform .16s,filter .16s,background .16s; }
+  .primary-button { background:var(--accent); color:var(--accent-ink); box-shadow:0 8px 23px rgba(200,241,105,.1); }
+  .primary-button:hover { filter:brightness(1.055); transform:translateY(-1px); }
+  .primary-button:disabled { opacity:.55;cursor:wait;transform:none; }
+  .primary-button svg,.secondary-button svg,.quiet-button svg { width:16px;height:16px; }
+  .secondary-button { background:var(--panel-hover);border:1px solid var(--line); color:var(--text); }
+  .secondary-button:hover { background:var(--panel-soft);border-color:var(--line-strong); }
+  .quiet-button { background:transparent;color:var(--muted);padding:0 10px; }
+  .quiet-button:hover {color:var(--text);background:var(--panel-hover);}
+  .full { width:100%; }
+  .or-line { display:flex;align-items:center;gap:12px;color:var(--subtle);font-size:10px;margin:19px 0;letter-spacing:1px;text-transform:uppercase; }
+  .or-line::before,.or-line::after { content:"";height:1px;background:var(--line);flex:1; }
+  .join-row { display:flex;gap:9px; }
+  .join-row .text-input { text-transform:uppercase;letter-spacing:3px;font-family:"DM Mono",monospace;font-weight:500; }
+  .join-row .secondary-button { flex:0 0 auto; }
+  .advanced { margin-top:12px; }
+  .advanced summary { color:var(--subtle);font-size:11px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px; }
+  .advanced summary::-webkit-details-marker {display:none;}
+  .advanced summary:hover {color:var(--muted);}
+  .advanced-body { padding-top:12px; }
+  .field-help {color:var(--subtle);font-size:10px;line-height:1.6;margin:7px 2px 0;}
+  .status-text { min-height:18px;color:var(--muted);font-size:11px;margin:12px 1px 0; }
+  .status-text.error {color:var(--danger);}
+  .status-text.success {color:var(--success);}
+  .preview-wrap { margin-top:35px; position:relative; }
+  .preview-label { display:flex;justify-content:space-between;align-items:center;margin:0 3px 12px;color:var(--subtle);font-size:10px;text-transform:uppercase;letter-spacing:1.4px;font-weight:800; }
+  .preview-label span:last-child { font-family:"DM Mono",monospace;letter-spacing:0;text-transform:none; }
+  .preview { border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--bg-elevated);overflow:hidden;box-shadow:var(--shadow);transform:rotate(-1deg);transition:transform .35s ease; }
+  .preview:hover {transform:rotate(0deg) translateY(-3px);}
+  .preview-top {display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line);}
+  .preview-orb {width:26px;height:26px;border-radius:9px;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink);}
+  .preview-orb svg {width:14px;height:14px;}
+  .preview-top strong {font-size:11px;}
+  .preview-top small {display:block;color:var(--subtle);font-size:9px;margin-top:1px;}
+  .preview-live {margin-left:auto;display:flex;align-items:center;gap:5px;color:var(--success);font-size:9px;}
+  .preview-grid {padding:15px;display:grid;grid-template-columns:1.2fr .8fr;gap:12px;}
+  .mini-panel {border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:12px;min-width:0;}
+  .mini-label {display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:800;margin-bottom:13px;}
+  .mini-label i {font-style:normal;color:var(--subtle);font-size:9px;font-weight:500;}
+  .mini-message {display:flex;align-items:flex-start;gap:7px;margin:10px 0;}
+  .mini-avatar {width:21px;height:21px;border-radius:7px;display:grid;place-items:center;font-size:8px;font-weight:800;flex:0 0 auto;background:rgba(170,162,255,.2);color:var(--purple);}
+  .mini-avatar.green {background:rgba(200,241,105,.16);color:var(--accent);}
+  .mini-bubble {padding:7px 9px;border-radius:3px 9px 9px 9px;background:var(--panel-soft);min-width:0;}
+  .mini-bubble small {display:block;color:var(--subtle);font-size:8px;margin-bottom:2px;}
+  .mini-bubble span {font-size:9px;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mini-task {display:flex;align-items:center;gap:7px;font-size:9px;color:var(--muted);margin:12px 0;}
+  .mini-check {width:13px;height:13px;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:4px;flex:0 0 auto;}
+  .mini-check.done {background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+  .preview-foot {margin:0 15px 15px;padding:10px;border:1px dashed var(--line-strong);border-radius:9px;display:flex;align-items:center;justify-content:center;gap:7px;color:var(--subtle);font-size:9px;}
+  .preview-foot svg {width:13px;height:13px;color:var(--accent);}
+  .value-strip { border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:20px 0 0; padding:24px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:22px; }
+  .value-item {display:flex;align-items:flex-start;gap:13px;padding:0 14px;}
+  .value-icon {width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:12px;flex:0 0 auto;}
+  .value-icon svg {width:17px;height:17px;}
+  .value-item strong {display:block;font-size:12px;margin:2px 0 4px;}
+  .value-item p {margin:0;color:var(--subtle);font-size:11px;line-height:1.7;}
+  .landing-foot {display:flex;justify-content:space-between;gap:15px;align-items:center;padding:25px 0 0;color:var(--subtle);font-size:10px;}
+  .landing-foot a {color:var(--muted);text-decoration:none;}
+  .landing-foot a:hover {color:var(--accent);}
+
+  /* Room view */
+  .room-screen {max-width:1450px;margin:0 auto;padding:17px 25px 26px;display:none;}
+  .room-screen.active {display:block;animation:enter .32s ease;}
+  .landing.hidden {display:none;}
+  @keyframes enter {from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+  .room-toolbar {display:flex;align-items:center;gap:13px;margin-bottom:18px;}
+  .back-button {width:39px;height:39px;display:grid;place-items:center;border:1px solid var(--line);border-radius:13px;background:var(--panel);color:var(--muted);flex:0 0 auto;}
+  .back-button:hover {color:var(--text);border-color:var(--line-strong);}
+  .back-button svg {width:17px;height:17px;}
+  .room-heading {min-width:0;flex:1;}
+  .room-title-line {display:flex;align-items:center;gap:9px;min-width:0;}
+  .room-title-line h2 {margin:0;font-size:21px;letter-spacing:-.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .room-code-badge {font-family:"DM Mono",monospace;font-size:10px;letter-spacing:1.4px;color:var(--accent);background:rgba(200,241,105,.09);border:1px solid rgba(200,241,105,.2);padding:4px 7px;border-radius:7px;white-space:nowrap;}
+  .room-subtitle {color:var(--subtle);font-size:11px;margin-top:3px;display:flex;align-items:center;gap:6px;}
+  .sync-state {display:inline-flex;align-items:center;gap:6px;white-space:nowrap;color:var(--muted);font-size:10px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 10px;}
+  .sync-indicator {height:6px;width:6px;background:var(--success);border-radius:50%;}
+  .sync-state.syncing .sync-indicator {background:var(--accent);animation:blink 1s infinite;}
+  .sync-state.offline .sync-indicator {background:var(--danger);}
+  @keyframes blink {50%{opacity:.35;}}
+  .room-actions {display:flex;gap:7px;align-items:center;}
+  .share-button {height:39px;padding:0 13px;border:1px solid var(--line-strong);border-radius:12px;background:var(--panel);color:var(--text);display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;}
+  .share-button:hover {background:var(--panel-hover);}
+  .share-button svg {width:15px;height:15px;color:var(--accent);}
+  .room-grid {display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px;align-items:stretch;min-height:calc(100vh - 155px);}
+  .chat-panel,.tasks-panel {border:1px solid var(--line);border-radius:var(--radius-xl);background:var(--bg-elevated);min-width:0;overflow:hidden;box-shadow:var(--shadow);}
+  .chat-panel {display:flex;flex-direction:column;min-height:600px;}
+  .panel-head {padding:19px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px;}
+  .panel-title-wrap {display:flex;align-items:center;gap:11px;min-width:0;}
+  .panel-icon {width:34px;height:34px;display:grid;place-items:center;background:var(--panel-soft);border:1px solid var(--line);border-radius:11px;color:var(--accent);flex:0 0 auto;}
+  .panel-icon svg {width:16px;height:16px;}
+  .panel-head h3 {font-size:13px;margin:0;font-weight:800;}
+  .panel-head p {font-size:10px;color:var(--subtle);margin:2px 0 0;}
+  .message-count {color:var(--muted);font-family:"DM Mono",monospace;font-size:10px;background:var(--panel-soft);padding:5px 8px;border-radius:8px;}
+  .mobile-tabs {display:none;gap:5px;padding:0 17px 13px;}
+  .mobile-tab {padding:8px 12px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--muted);font-size:11px;font-weight:800;}
+  .mobile-tab.active {background:var(--panel-hover);border-color:var(--line);color:var(--text);}
+  .messages {flex:1;min-height:370px;overflow:auto;padding:23px 22px 19px;scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent;}
+  .day-divider {display:flex;align-items:center;gap:12px;color:var(--subtle);font-size:9px;text-transform:uppercase;font-weight:800;letter-spacing:1.5px;margin:0 0 24px;}
+  .day-divider::before,.day-divider::after {content:"";height:1px;background:var(--line);flex:1;}
+  .message-row {display:flex;gap:11px;margin:0 0 20px;align-items:flex-start;animation:message-in .25s ease both;}
+  @keyframes message-in {from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+  .avatar {width:34px;height:34px;display:grid;place-items:center;border-radius:12px;font-weight:800;font-size:10px;flex:0 0 auto;border:1px solid var(--line);background:var(--purple-soft);color:var(--purple);}
+  .avatar.tone-1 {background:rgba(200,241,105,.12);color:var(--accent);}
+  .avatar.tone-2 {background:rgba(255,169,122,.12);color:#ffad82;}
+  .avatar.tone-3 {background:rgba(115,203,220,.12);color:#74cdda;}
+  .message-content {min-width:0;max-width:calc(100% - 45px);}
+  .message-meta {display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:2px 0 6px;}
+  .message-meta strong {font-size:12px;font-weight:800;}
+  .message-row.tone-0 .message-meta strong {color:var(--purple);}
+  .message-row.tone-1 .message-meta strong {color:var(--accent);}
+  .message-row.tone-2 .message-meta strong {color:#ffad82;}
+  .message-row.tone-3 .message-meta strong {color:#74cdda;}
+  .message-meta time {font-size:9px;color:var(--subtle);}
+  .message-bubble {display:inline-block;max-width:min(660px,100%);background:var(--panel);border:1px solid var(--line);border-radius:3px 14px 14px 14px;padding:10px 13px;color:var(--text);font-size:13px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere;}
+  .bubble-time {float:right;font-size:9px;color:var(--subtle);margin:10px 0 0 12px;line-height:1;white-space:nowrap;}
+  .file-time {display:block;text-align:right;font-size:9px;color:var(--subtle);margin-top:6px;}
+  .message-row.own {flex-direction:row-reverse;}
+  .message-row.own .avatar {display:none;}
+  .message-row.own .message-meta {display:none;}
+  .message-row.own .message-content {max-width:82%;}
+  .message-row.own .message-bubble {border-radius:14px 3px 14px 14px;background:linear-gradient(135deg,rgba(200,241,105,.17),rgba(200,241,105,.07));border-color:rgba(200,241,105,.3);}
+  .message-row.own .bubble-time {color:var(--muted);}
+  .file-card {margin-top:3px;width:min(340px,100%);border:1px solid var(--line-strong);border-radius:14px;overflow:hidden;background:var(--panel);}
+  .file-card a {text-decoration:none;}
+  .file-preview {display:block;width:100%;max-height:260px;object-fit:cover;background:var(--panel-soft);}
+  .file-info {display:flex;align-items:center;gap:10px;padding:11px 12px;}
+  .file-symbol {display:grid;place-items:center;width:33px;height:33px;border:1px solid var(--line);border-radius:10px;color:var(--accent);background:var(--panel-soft);flex:0 0 auto;}
+  .file-symbol svg {width:17px;height:17px;}
+  .file-name {font-size:11px;font-weight:800;overflow-wrap:anywhere;}
+  .file-size {font-size:9px;color:var(--subtle);margin-top:2px;}
+  .file-download {margin-left:auto;display:grid;place-items:center;color:var(--muted);padding:5px;}
+  .file-download svg {width:15px;height:15px;}
+  .system-note {display:flex;justify-content:center;margin:22px 0;color:var(--subtle);font-size:10px;}
+  .system-note span {display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px dashed var(--line);border-radius:999px;}
+  .system-note svg {width:13px;height:13px;color:var(--accent);}
+  .empty-chat {height:100%;min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:25px;}
+  .empty-orb {width:58px;height:58px;border-radius:20px;background:rgba(200,241,105,.09);border:1px solid rgba(200,241,105,.2);display:grid;place-items:center;color:var(--accent);margin-bottom:16px;}
+  .empty-orb svg {width:25px;height:25px;}
+  .empty-chat h4 {font-size:15px;margin:0 0 6px;}
+  .empty-chat p {font-size:11px;color:var(--subtle);max-width:250px;line-height:1.8;margin:0;}
+  .composer-wrap {border-top:1px solid var(--line);padding:16px 18px 18px;background:linear-gradient(0deg,var(--bg-elevated),rgba(255,255,255,.012));}
+  .composer {display:flex;align-items:flex-end;gap:8px;border:1px solid var(--line-strong);background:var(--panel);border-radius:28px;padding:6px 6px 6px 10px;transition:border .18s,box-shadow .18s;}
+  .composer:focus-within {border-color:rgba(200,241,105,.42);box-shadow:0 0 0 3px rgba(200,241,105,.04);}
+  .attach-button {width:44px;height:44px;display:grid;place-items:center;border:0;border-radius:50%;color:var(--muted);background:transparent;flex:0 0 auto;}
+  .attach-button:hover {background:var(--panel-hover);color:var(--accent);}
+  .attach-button svg {width:18px;height:18px;}
+  #messageInput {flex:1;resize:none;max-height:120px;min-height:37px;padding:9px 2px 7px;border:0;outline:0!important;background:transparent;color:var(--text);font-size:12px;line-height:1.6;}
+  #messageInput::placeholder {color:var(--subtle);}
+  .send-button {width:48px;height:48px;display:grid;place-items:center;flex:0 0 auto;border:0;border-radius:50%;background:var(--accent);color:var(--accent-ink);transition:transform .15s,filter .15s;}
+  .send-button:hover {filter:brightness(1.05);transform:translateY(-1px);}
+  .send-button:disabled {opacity:.4;cursor:not-allowed;transform:none;}
+  .send-button svg {width:20px;height:20px;}
+  .composer-hint {display:flex;justify-content:space-between;gap:10px;color:var(--subtle);font-size:9px;margin:9px 4px 0;}
+  .composer-hint kbd {padding:1px 5px;border:1px solid var(--line);border-radius:4px;font:inherit;color:var(--muted);}
+  .upload-status {font-size:10px;color:var(--accent);margin:0 3px 8px;display:none;}
+  .upload-status.visible {display:block;}
+  .tasks-panel {display:flex;flex-direction:column;}
+  .tasks-panel .panel-head {padding:19px 18px;}
+  .task-progress {padding:14px 15px 4px;}
+  .progress-ring-card {display:flex;align-items:center;gap:14px;background:var(--panel-soft);border:1px solid var(--line);border-radius:18px;padding:11px 16px;}
+  .ring-wrap {position:relative;width:58px;height:58px;flex:0 0 auto;}
+  .progress-ring {width:58px;height:58px;transform:rotate(-90deg);}
+  .progress-ring circle {fill:none;stroke-width:5;}
+  .ring-bg {stroke:var(--panel-hover);}
+  .ring-fill {stroke:var(--accent);stroke-linecap:round;stroke-dasharray:119.4;stroke-dashoffset:119.4;transition:stroke-dashoffset .45s ease;}
+  .ring-pct {position:absolute;inset:0;display:grid;place-items:center;font-family:"DM Mono",monospace;font-size:12px;font-weight:600;color:var(--text);}
+  .progress-info strong {display:block;font-size:16px;font-weight:700;}
+  .progress-info span {font-size:11px;color:var(--muted);}
+  .task-form {display:flex;gap:8px;padding:12px 15px 6px;align-items:center;}
+  .task-form input {min-width:0;flex:1;border:1px solid var(--line-strong);background:var(--panel);padding:13px 16px;border-radius:999px;color:var(--text);font-size:13px;}
+  .task-form input:focus {outline:none;border-color:rgba(200,241,105,.45);box-shadow:0 0 0 3px rgba(200,241,105,.12);}
+  .task-form input::placeholder {color:var(--subtle);}
+  .add-task-button {width:46px;height:46px;display:grid;place-items:center;border:0;border-radius:50%;background:var(--accent);color:var(--accent-ink);flex:0 0 auto;transition:transform .15s;}
+  .add-task-button:active {transform:scale(.93);}
+  .add-task-button svg {width:19px;height:19px;}
+  .task-group-label {font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle);padding:12px 6px 7px;}
+  .tasks-list {padding:2px 12px 16px;overflow:auto;max-height:calc(100vh - 360px);min-height:180px;scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent;}
+  .task-item {display:flex;align-items:center;gap:12px;background:var(--panel-soft);border:1px solid var(--line);border-radius:16px;padding:11px 12px;margin-bottom:8px;transition:border-color .16s,opacity .2s;}
+  .task-item:active {border-color:var(--line-strong);}
+  .task-check {width:27px;height:27px;border:1.6px solid var(--line-strong);border-radius:50%;display:grid;place-items:center;flex:0 0 auto;background:transparent;padding:0;transition:background .18s,border-color .18s,transform .12s;}
+  .task-check:active {transform:scale(.9);}
+  .task-check svg {width:14px;height:14px;opacity:0;transform:scale(.5);transition:opacity .15s,transform .18s;}
+  .task-item.done .task-check {background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+  .task-item.done .task-check svg {opacity:1;transform:scale(1);}
+  .task-text {min-width:0;flex:1;font-size:13px;line-height:1.55;overflow-wrap:anywhere;}
+  .task-item.done {opacity:.55;}
+  .task-item.done .task-text {color:var(--subtle);text-decoration:line-through;text-decoration-color:var(--subtle);}
+  .task-sub {display:block;font-size:10px;color:var(--subtle);margin-top:3px;}
+  .delete-task {border:0;background:transparent;color:var(--subtle);padding:6px;opacity:.5;transition:opacity .15s,color .15s;flex:0 0 auto;}
+  @media (hover:hover) { .delete-task {opacity:0;} .task-item:hover .delete-task {opacity:.75;} }
+  .delete-task:hover {color:var(--danger);}
+  .delete-task svg {width:15px;height:15px;}
+  .empty-tasks {text-align:center;padding:30px 18px;color:var(--subtle);font-size:11px;line-height:1.8;}
+  .empty-tasks svg {width:26px;height:26px;color:var(--accent);display:block;margin:0 auto 9px;}
+  .tasks-footer {border-top:1px solid var(--line);padding:14px 17px;color:var(--subtle);font-size:9px;line-height:1.7;margin-top:auto;display:flex;align-items:flex-start;gap:8px;}
+  .tasks-footer svg {width:14px;height:14px;color:var(--accent);flex:0 0 auto;margin-top:2px;}
+  .room-bottom {display:flex;justify-content:space-between;align-items:center;gap:15px;margin:13px 3px 0;color:var(--subtle);font-size:9px;}
+  .room-bottom span {display:inline-flex;align-items:center;gap:6px;}
+  .room-bottom svg {width:13px;height:13px;}
+  .room-bottom button {border:0;background:transparent;color:var(--subtle);font-size:9px;padding:4px;}
+  .room-bottom button:hover {color:var(--danger);}
+  .toast-region {position:fixed;z-index:20;right:20px;bottom:20px;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+  .toast {max-width:min(370px,calc(100vw - 40px));display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line-strong);box-shadow:var(--shadow);padding:12px 15px;border-radius:13px;color:var(--text);font-size:11px;animation:toast-in .25s ease both;}
+  .toast svg {width:16px;height:16px;color:var(--accent);flex:0 0 auto;}
+  .toast.error svg {color:var(--danger);}
+  @keyframes toast-in {from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+  .modal-backdrop {position:fixed;inset:0;z-index:30;background:rgba(4,5,8,.68);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:20px;}
+  .modal-backdrop.open {display:flex;animation:enter .18s ease;}
+  .modal {width:min(480px,100%);border:1px solid var(--line-strong);border-radius:23px;background:var(--bg-elevated);box-shadow:0 30px 100px rgba(0,0,0,.35);padding:24px;}
+  .modal-head {display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:17px;}
+  .modal-head h3 {font-size:18px;letter-spacing:-.6px;margin:0 0 4px;}
+  .modal-head p {margin:0;color:var(--muted);font-size:11px;line-height:1.8;}
+  .modal-code {display:flex;align-items:center;justify-content:center;gap:10px;border:1px dashed rgba(200,241,105,.35);border-radius:16px;background:rgba(200,241,105,.045);padding:18px;margin:17px 0;}
+  .modal-code strong {font-family:"DM Mono",monospace;font-size:32px;letter-spacing:8px;color:var(--accent);margin-left:8px;}
+  .modal-link-box {border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:11px 12px;color:var(--muted);font-size:10px;overflow-wrap:anywhere;max-height:72px;overflow:auto;}
+  .modal-actions {display:flex;gap:9px;margin-top:15px;}
+  .modal-actions > * {flex:1;}
+  .modal-note {color:var(--subtle);font-size:10px;line-height:1.8;margin:14px 1px 0;}
+  .modal .icon-button {width:32px;height:32px;}
+  .sr-only {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+  @media (max-width: 980px) {
+    .hero {gap:30px;grid-template-columns:minmax(0,1fr) minmax(330px,.85fr);}
+    h1 {font-size:clamp(43px,6vw,64px);letter-spacing:-3.5px;}
+    .room-grid {grid-template-columns:minmax(0,1fr) 285px;}
+    .room-screen {padding-left:18px;padding-right:18px;}
+  }
+  @media (max-width: 760px) {
+    .topbar {height:70px;padding:0 20px;}
+    .top-note {display:none;}
+    .landing {padding:25px 20px 38px;}
+    .hero {grid-template-columns:1fr;gap:28px;min-height:0;}
+    .hero-copy {max-width:600px;font-size:14px;}
+    h1 {font-size:clamp(44px,10vw,70px);max-width:620px;margin-top:17px;}
+    .hero-chips {margin-top:21px;}
+    .access-card {padding:22px;}
+    .preview-wrap {display:none;}
+    .value-strip {grid-template-columns:1fr;gap:17px;padding:22px 0;}
+    .value-item {padding:0 5px;}
+    .landing-foot {padding-top:20px;align-items:flex-start;flex-direction:column;}
+    .room-screen {padding:10px 10px 20px;}
+    .room-toolbar {gap:9px;flex-wrap:wrap;margin-bottom:11px;}
+    .room-heading {flex:1 1 calc(100% - 60px);}
+    .room-title-line h2 {font-size:18px;}
+    .room-actions {width:100%;margin-left:48px;}
+    .room-actions .share-button {flex:1;justify-content:center;}
+    .sync-state {margin-left:auto;}
+    .room-grid {grid-template-columns:1fr;gap:10px;min-height:0;}
+    .chat-panel,.tasks-panel {border-radius:21px;}
+    .chat-panel {min-height:calc(100dvh - 210px);}
+    .panel-head {padding:15px 16px;min-height:62px;}
+    .mobile-tabs {display:flex;}
+    .messages {padding:18px 14px;min-height:300px;}
+    .composer-wrap {padding:12px;}
+    .composer-hint {font-size:8px;}
+    .tasks-panel {min-height:300px;}
+    .tasks-list {max-height:none;min-height:170px;}
+    .room-grid[data-mobile-view="chat"] .tasks-panel {display:none;}
+    .room-grid[data-mobile-view="tasks"] .chat-panel {display:flex;min-height:0;overflow:visible;background:transparent;border:0;box-shadow:none;}
+    .room-grid[data-mobile-view="tasks"] .chat-panel > .panel-head, .room-grid[data-mobile-view="tasks"] .chat-panel > .messages, .room-grid[data-mobile-view="tasks"] .chat-panel > .composer-wrap {display:none;}
+    .room-grid[data-mobile-view="tasks"] .chat-panel .mobile-tabs {padding:0 5px 2px;}
+    .delete-task {opacity:1;}
+    .room-bottom {font-size:8px;}
+    .room-bottom span:first-child {max-width:70%;}
+  }
+  @media (max-width: 400px) {
+    .topbar {padding:0 15px;}
+    .landing {padding-left:15px;padding-right:15px;}
+    .access-card {padding:17px;}
+    .field-row {grid-template-columns:1fr;gap:0;}
+    .room-code-badge {font-size:9px;letter-spacing:1px;}
+    .room-actions {margin-left:0;}
+    .share-button {font-size:10px;padding:0 9px;}
+    .sync-state {font-size:9px;padding:7px 8px;}
+    .modal {padding:19px;}
+    .modal-code strong {font-size:27px;letter-spacing:5px;}
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,*::before,*::after {scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+  }
+
+  /* Run home refresh: compact, chat-app inspired, with the room screen unchanged. */
+  .topbar { max-width: 640px; height: 68px; padding: 0 20px; border-bottom: 1px solid var(--line); }
+  .top-note { display: none !important; }
+  .landing { max-width: 600px; padding: 25px 18px 42px; }
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; min-height: 0; }
+  .hero-intro, .preview-wrap, .value-strip, .landing-foot { display: none !important; }
+  .access-card { background: var(--bg-elevated); border: 1px solid var(--line); border-radius: 24px; padding: 24px; box-shadow: 0 14px 42px rgba(0,0,0,.13); }
+  .access-card::before { display: none; }
+  .access-head { margin-bottom: 22px; }
+  .access-title { font-size: 25px; font-weight: 800; letter-spacing: -.9px; }
+  .access-subtitle { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+  .no-account { display: none; }
+  .label { font-size: 12px; margin-bottom: 7px; }
+  .field { margin-bottom: 17px; }
+  .text-input { border-radius: 14px; padding: 14px 15px; min-height: 51px; font-size: 14px; }
+  .primary-button, .secondary-button { min-height: 51px; border-radius: 14px; font-size: 13px; }
+  .primary-button { box-shadow: none; }
+  .or-line { margin: 20px 0; gap: 10px; font-size: 10px; letter-spacing: .5px; }
+  .join-row { gap: 8px; }
+  .join-row .text-input { letter-spacing: 1.4px; }
+  .join-row .secondary-button { padding: 0 14px; }
+  .room-name-more { margin: -4px 0 15px; }
+  .room-name-more summary { color: var(--muted); font-size: 12px; padding: 7px 2px; }
+  .room-name-more .optional-note { color: var(--subtle); }
+  .room-name-more .field { margin: 5px 0 4px; }
+  .status-text { min-height: 0; margin: 0; }
+  .status-text:not(:empty) { margin-top: 14px; }
+  .status-text.error { background: rgba(255,140,150,.07); border: 1px solid rgba(255,140,150,.2); color: var(--danger); border-radius: 13px; padding: 11px 12px; line-height: 1.6; overflow-wrap: anywhere; }
+  .status-text.success { color: var(--success); }
+  @media (max-width: 760px) {
+    .topbar { height: 64px; padding: 0 17px; }
+    .landing { padding: 18px 15px 34px; }
+    .hero { grid-template-columns: minmax(0,1fr); gap: 0; min-height: 0; }
+    .access-card { padding: 22px 19px; }
+    .hero-copy, .hero-chips { display: none !important; }
+    .join-row .text-input { min-width: 0; }
+  }
+  @media (max-width: 390px) {
+    .access-card { padding: 19px 16px; }
+    .join-row { align-items: stretch; }
+    .join-row .secondary-button { padding: 0 10px; gap: 5px; }
+  }
+
+
+  /* Mobile-first Run refresh */
+  .topbar {max-width:760px; padding-inline:22px;}
+  .landing {max-width:760px; padding:28px 20px 90px;}
+  .hero {display:block;min-height:0;}
+  .hero-intro {display:none!important;}
+  .hero-side {max-width:100%;}
+  .access-card {border-radius:26px;padding:25px;box-shadow:0 16px 44px rgba(0,0,0,.13);}
+  .access-head {margin-bottom:20px;}
+  .access-title {font-size:27px;}
+  .access-subtitle {font-size:13px;}
+  .field-help {font-size:11px;}
+  .run-fab {position:fixed;z-index:42;right:max(22px,env(safe-area-inset-right));bottom:calc(22px + env(safe-area-inset-bottom));width:62px;height:62px;border:0;border-radius:22px;background:var(--accent);color:var(--accent-ink);box-shadow:0 10px 28px rgba(0,0,0,.28),0 0 0 7px rgba(200,241,105,.08);font-size:34px;display:grid;place-items:center;transition:transform .32s cubic-bezier(.2,1.6,.4,1),border-radius .2s,box-shadow .2s;}
+  .run-fab.open {transform:rotate(45deg) scale(1.04);border-radius:50%;box-shadow:0 12px 35px rgba(0,0,0,.34);}
+  .run-fab.fab-hidden, .fab-menu.fab-hidden, .fab-scrim.fab-hidden {display:none!important;}
+  .fab-plus {display:block;line-height:1;transition:transform .25s;}
+  .fab-scrim {position:fixed;inset:0;z-index:39;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;}
+  .fab-scrim.open {opacity:1;pointer-events:auto;}
+  .fab-menu {position:fixed;z-index:41;right:22px;bottom:calc(96px + env(safe-area-inset-bottom));display:grid;gap:9px;width:min(290px,calc(100vw - 34px));opacity:0;transform:translateY(12px) scale(.96);transform-origin:bottom right;pointer-events:none;transition:opacity .2s,transform .28s cubic-bezier(.2,1.3,.4,1);}
+  .fab-menu.open {opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+  .fab-menu button {display:flex;align-items:center;gap:12px;text-align:left;padding:13px;border:1px solid var(--line-strong);border-radius:17px;background:var(--bg-elevated);color:var(--text);box-shadow:var(--shadow);}
+  .fab-menu-icon {width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:rgba(200,241,105,.13);color:var(--accent);font-size:23px;flex:0 0 auto;}
+  .fab-menu strong,.fab-menu small {display:block;}.fab-menu strong {font-size:12px;}.fab-menu small {color:var(--muted);font-size:10px;margin-top:2px;}
+  .settings-label {font-size:10px;letter-spacing:1.3px;font-weight:800;color:var(--subtle);margin:20px 0 10px;}
+  .theme-options {display:grid;gap:9px;}
+  .theme-option {width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:12px;border:1px solid var(--line);border-radius:15px;background:var(--panel);color:var(--text);}
+  .theme-option.selected {border-color:rgba(200,241,105,.58);background:var(--panel-hover);}
+  .theme-option strong,.theme-option small {display:block;}.theme-option strong {font-size:12px;}.theme-option small {font-size:10px;color:var(--muted);margin-top:3px;}
+  .theme-swatch {width:46px;height:42px;border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:4px;flex:0 0 auto;border:1px solid rgba(127,127,127,.22);}
+  .theme-swatch i {display:block;height:5px;border-radius:4px;background:currentColor;opacity:.65;}.theme-swatch i:nth-child(2){width:70%;}.theme-swatch i:nth-child(3){width:45%;}
+  .swatch-default {background:#171820;color:#c8f169;}.swatch-amoled {background:#000;color:#c8f169;border-color:#303030;}.swatch-light {background:#f4f7fb;color:#3688d9;}
+  .theme-check {margin-left:auto;color:var(--accent);opacity:0;font-weight:900;}.theme-option.selected .theme-check {opacity:1;}
+  .settings-modal {max-width:430px;}
+  .room-screen {padding-top:17px;}
+  .chat-panel,.tasks-panel {box-shadow:0 10px 35px rgba(0,0,0,.10);}
+  .message-bubble.own {background:linear-gradient(135deg,rgba(200,241,105,.17),rgba(200,241,105,.07));border-color:rgba(200,241,105,.23);}
+  .send-button {background:linear-gradient(135deg,#d7ff85,#b7e657);box-shadow:0 5px 16px rgba(200,241,105,.16);}
+  .avatar {box-shadow:0 4px 12px rgba(0,0,0,.12);}
+  .room-toolbar {backdrop-filter:blur(12px);}
+  @media (max-width:760px) {
+    .topbar {padding-inline:17px;}
+    .landing {padding:18px 15px 100px;}
+    .access-card {padding:22px 19px;border-radius:23px;}
+    .hero-side {width:100%;}
+    .room-screen {padding-bottom:calc(78px + env(safe-area-inset-bottom));}
+    .room-grid {display:grid;grid-template-columns:1fr;}
+    .chat-panel {min-height:calc(100dvh - 215px);}
+    .room-screen.active {display:flex;flex-direction:column;height:calc(100dvh - 82px);max-height:calc(100dvh - 82px);}
+    .room-grid {flex:1 1 auto;min-height:0;}
+    .room-grid[data-mobile-view="chat"] .chat-panel {min-height:0;height:auto;max-height:none;}
+    .room-grid[data-mobile-view="chat"] .chat-panel .messages {min-height:0;}
+    .room-grid[data-mobile-view="chat"] .chat-panel > .panel-head {display:none;}
+    .mobile-tabs {position:fixed;z-index:15;left:12px;right:12px;bottom:calc(8px + env(safe-area-inset-bottom));display:flex;gap:5px;padding:6px;background:var(--bg-elevated);border:1px solid var(--line-strong);border-radius:18px;box-shadow:0 10px 35px rgba(0,0,0,.25);backdrop-filter:blur(18px);}
+    .mobile-tab {flex:1;min-height:42px;border-radius:13px;font-size:12px;}
+    .mobile-tab.active {background:var(--accent);border-color:transparent;color:var(--accent-ink);}
+    .room-grid[data-mobile-view="tasks"] .tasks-panel {display:flex;min-height:calc(100dvh - 230px);}
+    .room-grid[data-mobile-view="tasks"] .chat-panel {display:flex;min-height:0;overflow:visible;background:transparent;border:0;box-shadow:none;}
+    .room-grid[data-mobile-view="tasks"] .chat-panel > .panel-head, .room-grid[data-mobile-view="tasks"] .chat-panel > .messages, .room-grid[data-mobile-view="tasks"] .chat-panel > .composer-wrap {display:none;}
+    .room-grid[data-mobile-view="tasks"] .chat-panel .mobile-tabs {padding:0 0 8px;}
+    .room-grid[data-mobile-view="chat"] .tasks-panel {display:none;}
+    .room-grid[data-mobile-view="tasks"] .mobile-tabs {position:fixed;}
+    .room-bottom {display:none;}
+    .composer-hint span:last-child {display:none;}
+  }
+  /* Phone composer: readable size, no auto-zoom on focus, roomier touch targets. */
+  @media (max-width: 768px) {
+    #messageInput, .text-input, #newTaskInput {font-size:16px;}
+    #messageInput {min-height:44px;padding:11px 2px 9px;}
+    .composer {padding:8px 8px 8px 12px;gap:8px;}
+    .composer-wrap {padding:10px 8px 14px;}
+    /* Compact mobile room toolbar: single row, icon-only share, dot-only sync — maximum space for chat. */
+    .room-toolbar {flex-wrap:nowrap;gap:10px;margin-bottom:8px;}
+    .room-heading {flex:1 1 auto;min-width:0;}
+    .room-title-line h2 {font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    #syncLabel {display:none;}
+    .sync-state {padding:7px 9px;margin-left:0;}
+    .room-actions {width:auto;margin-left:0;}
+    .room-actions .share-button {flex:0 0 auto;height:38px;padding:0 11px;font-size:0;gap:0;}
+    .room-actions .share-button svg {width:18px;height:18px;}
+    /* Telegram-like spacious room: no app topbar inside a room, full-bleed messages. */
+    body.in-room .topbar {display:none;}
+    body.in-room .room-screen {padding:8px 6px 0;}
+    body.in-room .room-screen.active {height:100dvh;max-height:100dvh;}
+    body.in-room .room-grid[data-mobile-view="chat"] .chat-panel {border:0;border-radius:0;background:transparent;box-shadow:none;}
+    body.in-room .room-grid[data-mobile-view="chat"] .messages {padding:14px 8px 12px;}
+  }
+  @media (prefers-reduced-motion:reduce) {.run-fab,.fab-menu,.fab-scrim {transition:none!important;}}
+
+/* Prevent the old duplicated top-level Join button from appearing. */
+#joinRoomButton, .join-row > button { display: none !important; }
+#inlineJoinDivider, #joinRoomForm { display:none !important; }
+#joinModal #joinRoomForm { display:block !important; }
+#joinModal .join-row { display:flex; }
+#joinModal .join-row .text-input { width:100%; }
+#joinModal .modal-actions { margin-top:16px; }
+  /* ---- Recent rooms (rejoin bubbles) ---- */
+  .recent-rooms { margin-top: 20px; padding-top: 18px; border-top: 1px dashed var(--line); }
+  .recent-rooms-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+  .recent-rooms-head > span:first-child { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); }
+  .recent-hint { font-size: 10px; color: var(--subtle); }
+  .recent-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .recent-room { display: flex; align-items: center; gap: 8px; padding: 9px 13px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--text); cursor: pointer; font: inherit; font-size: 12px; transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+  .recent-room:hover { transform: translateY(-1px); border-color: rgba(200,241,105,.45); box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+  .recent-room-name { font-weight: 700; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .recent-room-code { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; color: var(--accent-ink); background: var(--accent); border-radius: 6px; padding: 2px 7px; }
+  .recent-room-time { font-size: 10px; color: var(--subtle); }
+  /* ---- Typing indicator ---- */
+  .typing-indicator { display: none; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); padding: 0 6px 8px; }
+  .typing-indicator.visible { display: flex; animation: message-in .2s ease both; }
+  .typing-dots { display: inline-flex; gap: 3px; }
+  .typing-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: typing-bounce 1.2s infinite; }
+  .typing-dots i:nth-child(2) { animation-delay: .15s; }
+  .typing-dots i:nth-child(3) { animation-delay: .3s; }
+  @keyframes typing-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="ambient"></div>
+  <header class="topbar">
+    <button class="brand" id="brandHome" aria-label="Run home">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18V6h8a5 5 0 0 1 0 10H9"/><path d="M13 16l4 4"/></svg></span>
+      <span class="brand-name">ru<span>n</span></span>
+    </button>
+    <div class="topbar-right">
+      <div class="top-note"><span class="pulse-dot"></span> No accounts. Just connect.</div>
+      <button class="icon-button" id="themeToggle" aria-label="Toggle light and dark mode" title="Toggle theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 15.4A8.6 8.6 0 0 1 8.6 3.8 8.8 8.8 0 1 0 20.2 15.4Z"/></svg>
+      </button>
+    </div>
+  </header>
+  <main>
+    <section class="landing" id="landingScreen">
+      <div class="hero">
+        <div class="hero-intro">
+          <div class="eyebrow"><span class="eyebrow-line"></span> A little space to get things done</div>
+          <h1>Good things<br>happen when<br>we <span class="highlight">run together.</span></h1>
+          <p class="hero-copy">A shared room for the people you work, learn, or build with. Talk it out, keep tasks moving, and pass files around — all without creating an account.</p>
+          <div class="hero-chips">
+            <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg> Room chat</span>
+            <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Shared tasks</span>
+            <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.7 12.3 20.8a5 5 0 0 1-7.1-7.1l9.2-9.2a3.3 3.3 0 0 1 4.7 4.7L9.9 18.4a1.7 1.7 0 0 1-2.4-2.4l8.3-8.3"/></svg> File sharing</span>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="access-card">
+            <div class="access-head">
+              <div><h2 class="access-title">Your rooms</h2><p class="access-subtitle">Create a room or join with a code.</p></div>
+            </div>
+            <form id="createRoomForm">
+              <div class="field">
+                <label class="label" for="displayName">Your name</label>
+                <input class="text-input" id="displayName" name="displayName" maxlength="32" placeholder="e.g. Alex" autocomplete="nickname" required>
+              </div>
+              <details class="advanced room-name-more">
+                <summary>Add a room name <span class="optional-note">(optional)</span></summary>
+                <div class="advanced-body">
+                  <div class="field">
+                    <label class="label" for="newRoomName">Room name</label>
+                    <input class="text-input" id="newRoomName" name="roomName" maxlength="60" placeholder="e.g. Study group">
+                  </div>
+                </div>
+              </details>
+            </form>
+            <div class="or-line" id="inlineJoinDivider">or join a room</div>
+            <form id="joinRoomForm">
+              <div class="join-row">
+                <label class="sr-only" for="joinCode">Six-character room code or invite link</label>
+                <input class="text-input" id="joinCode" maxlength="500" placeholder="6-character code" autocomplete="off" spellcheck="false" required>
+
+              </div>
+              <p class="field-help" style="margin:7px 2px 0">Press Enter to join, or use the + button.</p>
+            </form>
+            <p class="status-text" id="landingStatus" aria-live="polite"></p>
+            <div class="recent-rooms" id="recentRooms" hidden>
+              <div class="recent-rooms-head"><span>Recent rooms</span><span class="recent-hint">Jump back in anytime</span></div>
+              <div class="recent-list" id="recentRoomsList"></div>
+            </div>
+          </div>
+          <div class="preview-wrap">
+            <div class="preview-label"><span>A peek inside a room</span><span>RUN / PREVIEW_01</span></div>
+            <div class="preview">
+              <div class="preview-top"><span class="preview-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18V6h8a5 5 0 0 1 0 10H9"/><path d="M13 16l4 4"/></svg></span><div><strong>Studio / weekly sprint</strong><small>3 people · 2 active tasks</small></div><span class="preview-live"><i class="pulse-dot"></i> In sync</span></div>
+              <div class="preview-grid">
+                <div class="mini-panel"><div class="mini-label">Conversation <i>12 messages</i></div><div class="mini-message"><span class="mini-avatar">JM</span><div class="mini-bubble"><small>Jamie · 10:24</small><span>First draft is ready to review ✨</span></div></div><div class="mini-message"><span class="mini-avatar green">AL</span><div class="mini-bubble"><small>Alex · 10:26</small><span>Nice — adding notes now.</span></div></div></div>
+                <div class="mini-panel"><div class="mini-label">Tasks <i>2/3</i></div><div class="mini-task"><span class="mini-check done">✓</span><span>Outline the brief</span></div><div class="mini-task"><span class="mini-check done">✓</span><span>Review the draft</span></div><div class="mini-task"><span class="mini-check"></span><span>Share final files</span></div></div>
+              </div>
+              <div class="preview-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 17v3h14v-3"/></svg> Drop a file. Keep the flow going.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="value-strip">
+        <div class="value-item"><span class="value-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg></span><div><strong>Talk it through</strong><p>Simple room chat with timestamps and quick file previews.</p></div></div>
+        <div class="value-item"><span class="value-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div><strong>Keep the next step clear</strong><p>A shared task list everyone in the room can update.</p></div></div>
+        <div class="value-item"><span class="value-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 17v3h14v-3"/></svg></span><div><strong>Share without the fuss</strong><p>No profiles to set up. Pick a name and get straight to it.</p></div></div>
+      </div>
+      <footer class="landing-foot"><span>Made for small teams, study groups, and side projects.</span><span>Run is a no-account prototype · <a href="https://www.emqx.com/en/mqtt" target="_blank" rel="noopener noreferrer">MQTT realtime</a> + <a href="https://catbox.moe/tools.php" target="_blank" rel="noopener noreferrer">Catbox</a></span></footer>
+    </section>
+
+    <section class="room-screen" id="roomScreen" aria-label="Room workspace">
+      <div class="room-toolbar">
+        <button class="back-button" id="backHome" aria-label="Back to home" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+        <div class="room-heading"><div class="room-title-line"><h2 id="roomTitle">Room</h2><span class="room-code-badge" id="roomCodeLabel">ABC123</span></div><div class="room-subtitle"><span class="pulse-dot"></span><span id="roomSubline">Your shared space</span></div></div>
+        <div class="sync-state" id="syncState"><span class="sync-indicator"></span><span id="syncLabel">Synced</span></div>
+        <div class="room-actions"><button class="share-button" id="shareRoomButton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg> Share room</button></div>
+      </div>
+      <div class="room-grid" id="roomGrid" data-mobile-view="chat">
+        <section class="chat-panel" aria-label="Room chat">
+          <div class="panel-head"><div class="panel-title-wrap"><span class="panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg></span><div><h3>Room chat</h3><p>Say the thing. Move the work forward.</p></div></div><span class="message-count" id="messageCount">0 messages</span></div>
+          <div class="mobile-tabs"><button class="mobile-tab active" data-mobile-tab="chat">Chat</button><button class="mobile-tab" data-mobile-tab="tasks">Shared tasks <span id="mobileTaskCount">0</span></button></div>
+          <div class="messages" id="messagesList" aria-live="polite"></div>
+          <div class="composer-wrap">
+            <div class="typing-indicator" id="typingIndicator" aria-live="polite"></div>
+            <div class="upload-status" id="uploadStatus" aria-live="polite">Uploading file…</div>
+            <form class="composer" id="messageForm">
+              <input type="file" id="fileInput" class="sr-only" aria-label="Choose a file to share">
+              <button class="attach-button" id="attachButton" type="button" aria-label="Attach file" title="Attach a file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
+              <label class="sr-only" for="messageInput">Message</label>
+              <textarea id="messageInput" rows="1" maxlength="5000" placeholder="Write something useful… (Enter to send)"></textarea>
+              <button class="send-button" id="sendButton" type="submit" aria-label="Send message" title="Send message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
+            </form>
+            <div class="composer-hint"><span><kbd>Enter</kbd> to send · <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line</span><span>Files shared with this room</span></div>
+          </div>
+        </section>
+        <aside class="tasks-panel" aria-label="Shared tasks">
+          <div class="panel-head"><div class="panel-title-wrap"><span class="panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div><h3>Shared tasks</h3><p>Small steps, done together.</p></div></div></div>
+          <div class="task-progress"><div class="progress-ring-card"><div class="ring-wrap"><svg class="progress-ring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" class="ring-bg"/><circle cx="22" cy="22" r="19" class="ring-fill" id="taskProgressRing"/></svg><span class="ring-pct" id="taskProgressPct">0%</span></div><div class="progress-info"><strong id="taskProgressText">0 / 0</strong><span>tasks completed</span></div></div></div>
+          <form class="task-form" id="taskForm"><label for="newTaskInput" class="sr-only">New task</label><input id="newTaskInput" maxlength="180" placeholder="Add a task…"><button class="add-task-button" type="submit" aria-label="Add task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button></form>
+          <div class="tasks-list" id="tasksList"></div>
+          <div class="tasks-footer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg><span>Every task is shared with everyone using this room. No separate task app needed.</span></div>
+        </aside>
+      </div>
+      <div class="room-bottom"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> Live sync. Keep the invite link for next time.</span><button id="leaveRoomButton">Leave this room</button></div>
+    </section>
+  </main>
+</div>
+<button class="run-fab" id="runFab" aria-label="Create or join a room" aria-expanded="false"><span class="fab-plus">＋</span></button>
+<div class="fab-scrim" id="fabScrim"></div>
+<div class="fab-menu" id="fabMenu" aria-label="Room actions"><button type="button" data-fab-action="create"><span class="fab-menu-icon">＋</span><span><strong>Create a room</strong><small>Start a new shared space</small></span></button><button type="button" data-fab-action="join"><span class="fab-menu-icon">↗</span><span><strong>Join a room</strong><small>Enter a room code or invite</small></span></button></div>
+<div class="modal-backdrop" id="joinModal" role="dialog" aria-modal="true" aria-labelledby="joinModalTitle"><div class="modal"><div class="modal-head"><div><h3 id="joinModalTitle">Join a room</h3><p>Enter a six-character room code or paste an invite link.</p></div><button class="icon-button" id="closeJoinModal" aria-label="Close join dialog">×</button></div><div id="joinModalContent"></div><div class="modal-actions"><button class="primary-button" id="joinModalSubmit" type="button">Join room</button></div></div></div>
+<div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="modal settings-modal"><div class="modal-head"><div><h3 id="settingsTitle">Appearance</h3><p>Make Run feel right for you.</p></div><button class="icon-button" id="closeSettings" aria-label="Close settings">×</button></div>
+    <div class="settings-label">THEME</div>
+    <div class="theme-options">
+      <button type="button" class="theme-option" data-theme-choice="dark"><span class="theme-swatch swatch-default"><i></i><i></i><i></i></span><span><strong>Default</strong><small>Dark with lime accent</small></span><span class="theme-check">✓</span></button>
+      <button type="button" class="theme-option" data-theme-choice="amoled"><span class="theme-swatch swatch-amoled"><i></i><i></i><i></i></span><span><strong>AMOLED Black</strong><small>True black backgrounds</small></span><span class="theme-check">✓</span></button>
+      <button type="button" class="theme-option" data-theme-choice="light"><span class="theme-swatch swatch-light"><i></i><i></i><i></i></span><span><strong>Light</strong><small>Soft blue and white</small></span><span class="theme-check">✓</span></button>
+    </div>
+  </div>
+</div>
+<div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+<div class="modal-backdrop" id="shareModal" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+  <div class="modal">
+    <div class="modal-head"><div><h3 id="shareModalTitle">Bring your people in.</h3><p>Share the invite link for one-tap joining, or pass along the code.</p></div><button class="icon-button" id="closeShareModal" aria-label="Close share dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m18 6-12 12M6 6l12 12"/></svg></button></div>
+    <div class="modal-code"><span style="color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px">Room code</span><strong id="shareCodeDisplay">ABC123</strong><button class="icon-button" id="copyCodeButton" title="Copy room code" aria-label="Copy room code"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div>
+    <label class="label" for="inviteLinkDisplay">Invite link</label><div class="modal-link-box" id="inviteLinkDisplay"></div>
+    <div class="modal-actions"><button class="primary-button" id="copyInviteButton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg> Copy invite link</button><button class="secondary-button" id="copyRoomPackButton">Copy code + directory</button></div>
+    <p class="modal-note" id="shareModalNote">Anyone with the invite can open this room. Room codes are not private access keys — don't share sensitive files or private information here.</p>
+  </div>
+</div>
+<div class="modal-backdrop" id="manualUploadModal" role="dialog" aria-modal="true" aria-labelledby="manualUploadTitle">
+  <div class="modal">
+    <div class="modal-head"><div><h3 id="manualUploadTitle">Finish sharing this file.</h3><p id="manualUploadDescription">Your browser couldn't read Catbox's upload response. You can still share the file by pasting its Catbox URL here.</p></div><button class="icon-button" id="closeManualUpload" aria-label="Close upload dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m18 6-12 12M6 6l12 12"/></svg></button></div>
+    <div class="modal-link-box" id="manualUploadFileLabel" style="margin-bottom:16px"></div>
+    <div class="modal-actions" style="margin-top:0;margin-bottom:16px"><button class="secondary-button" id="openCatboxButton" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h7v7M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg> Open Catbox</button></div>
+    <form id="manualUploadForm">
+      <label class="label" for="manualFileUrl">Catbox file URL</label><input class="text-input" id="manualFileUrl" type="url" placeholder="https://files.catbox.moe/…" required>
+      <p class="modal-note">Upload the same file on Catbox, copy the resulting <code>files.catbox.moe</code> link, and paste it above. This only sends the URL to the room; your file stays on Catbox.</p>
+      <div class="modal-actions"><button class="primary-button" id="manualShareButton" type="submit">Share file in room</button><button class="secondary-button" id="cancelManualUpload" type="button">Cancel</button></div>
+    </form>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mqtt@5/dist/mqtt.min.js"></script>
+<script>
+(() => {
+  'use strict';
+  const CATBOX_API = 'https://catbox.moe/user/api.php';
+  /* Run realtime backend: public MQTT brokers (no signup, no API keys).
+     Each room is an MQTT topic holding its full state as a retained message. */
+  const MQTT_BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt'];
+  const MQTT_TOPIC_PREFIX = 'runapp/v1/room/';
+  const MQTT_CONNECT_TIMEOUT_MS = 12000;
+  const MQTT_JOIN_TIMEOUT_MS = 9000;
+  const MQTT_CODE_CHECK_TIMEOUT_MS = 2500;
+  const MAX_FILE_BYTES = 200 * 1024 * 1024;
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+  const store = {
+    get(key, fallback = null) { try { const value = localStorage.getItem(key); return value === null ? fallback : value; } catch { return fallback; } },
+    set(key, value) { try { localStorage.setItem(key, String(value)); } catch {} },
+    getJSON(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || ''); } catch { return fallback; } },
+    setJSON(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} }
+  };
+  const state = {
+    name: store.get('run_display_name', ''),
+    userId: store.get('run_user_id', makeId()),
+    mqttClient: null,
+    mqttConnectPromise: null,
+    roomTopic: '',
+    typingTopic: '',
+    typingUsers: new Map(),
+    lastTypingSent: 0,
+    room: null,
+    roomData: null,
+    roomFingerprint: '',
+    writeQueue: Promise.resolve(),
+    theme: store.get('run_theme', 'dark'),
+    pendingUpload: false,
+    pendingManualFile: null,
+    messagesInitiallyRendered: false,
+    roomMode: false
+  };
+  store.set('run_user_id', state.userId);
+
+  function makeId() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
+    return Date.now().toString(36) + Math.random().toString(36).slice(2);
+  }
+  function randomCode() {
+    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (let i = 0; i < 6; i++) bytes[i] = Math.floor(Math.random() * 256);
+    return Array.from(bytes, b => alphabet[b % alphabet.length]).join('');
+  }
+  function escapeHTML(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  }
+  function initials(name) {
+    const parts = String(name || '?').trim().split(/\s+/).filter(Boolean);
+    return (parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : (parts[0] || '?').slice(0, 2)).toUpperCase();
+  }
+  function toneFor(userId) {
+    let hash = 0; for (const char of String(userId || '')) hash = (hash * 31 + char.charCodeAt(0)) | 0;
+    return Math.abs(hash) % 4;
+  }
+  function formatTime(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return new Intl.DateTimeFormat(undefined, {hour:'numeric', minute:'2-digit'}).format(date);
+  }
+  function formatDate(value) {
+    const d = new Date(value); if (Number.isNaN(d.getTime())) return 'Earlier';
+    const today = new Date();
+    if (d.toDateString() === today.toDateString()) return 'Today';
+    const yesterday = new Date(); yesterday.setDate(today.getDate() - 1);
+    if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+    return new Intl.DateTimeFormat(undefined, {month:'short', day:'numeric', year: d.getFullYear() === today.getFullYear() ? undefined : 'numeric'}).format(d);
+  }
+  function formatSize(bytes) {
+    if (!Number.isFinite(bytes) || bytes < 0) return '';
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+  function safeLink(url) {
+    try { const parsed = new URL(url); return ['https:','http:'].includes(parsed.protocol) ? parsed.href : ''; } catch { return ''; }
+  }
+  function isImage(file) {
+    const mime = String(file?.mime || '').toLowerCase();
+    const name = String(file?.name || file?.url || '').toLowerCase();
+    return mime.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|avif)(?:[?#].*)?$/.test(name);
+  }
+  function status(message, type = '') {
+    const el = $('#landingStatus'); if (!el) return;
+    el.textContent = message; el.className = `status-text${type ? ' ' + type : ''}`;
+  }
+  function toast(message, type = 'success') {
+    const region = $('#toastRegion'); const node = document.createElement('div');
+    node.className = `toast${type === 'error' ? ' error' : ''}`;
+    const icon = type === 'error'
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>';
+    node.innerHTML = icon + `<span>${escapeHTML(message)}</span>`; region.appendChild(node);
+    window.setTimeout(() => { node.style.opacity = '0'; node.style.transform = 'translateY(5px)'; window.setTimeout(() => node.remove(), 230); }, 3200);
+  }
+  function setBusy(button, busy, busyText = 'Connecting…') {
+    if (!button) return;
+    if (busy) { button.dataset.originalText = button.innerHTML; button.disabled = true; button.innerHTML = `<span>${escapeHTML(busyText)}</span>`; }
+    else { button.disabled = false; if (button.dataset.originalText) button.innerHTML = button.dataset.originalText; delete button.dataset.originalText; }
+  }
+  function setTheme(theme) {
+    state.theme = ['dark','amoled','light'].includes(theme) ? theme : 'dark';
+    document.documentElement.dataset.theme = state.theme;
+    store.set('run_theme', state.theme);
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.content = state.theme === 'light' ? '#f4f7fb' : state.theme === 'amoled' ? '#000000' : '#111218';
+    $('#themeIcon').innerHTML = state.theme === 'light'
+      ? '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />'
+      : state.theme === 'amoled'
+      ? '<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 12h8"/>'
+      : '<path d="M20.2 15.4A8.6 8.6 0 0 1 8.6 3.8 8.8 8.8 0 1 0 20.2 15.4Z"/>';
+    $$('[data-theme-choice]').forEach(button => button.classList.toggle('selected', button.dataset.themeChoice === state.theme));
+  }
+  function showLanding() {
+    leaveRoomTopic();
+    state.room = null; state.roomData = null; state.roomFingerprint = ''; state.roomMode = false;
+    $('#landingScreen').classList.remove('hidden'); $('#roomScreen').classList.remove('active'); document.body.classList.remove('in-room');
+    ['runFab', 'fabMenu', 'fabScrim'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('fab-hidden'); });
+    $('#roomGrid').dataset.mobileView = 'chat';
+    const url = new URL(window.location.href); url.searchParams.delete('room'); url.searchParams.delete('dir');
+    window.history.replaceState({}, '', url.toString());
+    renderRecentRooms();
+  }
+  function showRoomShell() {
+    $('#landingScreen').classList.add('hidden'); $('#roomScreen').classList.add('active'); state.roomMode = true; document.body.classList.add('in-room');
+    const fab = $('#runFab');
+    if (fab) { fab.classList.remove('open'); fab.classList.add('fab-hidden'); fab.setAttribute('aria-expanded', 'false'); }
+    const menu = $('#fabMenu');
+    if (menu) { menu.classList.remove('open'); menu.classList.add('fab-hidden'); }
+    const scrim = $('#fabScrim');
+    if (scrim) { scrim.classList.remove('open'); scrim.classList.add('fab-hidden'); }
+  }
+  /* ---------- Realtime storage over public MQTT brokers (no signup, no API keys) ----------
+     Each room lives as an MQTT topic holding its full JSON state as a retained
+     message. Creating a room = publishing its initial state; joining = reading
+     the retained message; updates = republishing. Live subscriptions replace
+     polling, so changes arrive instantly. */
+  function mqttTopicFor(code) { return MQTT_TOPIC_PREFIX + String(code || '').toUpperCase(); }
+  function typingTopicFor(code) { return mqttTopicFor(code) + '/typing'; }
+
+  /* ---------- Recent rooms: rejoin bubbles on the landing screen ---------- */
+  const RECENT_ROOMS_KEY = 'run_recent_rooms_v1';
+  function getRecentRooms() {
+    try { const value = JSON.parse(localStorage.getItem(RECENT_ROOMS_KEY) || '[]'); return Array.isArray(value) ? value : []; }
+    catch { return []; }
+  }
+  function saveRecentRoom(code, name) {
+    const normalized = String(code || '').toUpperCase();
+    if (!/^[A-Z0-9]{6}$/.test(normalized)) return;
+    const rooms = getRecentRooms().filter(r => r && r.code !== normalized);
+    rooms.unshift({ code: normalized, name: String(name || 'Room').slice(0, 60), at: new Date().toISOString() });
+    try { localStorage.setItem(RECENT_ROOMS_KEY, JSON.stringify(rooms.slice(0, 12))); } catch {}
+  }
+  function timeAgo(iso) {
+    const seconds = Math.max(1, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
+    if (seconds < 60) return 'just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return minutes + 'm ago';
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return hours + 'h ago';
+    return Math.floor(hours / 24) + 'd ago';
+  }
+  function renderRecentRooms() {
+    const wrap = $('#recentRooms'), list = $('#recentRoomsList');
+    if (!wrap || !list) return;
+    const rooms = getRecentRooms();
+    wrap.hidden = !rooms.length;
+    list.innerHTML = rooms.map(r =>
+      `<button type="button" class="recent-room" data-recent-code="${escapeHTML(r.code)}">` +
+      `<span class="recent-room-name">${escapeHTML(r.name || 'Room')}</span>` +
+      `<span class="recent-room-code">${escapeHTML(r.code)}</span>` +
+      `<span class="recent-room-time">${escapeHTML(timeAgo(r.at))}</span></button>`
+    ).join('');
+  }
+
+  /* ---------- Typing indicator over a lightweight non-retained topic ---------- */
+  let typingIdleTimer = null;
+  function publishTyping(isTyping) {
+    if (!state.mqttClient || !state.mqttClient.connected || !state.typingTopic || !state.room) return;
+    try {
+      state.mqttClient.publish(state.typingTopic,
+        JSON.stringify({ userId: state.userId, name: state.name || 'Guest', typing: !!isTyping, at: Date.now() }),
+        { qos: 0, retain: false }, () => {});
+    } catch {}
+  }
+  function noteTypingActivity() {
+    if (!state.room) return;
+    const now = Date.now();
+    if (now - state.lastTypingSent > 2500) { state.lastTypingSent = now; publishTyping(true); }
+    if (typingIdleTimer) window.clearTimeout(typingIdleTimer);
+    typingIdleTimer = window.setTimeout(() => publishTyping(false), 3000);
+  }
+  function stopTypingSignal() {
+    if (typingIdleTimer) { window.clearTimeout(typingIdleTimer); typingIdleTimer = null; }
+    publishTyping(false);
+  }
+  function handleTypingPayload(payload) {
+    let data;
+    try { data = JSON.parse(payload.toString()); } catch { return; }
+    if (!data || !data.userId || data.userId === state.userId) return;
+    if (data.typing) state.typingUsers.set(data.userId, { name: String(data.name || 'Someone').slice(0, 32), at: Date.now() });
+    else state.typingUsers.delete(data.userId);
+    renderTypingIndicator();
+  }
+  function renderTypingIndicator() {
+    const el = $('#typingIndicator');
+    if (!el) return;
+    const now = Date.now();
+    const names = [];
+    for (const [id, user] of state.typingUsers) {
+      if (now - user.at > 4000) state.typingUsers.delete(id);
+      else names.push(user.name);
+    }
+    if (!names.length) { el.classList.remove('visible'); el.innerHTML = ''; return; }
+    const label = names.length === 1 ? `${escapeHTML(names[0])} is typing`
+      : names.length === 2 ? `${escapeHTML(names[0])} and ${escapeHTML(names[1])} are typing`
+      : `${names.length} people are typing`;
+    el.innerHTML = `<span class="typing-dots"><i></i><i></i><i></i></span><span>${label}</span>`;
+    el.classList.add('visible');
+  }
+
+  function mqttConnectOnce(url) {
+    return new Promise((resolve, reject) => {
+      let done = false;
+      const finish = (fn, value) => { if (done) return; done = true; window.clearTimeout(timer); fn(value); };
+      let client;
+      try {
+        client = window.mqtt.connect(url, {
+          connectTimeout: MQTT_CONNECT_TIMEOUT_MS,
+          reconnectPeriod: 4000,
+          clientId: 'run-' + String(state.userId).slice(0, 8) + '-' + Math.random().toString(36).slice(2, 10),
+          clean: true
+        });
+      } catch (error) { reject(error instanceof Error ? error : new Error(String(error))); return; }
+      const timer = window.setTimeout(() => { try { client.end(true); } catch {} finish(reject, new Error('Connection timed out')); }, MQTT_CONNECT_TIMEOUT_MS + 3000);
+      client.once('connect', () => finish(resolve, client));
+      client.once('error', (err) => finish(reject, err instanceof Error ? err : new Error(String((err && err.message) || err))));
+    });
+  }
+
+  function bindMqttClient(client) {
+    client.on('message', (topic, payload) => {
+      if (!state.room) return;
+      if (topic === state.typingTopic) { handleTypingPayload(payload); return; }
+      if (topic !== state.roomTopic) return;
+      let data;
+      try { data = JSON.parse(payload.toString()); } catch { return; }
+      try {
+        const remote = normalizeRoom(data, state.room.code);
+        const remoteFp = fingerprint(remote);
+        const merged = mergeRoomData(remote, state.roomData || remote);
+        const mergedFp = fingerprint(merged);
+        if (mergedFp !== state.roomFingerprint) {
+          state.roomData = normalizeRoom(merged, state.room.code);
+          state.roomFingerprint = mergedFp;
+          $('#roomTitle').textContent = state.roomData.meta.name;
+          $('#roomSubline').textContent = `${state.roomData.messages.length} messages · created ${formatDate(state.roomData.meta.createdAt).toLowerCase()}`;
+          renderRoomData();
+        }
+        // If merging added something the remote copy lacked (two people wrote at
+        // once), republish the merged state so every client converges. The
+        // fingerprint check above prevents echo loops.
+        if (mergedFp !== remoteFp) publishRoomState().catch(() => {});
+        setSync('online', 'Synced');
+      } catch (error) { console.warn('Run: ignoring malformed room update.', error); }
+    });
+    client.on('reconnect', () => { if (state.room) setSync('syncing', 'Reconnecting'); });
+    client.on('close', () => { if (state.room) setSync('offline', 'Offline'); });
+    client.on('connect', () => {
+      if (state.roomTopic) { try { client.subscribe(state.roomTopic, { qos: 1 }); } catch {} }
+      if (state.typingTopic) { try { client.subscribe(state.typingTopic, { qos: 0 }); } catch {} }
+      if (state.room) setSync('syncing', 'Syncing');
+    });
+  }
+
+  function mqttEnsureConnected() {
+    if (typeof window.mqtt === 'undefined') {
+      return Promise.reject(new Error('Could not load the realtime library. Check your internet connection and reload the page.'));
+    }
+    if (state.mqttClient && state.mqttClient.connected) return Promise.resolve(state.mqttClient);
+    if (state.mqttConnectPromise) return state.mqttConnectPromise;
+    state.mqttConnectPromise = (async () => {
+      for (const url of MQTT_BROKERS) {
+        try {
+          const client = await mqttConnectOnce(url);
+          state.mqttClient = client;
+          bindMqttClient(client);
+          return client;
+        } catch (error) { console.warn('Run: MQTT broker unreachable:', url); }
+      }
+      throw new Error('Could not reach the realtime network. Check your internet connection and try again.');
+    })();
+    state.mqttConnectPromise.then(
+      () => { state.mqttConnectPromise = null; },
+      () => { state.mqttConnectPromise = null; state.mqttClient = null; }
+    );
+    return state.mqttConnectPromise;
+  }
+
+  function publishRoomState() {
+    const data = state.roomData;
+    if (!state.mqttClient || !state.mqttClient.connected || !state.roomTopic || !data) {
+      return Promise.reject(new Error('Not connected to the realtime network yet.'));
+    }
+    return new Promise((resolve, reject) => {
+      let payload;
+      try { payload = JSON.stringify(data); } catch (error) { reject(new Error('Could not encode the room data.')); return; }
+      state.mqttClient.publish(state.roomTopic, payload, { qos: 1, retain: true }, (err) => {
+        if (err) reject(err instanceof Error ? err : new Error(String(err)));
+        else resolve();
+      });
+    });
+  }
+
+  // Resolves with the retained room state for a code, or null if none arrives in time.
+  function fetchRoomState(code, timeoutMs) {
+    return mqttEnsureConnected().then((client) => new Promise((resolve) => {
+      const topic = mqttTopicFor(code);
+      let settled = false;
+      const cleanup = (value) => {
+        if (settled) return; settled = true;
+        window.clearTimeout(timer);
+        try { client.removeListener('message', onMessage); } catch {}
+        try { client.unsubscribe(topic); } catch {}
+        resolve(value);
+      };
+      function onMessage(t, payload) {
+        if (t !== topic || settled) return;
+        try { cleanup(normalizeRoom(JSON.parse(payload.toString()), code)); }
+        catch { /* ignore malformed payloads */ }
+      }
+      const timer = window.setTimeout(() => cleanup(null), timeoutMs);
+      client.on('message', onMessage);
+      try { client.subscribe(topic, { qos: 1 }, (err) => { if (err) cleanup(null); }); }
+      catch { cleanup(null); }
+    }));
+  }
+
+  function subscribeToRoomTopic(code) {
+    const topic = mqttTopicFor(code);
+    const typingTopic = typingTopicFor(code);
+    if (state.mqttClient && state.roomTopic && state.roomTopic !== topic) {
+      try { state.mqttClient.unsubscribe(state.roomTopic); } catch {}
+    }
+    if (state.mqttClient && state.typingTopic && state.typingTopic !== typingTopic) {
+      try { state.mqttClient.unsubscribe(state.typingTopic); } catch {}
+    }
+    state.roomTopic = topic;
+    state.typingTopic = typingTopic;
+    if (state.mqttClient && state.mqttClient.connected) {
+      try { state.mqttClient.subscribe(topic, { qos: 1 }); } catch {}
+      try { state.mqttClient.subscribe(typingTopic, { qos: 0 }); } catch {}
+    }
+  }
+
+  function leaveRoomTopic() {
+    stopTypingSignal();
+    if (state.mqttClient && state.roomTopic) { try { state.mqttClient.unsubscribe(state.roomTopic); } catch {} }
+    if (state.mqttClient && state.typingTopic) { try { state.mqttClient.unsubscribe(state.typingTopic); } catch {} }
+    state.roomTopic = '';
+    state.typingTopic = '';
+    state.typingUsers.clear();
+    renderTypingIndicator();
+  }
+
+  function normalizeRoom(data, code) {
+    if (!data || typeof data !== 'object') throw new Error('This room has invalid or missing data.');
+    return {
+      kind: 'run-room', version: 1,
+      meta: {code: String(data.meta?.code || code || '').toUpperCase(), name: String(data.meta?.name || 'Untitled room'), createdAt: data.meta?.createdAt || new Date().toISOString()},
+      messages: Array.isArray(data.messages) ? data.messages.filter(m => m && typeof m === 'object' && m.id).slice(-600) : [],
+      tasks: Array.isArray(data.tasks) ? data.tasks.filter(t => t && typeof t === 'object' && t.id).slice(-300) : []
+    };
+  }
+  async function createRoom(roomName) {
+    await mqttEnsureConnected();
+    const now = new Date().toISOString();
+    let code = randomCode();
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const existing = await fetchRoomState(code, MQTT_CODE_CHECK_TIMEOUT_MS);
+      if (!existing) break;
+      code = randomCode();
+      if (attempt === 9) throw new Error('Could not find an available room code. Please try again.');
+    }
+    const roomData = normalizeRoom({kind:'run-room', version:1, meta:{code, name:(roomName || '').trim().slice(0,60) || 'A new room', createdAt:now}, messages:[], tasks:[]}, code);
+    state.roomTopic = mqttTopicFor(code);
+    state.roomData = roomData;
+    try { await publishRoomState(); }
+    catch (error) {
+      state.roomTopic = ''; state.roomData = null;
+      throw new Error('Could not create the room. Check your internet connection and try again.');
+    }
+    await openRoom({code, name: roomData.meta.name}, roomData, false);
+    openShareModal();
+  }
+  async function findRoomByCode(code) {
+    const normalized = String(code || '').trim().toUpperCase();
+    if (!/^[A-Z0-9]{6}$/.test(normalized)) throw new Error('Enter a six-character room code, or paste the full invite link.');
+    await mqttEnsureConnected();
+    const data = await fetchRoomState(normalized, MQTT_JOIN_TIMEOUT_MS);
+    if (!data) throw new Error(`Room code ${normalized} was not found. Check the code, or ask for a fresh invite link.`);
+    return {code: normalized, name: data.meta.name || 'Room', data};
+  }
+  async function parseInviteInput(raw) {
+    const input = String(raw || '').trim();
+    if (/^https?:\/\//i.test(input)) {
+      try {
+        const url = new URL(input);
+        const roomCode = url.searchParams.get('room');
+        if (roomCode) return findRoomByCode(roomCode);
+        throw new Error('That link does not contain a Run room code.');
+      } catch (error) { throw error instanceof TypeError ? new Error('Paste a full invite link or a six-character room code.') : error; }
+    }
+    return findRoomByCode(input);
+  }
+  async function joinRoom(raw) {
+    const target = await parseInviteInput(raw);
+    await openRoom({code: target.code, name: target.name}, target.data, true);
+  }
+  function fingerprint(data) {
+    return JSON.stringify({meta:data.meta, messages:data.messages, tasks:data.tasks});
+  }
+  async function openRoom(room, roomData, fromJoin) {
+    leaveRoomTopic();
+    state.room = room;
+    state.roomData = normalizeRoom(roomData, room.code);
+    state.roomFingerprint = fingerprint(state.roomData);
+    state.messagesInitiallyRendered = false;
+    const url = new URL(window.location.href);
+    url.searchParams.delete('dir'); url.searchParams.set('room', room.code);
+    window.history.replaceState({}, '', url.toString());
+    showRoomShell();
+    $('#roomTitle').textContent = state.roomData.meta.name;
+    $('#roomCodeLabel').textContent = room.code;
+    $('#roomSubline').textContent = `${state.roomData.messages.length} messages · created ${formatDate(state.roomData.meta.createdAt).toLowerCase()}`;
+    $('#syncState').classList.remove('offline','syncing'); $('#syncLabel').textContent = 'Synced';
+    renderRoomData();
+    subscribeToRoomTopic(room.code);
+    saveRecentRoom(room.code, state.roomData.meta.name);
+    if (fromJoin) toast(`You're in ${state.roomData.meta.name}.`);
+  }
+
+  function setSync(kind, label) {
+    $('#syncState').classList.toggle('syncing', kind === 'syncing');
+    $('#syncState').classList.toggle('offline', kind === 'offline');
+    $('#syncLabel').textContent = label;
+  }
+
+  function renderRoomData() {
+    renderMessages(); renderTasks();
+    $('#messageCount').textContent = `${state.roomData.messages.length} message${state.roomData.messages.length === 1 ? '' : 's'}`;
+    $('#mobileTaskCount').textContent = String(state.roomData.tasks.filter(t => !t.done).length);
+  }
+  function renderMessages() {
+    const list = $('#messagesList');
+    const previousBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 90;
+    const messages = [...(state.roomData?.messages || [])].sort((a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    if (!messages.length) {
+      list.innerHTML = '<div class="empty-chat"><div class="empty-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg></div><h4>The room is yours.</h4><p>Start the conversation, share a file, or add a task. Good things start small.</p></div>';
+      state.messagesInitiallyRendered = true;
+      return;
+    }
+    let html = ''; let previousDate = '';
+    for (const msg of messages) {
+      const day = formatDate(msg.createdAt);
+      if (day !== previousDate) { html += `<div class="day-divider"><span>${escapeHTML(day)}</span></div>`; previousDate = day; }
+      const own = msg.userId === state.userId;
+      const tone = toneFor(msg.userId);
+      const author = escapeHTML(msg.author || 'Guest');
+      const timestamp = escapeHTML(formatTime(msg.createdAt));
+      html += `<article class="message-row tone-${tone}${own ? ' own' : ''}" data-message-id="${escapeHTML(msg.id)}"><div class="avatar tone-${tone}">${escapeHTML(initials(msg.author || 'Guest'))}</div><div class="message-content"><div class="message-meta"><strong>${author}</strong></div>`;
+      if (msg.type === 'file' && msg.file) {
+        const file = msg.file; const url = safeLink(file.url);
+        if (url) {
+          const image = isImage(file);
+          html += `<div class="file-card">${image ? `<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer"><img class="file-preview" loading="lazy" src="${escapeHTML(url)}" alt="${escapeHTML(file.name || 'Shared image')}" referrerpolicy="no-referrer"></a>` : ''}<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer" download="${escapeHTML(file.name || '')}"><div class="file-info"><span class="file-symbol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></span><span style="min-width:0;flex:1"><span class="file-name">${escapeHTML(file.name || 'Shared file')}</span><span class="file-size">${escapeHTML(formatSize(file.size))} · ${image ? 'Image' : 'File'} · open</span></span><span class="file-download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span></div></a></div><time class="file-time">${timestamp}</time>`;
+        } else html += '<div class="message-bubble">File link is invalid or unavailable.</div>';
+      } else {
+        html += `<div class="message-bubble${own ? ' own' : ''}">${escapeHTML(msg.text || '')}<time class="bubble-time">${timestamp}</time></div>`;
+      }
+      html += '</div></article>';
+    }
+    list.innerHTML = html;
+    if (previousBottom || !state.messagesInitiallyRendered) list.scrollTop = list.scrollHeight;
+    state.messagesInitiallyRendered = true;
+  }
+  function renderTasks() {
+    const list = $('#tasksList');
+    const tasks = state.roomData?.tasks || [];
+    const sorted = [...tasks].sort((a,b) => Number(Boolean(a.done)) - Number(Boolean(b.done)) || new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    const done = tasks.filter(t => t.done).length;
+    const pct = tasks.length ? done / tasks.length : 0;
+    $('#taskProgressText').textContent = `${done} / ${tasks.length}`;
+    $('#taskProgressPct').textContent = `${Math.round(pct * 100)}%`;
+    $('#taskProgressRing').style.strokeDashoffset = String(119.4 * (1 - pct));
+    $('#mobileTaskCount').textContent = String(tasks.length - done);
+    if (!sorted.length) {
+      list.innerHTML = '<div class="empty-tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>No tasks yet.<br>Add the first little step above.</div>';
+      return;
+    }
+    const card = task => `<div class="task-item${task.done ? ' done' : ''}" data-task-id="${escapeHTML(task.id)}"><button class="task-check" data-task-action="toggle" aria-label="${task.done ? 'Mark as not done' : 'Mark as done'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></button><div class="task-text">${escapeHTML(task.text)}<span class="task-sub">Added by ${escapeHTML(task.author || 'Guest')}</span></div><button class="delete-task" data-task-action="delete" aria-label="Delete task" title="Delete task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg></button></div>`;
+    const pending = sorted.filter(t => !t.done);
+    const completed = sorted.filter(t => t.done);
+    list.innerHTML =
+      (pending.length ? `<div class="task-group-label">To do &middot; ${pending.length}</div>` + pending.map(card).join('') : '') +
+      (completed.length ? `<div class="task-group-label">Completed</div>` + completed.map(card).join('') : '');
+  }
+  function mergeRoomData(remote, local) {
+    const messages = new Map();
+    for (const msg of [...(remote.messages || []), ...(local.messages || [])]) if (msg?.id) messages.set(msg.id, msg);
+    const tasks = new Map();
+    for (const task of [...(remote.tasks || []), ...(local.tasks || [])]) if (task?.id) tasks.set(task.id, task);
+    return {...remote, meta: remote.meta || local.meta, messages: [...messages.values()].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt)).slice(-600), tasks:[...tasks.values()].slice(-300)};
+  }
+  function enqueueRoomMutation(mutator) {
+    const roomAtCall = state.room;
+    if (!roomAtCall) return Promise.reject(new Error('No room is open.'));
+    const operation = async () => {
+      if (!state.room || state.room.code !== roomAtCall.code) return;
+      // state.roomData is kept fresh by the live MQTT subscription, so the
+      // mutation applies directly and is then published for everyone.
+      const base = normalizeRoom(state.roomData || {}, roomAtCall.code);
+      const next = normalizeRoom(await mutator(base), roomAtCall.code);
+      state.roomData = next;
+      await publishRoomState();
+      if (state.room && state.room.code === roomAtCall.code) {
+        state.roomFingerprint = fingerprint(state.roomData);
+        renderRoomData();
+        setSync('online', 'Synced');
+      }
+      return next;
+    };
+    state.writeQueue = state.writeQueue.then(operation, operation).catch(error => { console.error('Run update failed:', error); toast(error.message || 'Could not save this update.', 'error'); if (state.room?.code === roomAtCall.code) setSync('offline','Retrying'); throw error; });
+    return state.writeQueue;
+  }
+  async function sendMessage(text) {
+    const cleaned = String(text || '').trim(); if (!cleaned || !state.room) return;
+    const msg = {id:makeId(), type:'text', text:cleaned, author:state.name || 'Guest', userId:state.userId, createdAt:new Date().toISOString()};
+    const next = {...state.roomData, messages:[...(state.roomData?.messages || []), msg].slice(-600)};
+    state.roomData = next; state.roomFingerprint = fingerprint(next); renderRoomData();
+    $('#messageInput').value = ''; resizeComposer(); stopTypingSignal();
+    try { await enqueueRoomMutation(base => ({...base, messages:[...base.messages.filter(m => m.id !== msg.id), msg].slice(-600)})); }
+    catch { toast('Message could not be saved. It may disappear after a refresh.', 'error'); }
+  }
+  function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => typeof reader.result === 'string' ? resolve(reader.result) : reject(new Error('Could not read this image.'));
+      reader.onerror = () => reject(new Error('Could not read this image.'));
+      reader.readAsDataURL(file);
+    });
+  }
+  async function shareFileMessage(fileMeta) {
+    const msg = {id:makeId(), type:'file', file:fileMeta, author:state.name || 'Guest', userId:state.userId, createdAt:new Date().toISOString()};
+    const next = {...state.roomData, messages:[...(state.roomData?.messages || []), msg].slice(-600)};
+    state.roomData = next; state.roomFingerprint = fingerprint(next); renderRoomData();
+    await enqueueRoomMutation(base => ({...base, messages:[...base.messages.filter(m=>m.id!==msg.id),msg].slice(-600)}));
+  }
+  function openManualUpload(file) {
+    state.pendingManualFile = {name:file.name, size:file.size, mime:file.type || ''};
+    $('#manualUploadFileLabel').textContent = `${file.name} · ${formatSize(file.size)} · Upload this file on Catbox, then paste the returned link.`;
+    $('#manualFileUrl').value = '';
+    $('#manualUploadModal').classList.add('open');
+    $('#manualFileUrl').focus();
+  }
+  async function uploadFile(file) {
+    if (!state.room || !file) return;
+    if (file.size > MAX_FILE_BYTES) { toast('This file is larger than the 200 MB upload limit.', 'error'); return; }
+    state.pendingUpload = true; $('#uploadStatus').classList.add('visible'); $('#uploadStatus').textContent = `Preparing ${file.name}…`; $('#attachButton').disabled = true; $('#sendButton').disabled = true;
+    try {
+      // A modest image can be stored in the room blob directly, avoiding third-party upload CORS.
+      if (file.type.startsWith('image/') && file.size <= 350 * 1024) {
+        const dataUrl = await readFileAsDataURL(file);
+        await shareFileMessage({url:'', dataUrl, name:file.name, size:file.size, mime:file.type || 'image/*'});
+        toast('Small image shared with the room.');
+        return;
+      }
+      const form = new FormData(); form.append('reqtype','fileupload'); form.append('fileToUpload',file,file.name);
+      let response;
+      try { response = await fetch(CATBOX_API, {method:'POST',body:form}); }
+      catch (error) {
+        openManualUpload(file);
+        return;
+      }
+      const urlText = (await response.text()).trim();
+      const url = safeLink(urlText);
+      if (!response.ok || !url || !/^https:\/\/files\.catbox\.moe\//i.test(url)) {
+        throw new Error(`Catbox could not upload this file. ${urlText.slice(0,120)}`);
+      }
+      await shareFileMessage({url, name:file.name, size:file.size, mime:file.type || ''});
+      toast('File shared with the room.');
+    } catch (error) { toast(error.message || 'Upload failed.', 'error'); }
+    finally { state.pendingUpload = false; $('#uploadStatus').classList.remove('visible'); $('#attachButton').disabled = false; $('#sendButton').disabled = false; $('#fileInput').value = ''; }
+  }
+  async function addTask(text) {
+    const cleaned = String(text || '').trim(); if (!cleaned || !state.room) return;
+    const task = {id:makeId(),text:cleaned,done:false,author:state.name || 'Guest',userId:state.userId,createdAt:new Date().toISOString()};
+    const next = {...state.roomData, tasks:[...(state.roomData?.tasks || []),task].slice(-300)};
+    state.roomData = next; state.roomFingerprint = fingerprint(next); renderRoomData(); $('#newTaskInput').value = '';
+    try { await enqueueRoomMutation(base => ({...base,tasks:[...base.tasks.filter(t=>t.id!==task.id),task].slice(-300)})); }
+    catch {}
+  }
+  async function modifyTask(id, action) {
+    if (!state.room) return;
+    const current = state.roomData.tasks.find(t => t.id === id); if (!current) return;
+    const desiredDone = !current.done;
+    let optimistic = {...state.roomData, tasks: action === 'delete' ? state.roomData.tasks.filter(t=>t.id!==id) : state.roomData.tasks.map(t=>t.id===id?{...t,done:desiredDone}:t)};
+    state.roomData = optimistic; state.roomFingerprint = fingerprint(optimistic); renderRoomData();
+    try {
+      await enqueueRoomMutation(base => ({...base,tasks:action === 'delete' ? base.tasks.filter(t=>t.id!==id) : base.tasks.map(t=>t.id===id?{...t,done:desiredDone}:t)}));
+    } catch {}
+  }
+  function roomInviteURL() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('dir'); url.searchParams.set('room', state.room.code);
+    return url.toString();
+  }
+  function openShareModal() {
+    if (!state.room) return;
+    $('#shareCodeDisplay').textContent = state.room.code;
+    const invite = roomInviteURL();
+    $('#inviteLinkDisplay').textContent = invite;
+    if (window.location.protocol === 'file:') {
+      $('#shareModalNote').textContent = 'This copy is opened as a local file, so its invite link will point to your device and will not work for other people. Host this HTML file on a static web host first, then share rooms from that web URL.';
+    } else {
+      $('#shareModalNote').textContent = 'The invite link carries the room code, so opening it joins the room in one tap. Room codes are not private access keys — anyone with the invite can read and change the room data.';
+    }
+    $('#shareModal').classList.add('open');
+  }
+  async function copyText(value) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(value);
+      else {
+        const area = document.createElement('textarea'); area.value = value; area.style.position = 'fixed'; area.style.opacity = '0'; document.body.appendChild(area); area.select();
+        const ok = document.execCommand('copy'); area.remove(); if (!ok) throw new Error('Clipboard unavailable');
+      }
+      return true;
+    } catch { return false; }
+  }
+  async function copyInvite() {
+    const value = roomInviteURL();
+    if (await copyText(value)) toast('Invite link copied.'); else toast('Copy failed — select the invite link and copy it.', 'error');
+  }
+  async function copyCode() {
+    if (await copyText(state.room.code)) toast('Room code copied.'); else toast(`Room code: ${state.room.code}`, 'error');
+  }
+  async function copyRoomPack() {
+    const value = `Run room code: ${state.room.code}\nInvite link: ${roomInviteURL()}`;
+    if (await copyText(value)) toast('Room code and directory copied.'); else toast(value,'error');
+  }
+  function resizeComposer() {
+    const input = $('#messageInput'); input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+  }
+  function switchMobileTab(name) {
+    $('#roomGrid').dataset.mobileView = name;
+    $$('[data-mobile-tab]').forEach(button => button.classList.toggle('active', button.dataset.mobileTab === name));
+  }
+  async function handleCreate(event) {
+    event.preventDefault();
+    const name = $('#displayName').value.trim().slice(0,32);
+    if (!name) { status('Add a display name first.', 'error'); $('#displayName').focus(); return; }
+    state.name = name; store.set('run_display_name', name);
+    const button = $('#createRoomButton'); setBusy(button, true, 'Making your room…'); status('Creating your room…');
+    try { await createRoom($('#newRoomName').value.trim()); status(''); }
+    catch (error) { status(error.message || 'Could not create a room.', 'error'); }
+    finally { setBusy(button, false); }
+  }
+  async function handleJoin(event) {
+    event.preventDefault();
+    const name = $('#displayName').value.trim().slice(0,32);
+    if (!name) { status('Add a display name first so people know who is talking.', 'error'); $('#displayName').focus(); return; }
+    state.name = name; store.set('run_display_name', name);
+    status('Looking for your room…');
+    try { await joinRoom($('#joinCode').value); status(''); $('#joinCode').value = ''; }
+    catch (error) { status(error.message || 'Could not join this room.', 'error'); }
+    finally {}
+  }
+  function bindEvents() {
+    $('#brandHome').addEventListener('click', () => showLanding());
+    $('#backHome').addEventListener('click', () => showLanding());
+    $('#leaveRoomButton').addEventListener('click', () => showLanding());
+    $('#themeToggle').addEventListener('click', () => $('#settingsModal').classList.add('open'));
+    $('#closeSettings').addEventListener('click', () => $('#settingsModal').classList.remove('open'));
+    $('#settingsModal').addEventListener('click', event => { if (event.target === $('#settingsModal')) $('#settingsModal').classList.remove('open'); });
+    $$('[data-theme-choice]').forEach(button => button.addEventListener('click', () => setTheme(button.dataset.themeChoice)));
+    const fab = $('#runFab');
+    const closeFab = () => { fab.classList.remove('open'); fab.setAttribute('aria-expanded','false'); $('#fabMenu').classList.remove('open'); $('#fabScrim').classList.remove('open'); };
+    fab.addEventListener('click', () => { const open = !fab.classList.contains('open'); fab.classList.toggle('open', open); fab.setAttribute('aria-expanded', String(open)); $('#fabMenu').classList.toggle('open', open); $('#fabScrim').classList.toggle('open', open); });
+    $('#fabScrim').addEventListener('click', closeFab);
+    // Move the existing join form into a dedicated modal so the landing card has no duplicate join section.
+    $('#joinModalContent').appendChild($('#joinRoomForm'));
+    const closeJoinModal = () => $('#joinModal').classList.remove('open');
+    $('#closeJoinModal').addEventListener('click', closeJoinModal);
+    $('#joinModal').addEventListener('click', event => { if (event.target === $('#joinModal')) closeJoinModal(); });
+    $('#joinModalSubmit').addEventListener('click', () => $('#joinRoomForm').requestSubmit());
+    $$('[data-fab-action]').forEach(button => button.addEventListener('click', () => { closeFab(); const action = button.dataset.fabAction; if (action === 'create') { $('#createRoomForm').requestSubmit(); } else { $('#joinModal').classList.add('open'); setTimeout(() => $('#joinCode').focus(), 80); } }));
+    $('#createRoomForm').addEventListener('submit', handleCreate);
+    $('#joinRoomForm').addEventListener('submit', handleJoin);
+    $('#displayName').value = state.name;
+    $('#displayName').addEventListener('change', () => { state.name = $('#displayName').value.trim().slice(0,32); store.set('run_display_name', state.name); });
+    $('#messageForm').addEventListener('submit', event => { event.preventDefault(); if (!state.pendingUpload) sendMessage($('#messageInput').value); });
+    $('#messageInput').addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); if (!state.pendingUpload) sendMessage($('#messageInput').value); } });
+    $('#messageInput').addEventListener('input', () => { resizeComposer(); noteTypingActivity(); });
+    $('#attachButton').addEventListener('click', () => $('#fileInput').click());
+    $('#fileInput').addEventListener('change', event => { const file = event.target.files?.[0]; if (file) uploadFile(file); });
+    $('#taskForm').addEventListener('submit', event => { event.preventDefault(); addTask($('#newTaskInput').value); });
+    $('#tasksList').addEventListener('click', event => {
+      const button = event.target.closest('[data-task-action]'); if (!button) return;
+      const item = button.closest('[data-task-id]'); if (!item) return;
+      modifyTask(item.dataset.taskId, button.dataset.taskAction);
+    });
+    $$('[data-mobile-tab]').forEach(button => button.addEventListener('click', () => switchMobileTab(button.dataset.mobileTab)));
+    $('#shareRoomButton').addEventListener('click', openShareModal);
+    $('#closeShareModal').addEventListener('click', () => $('#shareModal').classList.remove('open'));
+    $('#shareModal').addEventListener('click', event => { if (event.target === $('#shareModal')) $('#shareModal').classList.remove('open'); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') { $('#shareModal').classList.remove('open'); $('#manualUploadModal').classList.remove('open'); $('#settingsModal').classList.remove('open'); state.pendingManualFile = null; } });
+    $('#copyCodeButton').addEventListener('click', copyCode);
+    $('#copyInviteButton').addEventListener('click', copyInvite);
+    $('#copyRoomPackButton').addEventListener('click', copyRoomPack);
+    $('#closeManualUpload').addEventListener('click', () => { $('#manualUploadModal').classList.remove('open'); state.pendingManualFile = null; });
+    $('#cancelManualUpload').addEventListener('click', () => { $('#manualUploadModal').classList.remove('open'); state.pendingManualFile = null; });
+    $('#openCatboxButton').addEventListener('click', () => window.open('https://catbox.moe/', '_blank', 'noopener,noreferrer'));
+    $('#manualUploadForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const pending = state.pendingManualFile;
+      const url = safeLink($('#manualFileUrl').value.trim());
+      if (!pending || !url || !/^https:\/\/files\.catbox\.moe\//i.test(url)) { toast('Paste a valid https://files.catbox.moe/ URL.', 'error'); return; }
+      const button = $('#manualShareButton'); setBusy(button, true, 'Sharing…');
+      try { await shareFileMessage({url, ...pending}); $('#manualUploadModal').classList.remove('open'); state.pendingManualFile = null; toast('File link shared with the room.'); }
+      catch (error) { toast(error.message || 'Could not share this link.', 'error'); }
+      finally { setBusy(button, false); }
+    });
+    $('#manualUploadModal').addEventListener('click', event => { if (event.target === $('#manualUploadModal')) { $('#manualUploadModal').classList.remove('open'); state.pendingManualFile = null; } });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && state.room) mqttEnsureConnected().catch(() => {}); });
+    window.addEventListener('online', () => { if (state.room) mqttEnsureConnected().catch(() => {}); });
+    const recentList = $('#recentRoomsList');
+    if (recentList) recentList.addEventListener('click', event => {
+      const button = event.target.closest('[data-recent-code]');
+      if (!button) return;
+      const name = $('#displayName').value.trim().slice(0, 32);
+      if (!name) { status('Add a display name first, then pick a room to rejoin.', 'error'); $('#displayName').focus(); return; }
+      state.name = name; store.set('run_display_name', state.name);
+      $('#joinCode').value = button.dataset.recentCode;
+      $('#joinRoomForm').requestSubmit();
+    });
+    renderRecentRooms();
+    window.setInterval(renderTypingIndicator, 2000);
+  }
+  async function bootstrapInvite() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('room');
+    if (code) {
+      $('#displayName').value = state.name;
+      $('#joinCode').value = code;
+      if (!state.name) { status('Choose a display name, then press Join room to enter this invite.'); }
+      else {
+        try { await joinRoom(code); }
+        catch (error) { status(error.message || 'Could not open this invite.', 'error'); }
+      }
+    }
+  }
+  setTheme(state.theme);
+  bindEvents();
+  bootstrapInvite();
+})();
+</script>
+</body>
+</html>
