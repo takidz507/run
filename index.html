@@ -1024,7 +1024,7 @@
   }
   function saveRecentRoom(code, name) {
     const normalized = String(code || '').toUpperCase();
-    if (!/^[A-Z0-9]{6}$/.test(normalized)) return;
+    if (!/^[A-Z0-9]{6}([A-Z0-9]{6})?$/.test(normalized)) return;
     const rooms = getRecentRooms().filter(r => r && r.code !== normalized);
     rooms.unshift({ code: normalized, name: String(name || 'Room').slice(0, 60), at: new Date().toISOString() });
     try { localStorage.setItem(RECENT_ROOMS_KEY, JSON.stringify(rooms.slice(0, 12))); } catch {}
@@ -1296,7 +1296,7 @@
   }
   async function findRoomByCode(code) {
     const normalized = String(code || '').trim().toUpperCase();
-    if (!/^[A-Z0-9]{6}$/.test(normalized)) throw new Error('Enter a six-character room code, or paste the full invite link.');
+    if (!/^[A-Z0-9]{6}([A-Z0-9]{6})?$/.test(normalized)) throw new Error('Enter a room code, or paste the full invite link.');
     await mqttEnsureConnected();
     const data = await fetchRoomState(normalized, MQTT_JOIN_TIMEOUT_MS);
     if (!data) throw new Error(`Room code ${normalized} was not found. Check the code, or ask for a fresh invite link.`);
@@ -1969,9 +1969,11 @@
         + `</div>`;
     }).join('');
   }
-  function openDirectory() {
+  async function openDirectory() {
     renderDirectory();
     $('#directoryModal').classList.add('open');
+    // Make sure we're subscribed: the retained listing arrives via subscription.
+    try { await mqttEnsureConnected(); } catch {}
   }
   async function joinDirectoryGroup(id, password) {
     const g = (state.directory?.groups || []).find(x => x.id === id);
@@ -2351,6 +2353,9 @@
   setTheme(state.theme);
   bindEvents();
   bootstrapInvite();
+  // Connect on landing too, so the public directory and presence are live
+  // without having to enter a room first. Silent if the network is blocked.
+  try { mqttEnsureConnected().catch(() => {}); } catch {}
 })();
 </script>
 </body>
