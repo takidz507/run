@@ -303,6 +303,87 @@
   .delete-task {border:0;background:transparent;color:var(--subtle);padding:6px;opacity:.5;transition:opacity .15s,color .15s;flex:0 0 auto;}
   @media (hover:hover) { .delete-task {opacity:0;} .task-item:hover .delete-task {opacity:.75;} }
   .delete-task:hover {color:var(--danger);}
+  [hidden] {display:none !important;}
+.public-group-field {margin-top:10px;}
+  .public-check {display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;}
+  .public-check input {width:17px;height:17px;accent-color:var(--accent);}
+  #publicGroupFields {margin-top:8px;}
+  .field-hint {font-size:11px;color:var(--subtle);margin:6px 0 0;line-height:1.45;}
+  .browse-groups-wrap {margin-top:10px;text-align:center;}
+  .link-button {background:none;border:0;color:var(--accent);font-size:13px;font-weight:700;padding:8px;}
+  .directory-list {display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow-y:auto;padding:2px;}
+  .directory-empty {text-align:center;color:var(--subtle);font-size:13px;padding:26px 10px;line-height:1.6;}
+  .directory-item {border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel);}
+  .directory-item-top {display:flex;align-items:center;gap:8px;}
+  .directory-name {flex:1;min-width:0;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .directory-lock {color:var(--subtle);font-size:13px;flex:0 0 auto;}
+  .directory-join {flex:0 0 auto;padding:7px 14px;font-size:12.5px;}
+  .directory-pw-row {display:flex;gap:8px;margin-top:8px;}
+  .directory-pw-row .text-input {flex:1;min-width:0;padding:8px 10px;font-size:13px;}
+  .directory-error {color:var(--danger);font-size:11.5px;margin-top:6px;}
+.translate-toggle {display:block;background:none;border:0;color:var(--accent);font-size:11px;font-weight:600;padding:4px 0 0;opacity:.85;}
+  .translate-toggle:hover {opacity:1;text-decoration:underline;}
+  .translated-badge {font-size:9px;color:var(--subtle);font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+.notify-row {display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px;}
+  .notify-row strong {display:block;font-size:13.5px;}
+  .notify-row small {display:block;color:var(--subtle);font-size:11.5px;margin-top:2px;}
+  .switch {width:46px;height:26px;border-radius:13px;border:1px solid var(--line-strong);background:var(--panel-soft);position:relative;flex:0 0 auto;transition:background .15s;}
+  .switch-knob {position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--subtle);transition:left .15s,background .15s;}
+  .switch[aria-checked="true"] {background:var(--accent);border-color:var(--accent);}
+  .switch[aria-checked="true"] .switch-knob {left:22px;background:#10130a;}
+.presence-pill {display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel);font-size:12.5px;font-weight:700;color:var(--text);flex:0 0 auto;}
+  .presence-dot {width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);flex:0 0 auto;}
+  .app-presence {display:flex;align-items:center;gap:7px;margin:8px 0 0;font-size:12.5px;color:var(--subtle);}
+.recording-panel {display:flex;align-items:center;gap:10px;margin:0 12px 8px;border:1px solid var(--danger);border-radius:14px;background:var(--panel);padding:10px 12px;}
+  .rec-dot {width:10px;height:10px;border-radius:50%;background:var(--danger);animation:recblink 1.1s infinite;flex:0 0 auto;}
+  @keyframes recblink {50% {opacity:.25;}}
+  .rec-time {font-weight:700;font-variant-numeric:tabular-nums;}
+  .rec-hint {flex:1;font-size:12px;color:var(--subtle);}
+  .rec-cancel {width:30px;height:30px;font-size:16px;}
+  .rec-stop {width:42px;height:42px;border-radius:50%;border:0;background:var(--danger);color:#fff;display:grid;place-items:center;flex:0 0 auto;}
+  .rec-stop svg {width:16px;height:16px;}
+  .voice-button.recording {background:var(--danger);border-color:var(--danger);color:#fff;}
+  .voice-player {display:flex;align-items:center;gap:10px;min-width:200px;max-width:100%;padding:6px 4px;}
+  .voice-play-btn {width:38px;height:38px;border-radius:50%;border:0;background:var(--accent);color:#10130a;display:grid;place-items:center;flex:0 0 auto;}
+  .voice-play-btn svg {width:15px;height:15px;}
+  .message-row.own .voice-play-btn {background:#10130a;color:var(--accent);}
+  .voice-track {flex:1;height:4px;border-radius:2px;background:var(--line-strong);position:relative;overflow:hidden;min-width:60px;}
+  .voice-progress {position:absolute;left:0;top:0;bottom:0;width:0%;background:var(--accent);border-radius:2px;}
+  .voice-duration {font-size:12px;font-weight:600;color:var(--subtle);font-variant-numeric:tabular-nums;flex:0 0 auto;}
+.reply-panel {display:flex;align-items:center;gap:8px;margin:0 12px 8px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;background:var(--panel);padding:8px 10px;}
+  .reply-preview {flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
+  .reply-to-label {font-size:11px;color:var(--accent);font-weight:600;}
+  .reply-to-text {font-size:12.5px;color:var(--subtle);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .reply-cancel {width:28px;height:28px;font-size:16px;flex:0 0 auto;}
+  .reply-quote {border-left:3px solid var(--accent);background:var(--panel-soft);border-radius:8px;padding:6px 10px;margin-bottom:6px;max-width:100%;}
+  .reply-quote-author {display:block;font-size:11px;font-weight:700;color:var(--accent);margin-bottom:1px;}
+  .reply-quote-text {display:block;font-size:12.5px;color:var(--subtle);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .reply-button {margin-left:auto;background:none;border:0;color:var(--subtle);opacity:0;padding:2px 6px;font-size:14px;border-radius:8px;flex:0 0 auto;}
+  .message-row:hover .reply-button {opacity:.85;}
+  .reply-button:hover {color:var(--accent);opacity:1;}
+  @media (hover:none) { .reply-button {opacity:.45;} }
+.caption-panel {margin:0 12px 8px;border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:10px 12px;}
+  .caption-file-row {display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .caption-file-icon {display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--panel-soft);color:var(--accent);flex:0 0 auto;}
+  .caption-file-icon svg {width:15px;height:15px;}
+  .caption-file-name {flex:1;min-width:0;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .caption-cancel {width:28px;height:28px;font-size:16px;}
+  .caption-input-row {display:flex;gap:8px;}
+  .caption-input-row .text-input {flex:1;min-width:0;}
+  .caption-send {flex:0 0 auto;padding:10px 18px;}
+.video-preview {background:#000;}
+  .file-caption {padding:8px 12px 10px;font-size:13px;line-height:1.45;color:var(--text);white-space:pre-wrap;overflow-wrap:anywhere;}
+.profile-editor {display:flex;gap:14px;align-items:flex-start;margin-bottom:6px;}
+  .profile-avatar {position:relative;width:64px;height:64px;border-radius:50%;border:1px solid var(--line-strong);background:var(--panel-soft);color:var(--text);font-weight:700;font-size:20px;flex:0 0 auto;display:grid;place-items:center;overflow:hidden;padding:0;}
+  .profile-avatar-preview {display:grid;place-items:center;width:100%;height:100%;}
+  .profile-avatar-preview img {width:100%;height:100%;object-fit:cover;display:block;}
+  .profile-avatar-edit {position:absolute;right:0;bottom:0;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#10130a;display:grid;place-items:center;border:2px solid var(--bg-elevated);}
+  .profile-avatar-edit svg {width:11px;height:11px;}
+  .profile-fields {flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .profile-fields .label {margin:8px 0 4px;font-size:11px;}
+  .profile-fields .label:first-child {margin-top:0;}
+  .avatar.has-photo {padding:0;overflow:hidden;background:var(--panel-soft);}
+  .avatar.has-photo img {width:100%;height:100%;object-fit:cover;display:block;}
   .clear-chat-button {width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--subtle);flex:0 0 auto;transition:color .15s,border-color .15s,transform .12s;}
   .clear-chat-button:hover {color:var(--danger);border-color:var(--danger);}
   .clear-chat-button:active {transform:scale(.93);}
@@ -592,7 +673,7 @@
         <div class="hero-side">
           <div class="access-card">
             <div class="access-head">
-              <div><h2 class="access-title">Your rooms</h2><p class="access-subtitle">Create a room or join with a code.</p></div>
+              <div><h2 class="access-title">Your rooms</h2><p class="access-subtitle">Create a room or join with a code.</p></div><p class="app-presence"><span class="presence-dot"></span><span><strong id="appPresenceCount">…</strong> online now</span></p>
             </div>
             <form id="createRoomForm">
               <div class="field">
@@ -607,7 +688,13 @@
                     <input class="text-input" id="newRoomName" name="roomName" maxlength="60" placeholder="e.g. Study group">
                   </div>
                 </div>
-              </details>
+              </details><div class="field public-group-field">
+                <label class="public-check"><input type="checkbox" id="publicGroupCheck"><span>List as <strong>public group</strong></span></label>
+                <div id="publicGroupFields" hidden>
+                  <input type="password" id="publicGroupPassword" class="text-input" placeholder="Password (optional)" maxlength="32" autocomplete="new-password">
+                  <p class="field-hint">Anyone can find it in the directory. A password locks the door — even the listing can't reveal it.</p>
+                </div>
+              </div>
             </form>
             <div class="or-line" id="inlineJoinDivider">or join a room</div>
             <form id="joinRoomForm">
@@ -618,6 +705,7 @@
               </div>
               <p class="field-help" style="margin:7px 2px 0">Press Enter to join, or use the + button.</p>
             </form>
+            <div class="browse-groups-wrap"><button type="button" class="link-button" id="browseGroupsButton">Browse public groups</button></div>
             <p class="status-text" id="landingStatus" aria-live="polite"></p>
             <div class="recent-rooms" id="recentRooms" hidden>
               <div class="recent-rooms-head"><span>Recent rooms</span><span class="recent-hint">Jump back in anytime</span></div>
@@ -650,7 +738,7 @@
         <button class="back-button" id="backHome" aria-label="Back to home" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
         <div class="room-heading"><div class="room-title-line"><h2 id="roomTitle">Room</h2><span class="room-code-badge" id="roomCodeLabel">ABC123</span></div><div class="room-subtitle"><span class="pulse-dot"></span><span id="roomSubline">Your shared space</span></div></div>
         <div class="sync-state" id="syncState"><span class="sync-indicator"></span><span id="syncLabel">Synced</span></div>
-        <div class="room-actions"><button class="clear-chat-button" id="clearChatButton" type="button" aria-label="Clear chat" title="Clear chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg></button><button class="share-button" id="shareRoomButton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg> Share room</button></div>
+        <div class="room-actions"><div class="presence-pill" id="roomPresence" title="Online in this room"><span class="presence-dot"></span><span id="roomPresenceCount">1</span></div><button class="clear-chat-button" id="clearChatButton" type="button" aria-label="Clear chat" title="Clear chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg></button><button class="share-button" id="shareRoomButton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg> Share room</button></div>
       </div>
       <div class="room-grid" id="roomGrid" data-mobile-view="chat">
         <section class="chat-panel" aria-label="Room chat">
@@ -660,11 +748,25 @@
           <div class="composer-wrap">
             <div class="typing-indicator" id="typingIndicator" aria-live="polite"></div>
             <div class="upload-status" id="uploadStatus" aria-live="polite">Uploading file…</div>
+            <div class="caption-panel" id="captionPanel" hidden>
+              <div class="caption-file-row"><span class="caption-file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></span><span class="caption-file-name" id="captionFileName"></span><button type="button" class="icon-button caption-cancel" id="captionCancel" aria-label="Cancel">×</button></div>
+              <div class="caption-input-row"><input type="text" id="captionInput" class="text-input" maxlength="280" placeholder="Add a caption… (optional)" autocomplete="off"><button type="button" class="primary-button caption-send" id="captionSend">Send</button></div>
+            </div>
+            <div class="reply-panel" id="replyPanel" hidden>
+              <div class="reply-preview"><span class="reply-to-label">Replying to <strong id="replyToAuthor"></strong></span><span class="reply-to-text" id="replyToText"></span></div>
+              <button type="button" class="icon-button reply-cancel" id="replyCancel" aria-label="Cancel reply">×</button>
+            </div>
+            <div class="recording-panel" id="recordingPanel" hidden>
+              <span class="rec-dot" aria-hidden="true"></span><span class="rec-time" id="recTime">0:00</span>
+              <span class="rec-hint">Tap stop when done</span>
+              <button type="button" class="icon-button rec-cancel" id="recCancel" aria-label="Cancel recording">×</button>
+              <button type="button" class="rec-stop" id="recStop" aria-label="Stop and send"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
+            </div>
             <form class="composer" id="messageForm">
               <input type="file" id="fileInput" class="sr-only" aria-label="Choose a file to share">
-              <button class="attach-button" id="attachButton" type="button" aria-label="Attach file" title="Attach a file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
+              <button class="attach-button" id="attachButton" type="button" aria-label="Attach file" title="Attach a file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button><button class="attach-button voice-button" id="voiceButton" type="button" aria-label="Record voice message" title="Record voice message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg></button>
               <label class="sr-only" for="messageInput">Message</label>
-              <textarea id="messageInput" rows="1" maxlength="5000" placeholder="Write something useful… (Enter to send)"></textarea>
+              <textarea id="messageInput" rows="1" maxlength="5000" placeholder="Write a message…"></textarea>
               <button class="send-button" id="sendButton" type="submit" aria-label="Send message" title="Send message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
             </form>
             <div class="composer-hint"><span><kbd>Enter</kbd> to send · <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line</span><span>Files shared with this room</span></div>
@@ -688,12 +790,38 @@
 <div class="modal-backdrop" id="joinModal" role="dialog" aria-modal="true" aria-labelledby="joinModalTitle"><div class="modal"><div class="modal-head"><div><h3 id="joinModalTitle">Join a room</h3><p>Enter a six-character room code or paste an invite link.</p></div><button class="icon-button" id="closeJoinModal" aria-label="Close join dialog">×</button></div><div id="joinModalContent"></div><div class="modal-actions"><button class="primary-button" id="joinModalSubmit" type="button">Join room</button></div></div></div>
 <div class="modal-backdrop" id="clearChatModal" role="dialog" aria-modal="true" aria-labelledby="clearChatTitle"><div class="modal"><div class="modal-head"><div><h3 id="clearChatTitle">Clear chat</h3><p>Delete messages for <strong>everyone</strong> in this room. This cannot be undone. Shared files stay on the file host.</p></div><button class="icon-button" id="closeClearChatModal" aria-label="Close clear chat dialog">×</button></div><div class="modal-actions" style="flex-direction:column;align-items:stretch;gap:8px;"><button class="secondary-button" id="clearOldMessages" type="button">Delete messages older than 7 days</button><button class="danger-button" id="clearAllMessages" type="button">Delete all messages</button></div></div></div> <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
   <div class="modal settings-modal"><div class="modal-head"><div><h3 id="settingsTitle">Appearance</h3><p>Make Run feel right for you.</p></div><button class="icon-button" id="closeSettings" aria-label="Close settings">×</button></div>
+    <div class="settings-label">PROFILE</div>
+    <div class="profile-editor">
+      <button type="button" class="profile-avatar" id="profileAvatarBtn" aria-label="Change profile photo">
+        <span class="profile-avatar-preview" id="profileAvatarPreview"></span>
+        <span class="profile-avatar-edit" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span>
+      </button>
+      <input type="file" id="profileAvatarInput" accept="image/*" hidden>
+      <div class="profile-fields">
+        <label class="label" for="profileName">Display name</label>
+        <input id="profileName" class="text-input" type="text" maxlength="32" autocomplete="off">
+        <label class="label" for="profileBio">Bio</label>
+        <input id="profileBio" class="text-input" type="text" maxlength="80" placeholder="A line about you…" autocomplete="off">
+        <label class="label" for="profileLang">My language</label>
+        <select id="profileLang" class="text-input"></select>
+      </div>
+    </div>
+    <div class="modal-actions"><button class="primary-button" id="saveProfileButton" type="button">Save profile</button></div>
+    <div class="settings-label">NOTIFICATIONS</div>
+    <label class="notify-row"><span><strong>New message alerts</strong><small>Sound + notification when the tab is in the background</small></span><button type="button" class="switch" id="notifyToggle" role="switch" aria-checked="false" aria-label="Toggle notifications"><span class="switch-knob"></span></button></label>
+    <div class="settings-label">TRANSLATION</div>
+    <label class="notify-row"><span><strong>Auto-translate messages</strong><small>Everyone reads in their own language</small></span><button type="button" class="switch" id="translateToggle" role="switch" aria-checked="false" aria-label="Toggle auto-translate"><span class="switch-knob"></span></button></label>
     <div class="settings-label">THEME</div>
     <div class="theme-options">
       <button type="button" class="theme-option" data-theme-choice="dark"><span class="theme-swatch swatch-default"><i></i><i></i><i></i></span><span><strong>Default</strong><small>Dark with lime accent</small></span><span class="theme-check">✓</span></button>
       <button type="button" class="theme-option" data-theme-choice="amoled"><span class="theme-swatch swatch-amoled"><i></i><i></i><i></i></span><span><strong>AMOLED Black</strong><small>True black backgrounds</small></span><span class="theme-check">✓</span></button>
       <button type="button" class="theme-option" data-theme-choice="light"><span class="theme-swatch swatch-light"><i></i><i></i><i></i></span><span><strong>Light</strong><small>Soft blue and white</small></span><span class="theme-check">✓</span></button>
     </div>
+  </div>
+</div>
+<div class="modal-backdrop" id="directoryModal" role="dialog" aria-modal="true" aria-labelledby="directoryTitle">
+  <div class="modal"><div class="modal-head"><div><h3 id="directoryTitle">Public groups</h3><p>Find a study group and jump in.</p></div><button class="icon-button" id="closeDirectory" aria-label="Close directory">×</button></div>
+    <div class="directory-list" id="directoryList"></div>
   </div>
 </div>
 <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
@@ -753,7 +881,22 @@
     roomFingerprint: '',
     writeQueue: Promise.resolve(),
     theme: store.get('run_theme', 'dark'),
+    avatar: store.get('run_avatar', ''),
+    bio: store.get('run_bio', ''),
+    lang: store.get('run_lang', 'en'),
+    notify: store.get('run_notify', '0') === '1',
+    translateOn: store.get('run_translate', '0') === '1',
+    translateCache: {},
+    translateFetching: new Set(),
+    showOriginal: new Set(),
     pendingUpload: false,
+    replyTo: null,
+    presenceRoom: new Map(),
+    presenceApp: new Map(),
+    presenceTimer: null,
+    directory: null,
+    pendingFile: null,
+    pendingCaption: '',
     pendingManualFile: null,
     messagesInitiallyRendered: false,
     roomMode: false
@@ -803,6 +946,11 @@
   }
   function safeLink(url) {
     try { const parsed = new URL(url); return ['https:','http:'].includes(parsed.protocol) ? parsed.href : ''; } catch { return ''; }
+  }
+  function isVideo(file) {
+    const mime = String(file?.mime || '').toLowerCase();
+    const name = String(file?.name || file?.url || '').toLowerCase();
+    return mime.startsWith('video/') || /\.(mp4|webm|mov|m4v|3gp|ogv|mkv|avi)(?:[?#].*)?$/.test(name);
   }
   function isImage(file) {
     const mime = String(file?.mime || '').toLowerCase();
@@ -968,7 +1116,13 @@
   }
 
   function bindMqttClient(client) {
+    try { client.subscribe(APP_PRESENCE_PREFIX + '+', { qos: 0 }); } catch {}
+    try { client.subscribe(DIRECTORY_TOPIC, { qos: 1 }); } catch {}
+    startPresenceLoop();
+    beatPresence();
     client.on('message', (topic, payload) => {
+      if (handlePresenceMessage(topic, payload)) return;
+      if (topic === DIRECTORY_TOPIC) { try { state.directory = JSON.parse(payload.toString()); renderDirectory(); } catch {} return; }
       if (!state.room) return;
       if (topic === state.typingTopic) { handleTypingPayload(payload); return; }
       if (topic !== state.roomTopic) return;
@@ -1074,20 +1228,34 @@
     if (state.mqttClient && state.typingTopic && state.typingTopic !== typingTopic) {
       try { state.mqttClient.unsubscribe(state.typingTopic); } catch {}
     }
+    if (state.mqttClient && state.roomPresenceTopic && state.roomPresenceTopic !== roomPresencePrefix(code)) {
+      try { state.mqttClient.unsubscribe(state.roomPresenceTopic + '+'); } catch {}
+      try { state.mqttClient.publish(state.roomPresenceTopic + state.userId, '', {qos: 0, retain: true}); } catch {}
+    }
     state.roomTopic = topic;
     state.typingTopic = typingTopic;
+    state.roomPresenceTopic = roomPresencePrefix(code);
     if (state.mqttClient && state.mqttClient.connected) {
       try { state.mqttClient.subscribe(topic, { qos: 1 }); } catch {}
       try { state.mqttClient.subscribe(typingTopic, { qos: 0 }); } catch {}
+      try { state.mqttClient.subscribe(state.roomPresenceTopic + '+', { qos: 0 }); } catch {}
     }
+    state.presenceRoom.clear();
+    beatPresence();
   }
 
   function leaveRoomTopic() {
     stopTypingSignal();
     if (state.mqttClient && state.roomTopic) { try { state.mqttClient.unsubscribe(state.roomTopic); } catch {} }
     if (state.mqttClient && state.typingTopic) { try { state.mqttClient.unsubscribe(state.typingTopic); } catch {} }
+    if (state.mqttClient && state.roomPresenceTopic) {
+      try { state.mqttClient.publish(state.roomPresenceTopic + state.userId, '', {qos: 0, retain: true}); } catch {}
+      try { state.mqttClient.unsubscribe(state.roomPresenceTopic + '+'); } catch {}
+    }
     state.roomTopic = '';
     state.typingTopic = '';
+    state.roomPresenceTopic = '';
+    state.presenceRoom.clear();
     state.typingUsers.clear();
     renderTypingIndicator();
   }
@@ -1098,18 +1266,21 @@
       kind: 'run-room', version: 1,
       meta: {code: String(data.meta?.code || code || '').toUpperCase(), name: String(data.meta?.name || 'Untitled room'), createdAt: data.meta?.createdAt || new Date().toISOString()},
       messages: Array.isArray(data.messages) ? data.messages.filter(m => m && typeof m === 'object' && m.id).slice(-600) : [],
-      tasks: Array.isArray(data.tasks) ? data.tasks.filter(t => t && typeof t === 'object' && t.id).slice(-300) : []
+      tasks: Array.isArray(data.tasks) ? data.tasks.filter(t => t && typeof t === 'object' && t.id).slice(-300) : [],
+      avatars: (data.avatars && typeof data.avatars === 'object' && !Array.isArray(data.avatars)) ? data.avatars : {}
     };
   }
-  async function createRoom(roomName) {
+  async function createRoom(roomName, forcedCode) {
     await mqttEnsureConnected();
     const now = new Date().toISOString();
-    let code = randomCode();
-    for (let attempt = 0; attempt < 10; attempt++) {
-      const existing = await fetchRoomState(code, MQTT_CODE_CHECK_TIMEOUT_MS);
-      if (!existing) break;
-      code = randomCode();
-      if (attempt === 9) throw new Error('Could not find an available room code. Please try again.');
+    let code = forcedCode || randomCode();
+    if (!forcedCode) {
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const existing = await fetchRoomState(code, MQTT_CODE_CHECK_TIMEOUT_MS);
+        if (!existing) break;
+        code = randomCode();
+        if (attempt === 9) throw new Error('Could not find an available room code. Please try again.');
+      }
     }
     const roomData = normalizeRoom({kind:'run-room', version:1, meta:{code, name:(roomName || '').trim().slice(0,60) || 'A new room', createdAt:now}, messages:[], tasks:[]}, code);
     state.roomTopic = mqttTopicFor(code);
@@ -1147,7 +1318,7 @@
     await openRoom({code: target.code, name: target.name}, target.data, true);
   }
   function fingerprint(data) {
-    return JSON.stringify({meta:data.meta, messages:data.messages, tasks:data.tasks});
+    return JSON.stringify({meta:data.meta, messages:data.messages, tasks:data.tasks, avatars:data.avatars});
   }
   async function openRoom(room, roomData, fromJoin) {
     leaveRoomTopic();
@@ -1176,6 +1347,7 @@
   }
 
   function renderRoomData() {
+    scanNewMessages();
     renderMessages(); renderTasks();
     $('#roomSubline').textContent = `${state.roomData.messages.length} messages · created ${formatDate(state.roomData.meta.createdAt).toLowerCase()}`;
     $('#messageCount').textContent = `${state.roomData.messages.length} message${state.roomData.messages.length === 1 ? '' : 's'}`;
@@ -1197,18 +1369,35 @@
       const own = msg.userId === state.userId;
       const tone = toneFor(msg.userId);
       const author = escapeHTML(msg.author || 'Guest');
+      const avatarUrl = (state.roomData && state.roomData.avatars && state.roomData.avatars[msg.userId]) || '';
+      maybeTranslateMessage(msg);
+      const translated = translatedTextFor(msg);
       const timestamp = escapeHTML(formatTime(msg.createdAt));
-      html += `<article class="message-row tone-${tone}${own ? ' own' : ''}" data-message-id="${escapeHTML(msg.id)}"><div class="avatar tone-${tone}">${escapeHTML(initials(msg.author || 'Guest'))}</div><div class="message-content"><div class="message-meta"><strong>${author}</strong></div>`;
+      html += `<article class="message-row tone-${tone}${own ? ' own' : ''}" data-message-id="${escapeHTML(msg.id)}"><div class="avatar${avatarUrl ? ' has-photo' : ` tone-${tone}`}">${avatarUrl ? `<img src="${escapeHTML(avatarUrl)}" alt="">` : escapeHTML(initials(msg.author || 'Guest'))}</div><div class="message-content"><div class="message-meta"><strong>${author}</strong></div>`;
       if (msg.type === 'file' && msg.file) {
-        const file = msg.file; const url = safeLink(file.url);
-        if (url) {
+        const file = msg.file; if (file.voice) { html += voicePlayerHtml(file, timestamp); } else { const url = safeLink(file.url);
+        const embeddedImg = !url && typeof file.dataUrl === 'string' && file.dataUrl.indexOf('data:image/') === 0;
+        if (url || embeddedImg) {
           const image = isImage(file);
-          html += `<div class="file-card">${image ? `<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer"><img class="file-preview" loading="lazy" src="${escapeHTML(url)}" alt="${escapeHTML(file.name || 'Shared image')}" referrerpolicy="no-referrer"></a>` : ''}<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer" download="${escapeHTML(file.name || '')}"><div class="file-info"><span class="file-symbol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></span><span style="min-width:0;flex:1"><span class="file-name">${escapeHTML(file.name || 'Shared file')}</span><span class="file-size">${escapeHTML(formatSize(file.size))} · ${image ? 'Image' : 'File'} · open</span></span><span class="file-download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span></div></a></div><time class="file-time">${timestamp}</time>`;
-        } else html += '<div class="message-bubble">File link is invalid or unavailable.</div>';
+          const video = !image && isVideo(file);
+          const src = escapeHTML(file.dataUrl || url);
+          const kindLabel = image ? 'Image' : (video ? 'Video' : 'File');
+          let previewHtml = '';
+          if (image) {
+            const imgTag = `<img class="file-preview" loading="lazy" src="${src}" alt="${escapeHTML(file.name || 'Shared image')}" referrerpolicy="no-referrer">`;
+            previewHtml = url ? `<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">${imgTag}</a>` : imgTag;
+          } else if (video) {
+            previewHtml = `<video class="file-preview video-preview" controls preload="metadata" playsinline src="${src}"></video>`;
+          }
+          const infoInner = `<div class="file-info"><span class="file-symbol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></span><span style="min-width:0;flex:1"><span class="file-name">${escapeHTML(file.name || 'Shared file')}</span><span class="file-size">${escapeHTML(formatSize(file.size))} · ${kindLabel} · open</span></span><span class="file-download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span></div>`;
+          const infoWrap = url ? `<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer" download="${escapeHTML(file.name || '')}">${infoInner}</a>` : infoInner;
+          const captionHtml = file.caption ? `<div class="file-caption">${escapeHTML(file.caption)}</div>` : '';
+          html += `${replyQuoteHtml(msg)}<div class="file-card">${previewHtml}${captionHtml}${infoWrap}</div><time class="file-time">${timestamp}</time>`;
+        } else html += '<div class="message-bubble">File link is invalid or unavailable.</div>'; }
       } else {
-        html += `<div class="message-bubble${own ? ' own' : ''}">${escapeHTML(msg.text || '')}<time class="bubble-time">${timestamp}</time></div>`;
+        html += `${replyQuoteHtml(msg)}<div class="message-bubble${own ? ' own' : ''}">${translated ? '<span class="translated-badge">Translated</span>' : ''}${escapeHTML(translated || msg.text || '')}${translated ? `<button type="button" class="translate-toggle" data-translate-toggle="${escapeHTML(msg.id)}">Show original</button>` : ''}<time class="bubble-time">${timestamp}</time></div>`;
       }
-      html += '</div></article>';
+      html += '<button type="button" class="reply-button" data-reply-to="${escapeHTML(msg.id)}" aria-label="Reply" title="Reply">↩</button></div></article>';
     }
     list.innerHTML = html;
     if (previousBottom || !state.messagesInitiallyRendered) list.scrollTop = list.scrollHeight;
@@ -1263,13 +1452,609 @@
     state.writeQueue = state.writeQueue.then(operation, operation).catch(error => { console.error('Run update failed:', error); toast(error.message || 'Could not save this update.', 'error'); if (state.room?.code === roomAtCall.code) setSync('offline','Retrying'); throw error; });
     return state.writeQueue;
   }
+/* ---------- Personal profile ---------- */
+  const LANG_OPTIONS = [['en','English'],['ar','العربية'],['fr','Français'],['es','Español'],['de','Deutsch'],['it','Italiano'],['pt','Português'],['ru','Русский'],['tr','Türkçe'],['zh','中文'],['hi','हिन्दी'],['ur','اردو']];
+  function renderProfileAvatarPreview() {
+    const p = $('#profileAvatarPreview');
+    if (!p) return;
+    if (state.avatar) p.innerHTML = `<img src="${escapeHTML(state.avatar)}" alt="Profile photo">`;
+    else p.textContent = initials(state.name || '?');
+  }
+  function populateProfileForm() {
+    if (!$('#profileName')) return;
+    $('#profileName').value = state.name || '';
+    $('#profileBio').value = state.bio || '';
+    $('#profileLang').innerHTML = LANG_OPTIONS.map(([v, l]) => `<option value="${v}"${state.lang === v ? ' selected' : ''}>${l}</option>`).join('');
+    renderProfileAvatarPreview();
+  }
+  function bindProfile() {
+    if (!$('#saveProfileButton') || $('#saveProfileButton').dataset.bound) return;
+    $('#saveProfileButton').dataset.bound = '1';
+    $('#profileAvatarBtn').addEventListener('click', () => $('#profileAvatarInput').click());
+    $('#profileAvatarInput').addEventListener('change', event => {
+      const f = event.target.files && event.target.files[0];
+      event.target.value = '';
+      if (!f) return;
+      if (!String(f.type || '').startsWith('image/')) { toast('Please choose an image file.', 'error'); return; }
+      const objUrl = URL.createObjectURL(f);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(objUrl);
+        try {
+          const s = 128, c = document.createElement('canvas');
+          c.width = s; c.height = s;
+          const ctx = c.getContext('2d');
+          const scale = Math.max(s / img.width, s / img.height);
+          const w = img.width * scale, h = img.height * scale;
+          ctx.drawImage(img, (s - w) / 2, (s - h) / 2, w, h);
+          state.avatar = c.toDataURL('image/jpeg', 0.82);
+          renderProfileAvatarPreview();
+        } catch (err) { toast('Could not process that image.', 'error'); }
+      };
+      img.onerror = () => { URL.revokeObjectURL(objUrl); toast('Could not read that image.', 'error'); };
+      img.src = objUrl;
+    });
+    $('#saveProfileButton').addEventListener('click', () => {
+      const name = $('#profileName').value.trim().slice(0, 32);
+      if (!name) { toast('Add a display name first.', 'error'); $('#profileName').focus(); return; }
+      state.name = name;
+      state.bio = $('#profileBio').value.trim().slice(0, 80);
+      state.lang = $('#profileLang').value || 'en';
+      store.set('run_display_name', state.name);
+      store.set('run_avatar', state.avatar || '');
+      store.set('run_bio', state.bio);
+      store.set('run_lang', state.lang);
+      const dn = $('#displayName');
+      if (dn) dn.value = state.name;
+      renderProfileAvatarPreview();
+      toast('Profile saved.', 'success');
+    });
+  }
+/* ---------- Captions on files ---------- */
+  function stageFileForCaption(file) {
+    state.pendingFile = file;
+    state.pendingCaption = '';
+    $('#captionFileName').textContent = `${file.name} · ${formatSize(file.size)}`;
+    $('#captionInput').value = '';
+    $('#captionPanel').hidden = false;
+    setTimeout(() => $('#captionInput').focus(), 60);
+  }
+  function hideCaptionPanel() {
+    $('#captionPanel').hidden = true;
+    state.pendingFile = null;
+    state.pendingCaption = '';
+  }
+  function bindCaption() {
+    if ($('#captionSend').dataset.bound) return;
+    $('#captionSend').dataset.bound = '1';
+    $('#captionSend').addEventListener('click', () => {
+      const file = state.pendingFile;
+      if (!file) { hideCaptionPanel(); return; }
+      const caption = $('#captionInput').value.trim().slice(0, 280);
+      hideCaptionPanel();
+      uploadFile(file, caption);
+    });
+    $('#captionCancel').addEventListener('click', () => {
+      hideCaptionPanel();
+      $('#fileInput').value = '';
+    });
+    $('#captionInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); $('#captionSend').click(); }
+      if (e.key === 'Escape') $('#captionCancel').click();
+    });
+  }
+/* ---------- Reply / quote ---------- */
+  function replySnippet(msg) {
+    if (!msg) return '';
+    let t = msg.type === 'file' ? (msg.file ? (msg.file.caption || msg.file.name || 'a file') : 'a file') : String(msg.text || '');
+    t = t.replace(/\s+/g, ' ').trim();
+    return t.length > 90 ? t.slice(0, 90) + '…' : t;
+  }
+  function startReply(msgId) {
+    const msg = (state.roomData?.messages || []).find(m => m.id === msgId);
+    if (!msg) return;
+    state.replyTo = {id: msg.id, author: msg.author || 'Guest', text: replySnippet(msg)};
+    $('#replyToAuthor').textContent = state.replyTo.author;
+    $('#replyToText').textContent = state.replyTo.text;
+    $('#replyPanel').hidden = false;
+    $('#messageInput').focus();
+  }
+  function cancelReply() {
+    state.replyTo = null;
+    $('#replyPanel').hidden = true;
+  }
+  function replyQuoteHtml(msg) {
+    if (!msg.replyTo) return '';
+    const r = msg.replyTo;
+    return `<div class="reply-quote" data-jump-to="${escapeHTML(r.id || '')}"><span class="reply-quote-author">${escapeHTML(r.author || 'Guest')}</span><span class="reply-quote-text">${escapeHTML(r.text || '')}</span></div>`;
+  }
+  function bindReply() {
+    if ($('#replyCancel').dataset.bound) return;
+    $('#replyCancel').dataset.bound = '1';
+    $('#replyCancel').addEventListener('click', cancelReply);
+    $('#messagesList').addEventListener('click', event => {
+      const rb = event.target.closest('[data-reply-to]');
+      if (rb) { startReply(rb.getAttribute('data-reply-to')); return; }
+      const q = event.target.closest('[data-jump-to]');
+      if (q) {
+        const id = q.getAttribute('data-jump-to');
+        const el = id && document.querySelector(`[data-message-id="${CSS.escape(id)}"]`);
+        if (el) el.scrollIntoView({behavior: 'smooth', block: 'center'});
+      }
+    });
+  }
+/* ---------- Voice messages ---------- */
+  let voiceRecorder = null, voiceChunks = [], voiceStream = null, voiceStartAt = 0, voiceTick = null, voiceSendOnStop = false;
+  const VOICE_MAX_SEC = 300;
+  function fmtDur(sec) {
+    sec = Math.max(0, Math.round(sec || 0));
+    return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
+  }
+  function showRecordingUI() {
+    $('#recordingPanel').hidden = false;
+    $('#voiceButton').classList.add('recording');
+    $('#recTime').textContent = '0:00';
+    voiceTick = setInterval(() => {
+      const s = Math.floor((Date.now() - voiceStartAt) / 1000);
+      $('#recTime').textContent = fmtDur(s);
+      if (s >= VOICE_MAX_SEC) stopVoiceRecording(true);
+    }, 500);
+  }
+  function hideRecordingUI() {
+    $('#recordingPanel').hidden = true;
+    $('#voiceButton').classList.remove('recording');
+    if (voiceTick) { clearInterval(voiceTick); voiceTick = null; }
+  }
+  async function toggleVoiceRecording() {
+    if (voiceRecorder) { stopVoiceRecording(true); return; }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+      toast('Voice recording is not supported in this browser.', 'error');
+      return;
+    }
+    try {
+      voiceStream = await navigator.mediaDevices.getUserMedia({audio: true});
+    } catch (err) {
+      toast('Microphone access was denied.', 'error');
+      return;
+    }
+    try {
+      voiceRecorder = new MediaRecorder(voiceStream);
+    } catch (err) {
+      voiceStream.getTracks().forEach(t => t.stop());
+      voiceStream = null;
+      toast('Could not start recording.', 'error');
+      return;
+    }
+    voiceChunks = [];
+    voiceSendOnStop = false;
+    voiceRecorder.ondataavailable = e => { if (e.data && e.data.size) voiceChunks.push(e.data); };
+    voiceRecorder.onstop = finishVoiceRecording;
+    voiceRecorder.start();
+    voiceStartAt = Date.now();
+    showRecordingUI();
+  }
+  function stopVoiceRecording(send) {
+    voiceSendOnStop = !!send;
+    if (voiceRecorder && voiceRecorder.state !== 'inactive') voiceRecorder.stop();
+    else finishVoiceRecording();
+  }
+  function finishVoiceRecording() {
+    const rec = voiceRecorder, chunks = voiceChunks, send = voiceSendOnStop;
+    const startedAt = voiceStartAt;
+    voiceRecorder = null; voiceChunks = []; voiceSendOnStop = false;
+    if (voiceStream) { voiceStream.getTracks().forEach(t => t.stop()); voiceStream = null; }
+    hideRecordingUI();
+    if (!send || !chunks.length) return;
+    const mime = (rec && rec.mimeType) || 'audio/webm';
+    const blob = new Blob(chunks, {type: mime});
+    if (!blob.size) return;
+    const duration = Math.round((Date.now() - startedAt) / 1000);
+    const ext = mime.includes('mp4') ? 'm4a' : 'webm';
+    const file = new File([blob], `voice-message.${ext}`, {type: mime});
+    if (file.size <= 350 * 1024) {
+      readFileAsDataURL(file).then(dataUrl => {
+        shareFileMessage({url: '', dataUrl, name: 'Voice message', size: file.size, mime, duration, voice: true});
+        toast('Voice message sent.');
+      }).catch(() => toast('Could not process the recording.', 'error'));
+    } else {
+      uploadFile(file, '');
+    }
+  }
+  function bindVoice() {
+    if ($('#voiceButton').dataset.bound) return;
+    $('#voiceButton').dataset.bound = '1';
+    $('#voiceButton').addEventListener('click', toggleVoiceRecording);
+    $('#recStop').addEventListener('click', () => stopVoiceRecording(true));
+    $('#recCancel').addEventListener('click', () => stopVoiceRecording(false));
+  }
+  /* voice playback (delegated) */
+  let playingVoiceAudio = null, playingVoiceBtn = null;
+  function stopVoicePlayback() {
+    if (playingVoiceAudio) { playingVoiceAudio.pause(); }
+    if (playingVoiceBtn) setVoiceBtnIcon(playingVoiceBtn, false);
+    playingVoiceAudio = null; playingVoiceBtn = null;
+  }
+  function setVoiceBtnIcon(btn, playing) {
+    btn.innerHTML = playing
+      ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+  }
+  function bindVoicePlayback() {
+    const list = $('#messagesList');
+    if (list.dataset.voiceBound) return;
+    list.dataset.voiceBound = '1';
+    list.addEventListener('click', event => {
+      const btn = event.target.closest('[data-voice-play]');
+      if (!btn) return;
+      const player = btn.closest('[data-voice]');
+      const audio = player && player.querySelector('audio');
+      if (!audio) return;
+      if (playingVoiceBtn === btn && playingVoiceAudio === audio && !audio.paused) {
+        audio.pause();
+        return;
+      }
+      stopVoicePlayback();
+      playingVoiceAudio = audio; playingVoiceBtn = btn;
+      setVoiceBtnIcon(btn, true);
+      const bar = player.querySelector('.voice-progress');
+      const durEl = player.querySelector('.voice-duration');
+      const total = parseFloat(btn.dataset.duration || '0');
+      audio.ontimeupdate = () => {
+        if (bar && audio.duration) bar.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+        if (durEl) durEl.textContent = fmtDur(audio.duration ? audio.duration - audio.currentTime : total);
+      };
+      audio.onended = () => { stopVoicePlayback(); if (bar) bar.style.width = '0%'; if (durEl) durEl.textContent = fmtDur(total); };
+      audio.onpause = () => { if (playingVoiceBtn === btn) setVoiceBtnIcon(btn, false); };
+      audio.play().catch(() => { stopVoicePlayback(); toast('Could not play this recording.', 'error'); });
+    });
+  }
+  function voicePlayerHtml(file, timestamp) {
+    const src = escapeHTML(file.dataUrl || file.url || '');
+    const dur = fmtDur(file.duration || 0);
+    return `<div class="message-bubble voice-bubble"><div class="voice-player" data-voice>`
+      + `<button type="button" class="voice-play-btn" data-voice-play data-duration="${escapeHTML(String(file.duration || 0))}" aria-label="Play voice message"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>`
+      + `<div class="voice-track"><div class="voice-progress"></div></div>`
+      + `<span class="voice-duration">${dur}</span>`
+      + `<audio src="${src}" preload="metadata"></audio></div>`
+      + `<time class="bubble-time">${timestamp}</time></div>`;
+  }
+/* ---------- Online presence ---------- */
+  const APP_PRESENCE_PREFIX = 'runapp/v1/presence/';
+  const PRESENCE_TTL_MS = 60000, PRESENCE_BEAT_MS = 20000;
+  function roomPresencePrefix(code) { return mqttTopicFor(code) + '/presence/'; }
+  function presencePayload() {
+    return JSON.stringify({userId: state.userId, name: state.name || 'Guest', avatar: state.avatar || '', at: Date.now()});
+  }
+  function beatPresence() {
+    const c = state.mqttClient;
+    if (!c || !c.connected) return;
+    try { c.publish(APP_PRESENCE_PREFIX + state.userId, presencePayload(), {qos: 0, retain: true}); } catch {}
+    if (state.room) {
+      try { c.publish(roomPresencePrefix(state.room.code) + state.userId, presencePayload(), {qos: 0, retain: true}); } catch {}
+    }
+  }
+  function clearPresence() {
+    const c = state.mqttClient;
+    if (!c || !c.connected) return;
+    try { c.publish(APP_PRESENCE_PREFIX + state.userId, '', {qos: 0, retain: true}); } catch {}
+    if (state.room) {
+      try { c.publish(roomPresencePrefix(state.room.code) + state.userId, '', {qos: 0, retain: true}); } catch {}
+    }
+  }
+  function notePresence(map, payload) {
+    let data;
+    try { data = JSON.parse(payload.toString()); } catch { return false; }
+    if (!data || !data.userId) return false;
+    if (!data.at || (Date.now() - data.at) > PRESENCE_TTL_MS) { map.delete(data.userId); }
+    else map.set(data.userId, data);
+    return true;
+  }
+  function handlePresenceMessage(topic, payload) {
+    if (state.room && topic.indexOf(roomPresencePrefix(state.room.code)) === 0) {
+      notePresence(state.presenceRoom, payload);
+      renderPresence();
+      return true;
+    }
+    if (topic.indexOf(APP_PRESENCE_PREFIX) === 0) {
+      notePresence(state.presenceApp, payload);
+      renderPresence();
+      return true;
+    }
+    return false;
+  }
+  function prunePresence() {
+    const now = Date.now();
+    for (const [k, v] of state.presenceRoom) if (!v.at || (now - v.at) > PRESENCE_TTL_MS) state.presenceRoom.delete(k);
+    for (const [k, v] of state.presenceApp) if (!v.at || (now - v.at) > PRESENCE_TTL_MS) state.presenceApp.delete(k);
+  }
+  function renderPresence() {
+    prunePresence();
+    const rc = $('#roomPresenceCount');
+    if (rc) rc.textContent = String(state.presenceRoom.size || 1);
+    const ac = $('#appPresenceCount');
+    if (ac) ac.textContent = String(state.presenceApp.size || 1);
+  }
+  function startPresenceLoop() {
+    if (state.presenceTimer) return;
+    state.presenceTimer = setInterval(() => { beatPresence(); renderPresence(); }, PRESENCE_BEAT_MS);
+    window.addEventListener('beforeunload', clearPresence);
+  }
+/* ---------- Browser notifications ---------- */
+  function playNotifySound() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      const ctx = new AC();
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'sine'; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.45);
+      o.onended = () => ctx.close();
+    } catch {}
+  }
+  function notifyMessage(msg) {
+    if (!state.notify || !('Notification' in window)) return;
+    if (Notification.permission !== 'granted') return;
+    if (!document.hidden) return;
+    if (!msg || msg.userId === state.userId) return;
+    const roomName = (state.roomData && state.roomData.meta && state.roomData.meta.name) || 'Run';
+    const author = msg.author || 'Guest';
+    let body = String(msg.text || '');
+    if (msg.type === 'file' && msg.file) {
+      body = msg.file.voice ? '🎤 Voice message' : (msg.file.caption || `📎 ${msg.file.name || 'Shared a file'}`);
+    }
+    if (!body) return;
+    playNotifySound();
+    try {
+      const n = new Notification(`${author} · ${roomName}`, {body: body.slice(0, 140), tag: `run-${msg.id}`});
+      n.onclick = () => { window.focus(); n.close(); };
+      setTimeout(() => n.close(), 8000);
+    } catch {}
+  }
+  function setNotifyUI() {
+    const t = $('#notifyToggle');
+    if (t) t.setAttribute('aria-checked', state.notify ? 'true' : 'false');
+  }
+  async function toggleNotify() {
+    if (!('Notification' in window)) { toast('Notifications are not supported in this browser.', 'error'); return; }
+    if (!state.notify) {
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') { toast('Notification permission was denied.', 'error'); return; }
+      state.notify = true;
+    } else {
+      state.notify = false;
+    }
+    store.set('run_notify', state.notify ? '1' : '0');
+    setNotifyUI();
+    toast(state.notify ? 'Notifications on.' : 'Notifications off.', 'success');
+  }
+  function bindNotify() {
+    if ($('#notifyToggle').dataset.bound) return;
+    $('#notifyToggle').dataset.bound = '1';
+    setNotifyUI();
+    $('#notifyToggle').addEventListener('click', toggleNotify);
+  }
+  function scanNewMessages() {
+    if (!state.seenIds) state.seenIds = new Set();
+    const msgs = state.roomData?.messages || [];
+    for (const m of msgs) {
+      if (!m || !m.id) continue;
+      if (!state.seenIds.has(m.id)) {
+        state.seenIds.add(m.id);
+        if (m.userId !== state.userId) notifyMessage(m);
+      }
+    }
+    if (state.seenIds.size > 1200) {
+      const arr = [...state.seenIds].slice(-800);
+      state.seenIds = new Set(arr);
+    }
+  }
+/* ---------- Auto-translate ---------- */
+  async function fetchTranslation(text, target) {
+    const q = String(text || '').slice(0, 2000);
+    if (!q.trim()) return '';
+    const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl='
+      + encodeURIComponent(target) + '&dt=t&q=' + encodeURIComponent(q);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('translate failed');
+    const data = await res.json();
+    const out = ((data && data[0]) || []).map(s => s[0]).join('');
+    return out || q;
+  }
+  function translateKey(id) { return `${id}:${state.lang || 'en'}`; }
+  function maybeTranslateMessage(msg) {
+    if (!state.translateOn || !msg || msg.type !== 'text' || !msg.text) return;
+    if (msg.userId === state.userId) return;
+    if (state.showOriginal.has(msg.id)) return;
+    const key = translateKey(msg.id);
+    if (state.translateCache[key] !== undefined || state.translateFetching.has(key)) return;
+    state.translateFetching.add(key);
+    fetchTranslation(msg.text, state.lang || 'en')
+      .then(t => { state.translateCache[key] = t; })
+      .catch(() => { state.translateCache[key] = msg.text; })
+      .finally(() => {
+        state.translateFetching.delete(key);
+        if (state.room) renderMessages();
+      });
+  }
+  function translatedTextFor(msg) {
+    if (!state.translateOn || !msg || msg.type !== 'text') return null;
+    if (msg.userId === state.userId || state.showOriginal.has(msg.id)) return null;
+    const t = state.translateCache[translateKey(msg.id)];
+    if (t === undefined || t === msg.text) return null;
+    return t;
+  }
+  function setTranslateUI() {
+    const t = $('#translateToggle');
+    if (t) t.setAttribute('aria-checked', state.translateOn ? 'true' : 'false');
+  }
+  function toggleTranslate() {
+    state.translateOn = !state.translateOn;
+    store.set('run_translate', state.translateOn ? '1' : '0');
+    setTranslateUI();
+    renderMessages();
+    toast(state.translateOn ? 'Auto-translate on.' : 'Auto-translate off.', 'success');
+  }
+  function bindTranslate() {
+    if ($('#translateToggle').dataset.bound) return;
+    $('#translateToggle').dataset.bound = '1';
+    setTranslateUI();
+    $('#translateToggle').addEventListener('click', toggleTranslate);
+    $('#messagesList').addEventListener('click', event => {
+      const tg = event.target.closest('[data-translate-toggle]');
+      if (!tg) return;
+      const id = tg.getAttribute('data-translate-toggle');
+      if (state.showOriginal.has(id)) state.showOriginal.delete(id);
+      else state.showOriginal.add(id);
+      renderMessages();
+    });
+  }
+/* ---------- Public groups directory ---------- */
+  const DIRECTORY_TOPIC = 'runapp/v1/directory';
+  async function sha256hex(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  function groupKeyFromHash(hex, len) {
+    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let out = '';
+    for (let i = 0; i < len; i++) out += alphabet[parseInt(hex.substr(i * 2, 2), 16) % alphabet.length];
+    return out;
+  }
+  function randomGroupSeed() {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    return [...bytes].map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  async function publishDirectory(groups) {
+    const c = state.mqttClient;
+    if (!c || !c.connected) throw new Error('Not connected.');
+    await new Promise((resolve, reject) => {
+      c.publish(DIRECTORY_TOPIC, JSON.stringify({kind: 'run-directory', version: 1, groups}), {qos: 1, retain: true}, err => err ? reject(err) : resolve());
+    });
+  }
+  async function addToDirectory(entry) {
+    const groups = [...(state.directory?.groups || []).filter(g => g.id !== entry.id), entry]
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 60);
+    await publishDirectory(groups);
+    state.directory = {kind: 'run-directory', version: 1, groups};
+    renderDirectory();
+  }
+  async function removeFromDirectory(id) {
+    const groups = (state.directory?.groups || []).filter(g => g.id !== id);
+    await publishDirectory(groups);
+    state.directory = {kind: 'run-directory', version: 1, groups};
+    renderDirectory();
+  }
+  function renderDirectory() {
+    const list = $('#directoryList');
+    if (!list) return;
+    const groups = state.directory?.groups || [];
+    if (!groups.length) {
+      list.innerHTML = '<div class="directory-empty">No public groups yet.<br>Be the first — tick “List as public group” when creating a room.</div>';
+      return;
+    }
+    list.innerHTML = groups.map(g => {
+      const mine = g.by === state.userId;
+      return `<div class="directory-item" data-group-id="${escapeHTML(g.id)}">`
+        + `<div class="directory-item-top"><span class="directory-name">${escapeHTML(g.name)}</span>`
+        + (g.hasPassword ? '<span class="directory-lock" title="Password protected">🔒</span>' : '')
+        + (mine ? `<button type="button" class="icon-button directory-remove" data-dir-remove="${escapeHTML(g.id)}" title="Remove listing" aria-label="Remove listing">×</button>` : '')
+        + `<button type="button" class="primary-button directory-join" data-dir-join="${escapeHTML(g.id)}">Join</button></div>`
+        + `<div class="directory-pw" hidden><div class="directory-pw-row"><input type="password" class="text-input directory-pw-input" placeholder="Group password" maxlength="32" autocomplete="off"><button type="button" class="primary-button directory-join" data-dir-join-go="${escapeHTML(g.id)}">Go</button></div><div class="directory-error" hidden></div></div>`
+        + `</div>`;
+    }).join('');
+  }
+  function openDirectory() {
+    renderDirectory();
+    $('#directoryModal').classList.add('open');
+  }
+  async function joinDirectoryGroup(id, password) {
+    const g = (state.directory?.groups || []).find(x => x.id === id);
+    if (!g) { toast('That group is no longer listed.', 'error'); return; }
+    const name = $('#displayName').value.trim().slice(0, 32);
+    if (!name) { toast('Add a display name first.', 'error'); $('#directoryModal').classList.remove('open'); $('#displayName').focus(); return; }
+    state.name = name; store.set('run_display_name', name);
+    let code;
+    if (g.hasPassword) {
+      if (!g.seed || !g.verifier) { toast('This listing is broken.', 'error'); return; }
+      const pw = String(password || '');
+      if (!pw) return;
+      const hex = await sha256hex(g.seed + '::' + pw);
+      if (hex.slice(0, 12) !== g.verifier) throw new Error('wrong-password');
+      code = groupKeyFromHash(await sha256hex(g.seed + '::pw::' + pw), 12);
+    } else {
+      code = g.key;
+    }
+    if (!code) { toast('This listing is broken.', 'error'); return; }
+    $('#directoryModal').classList.remove('open');
+    await joinRoom(code);
+  }
+  function bindDirectory() {
+    if ($('#browseGroupsButton').dataset.bound) return;
+    $('#browseGroupsButton').dataset.bound = '1';
+    $('#publicGroupCheck').addEventListener('change', e => {
+      $('#publicGroupFields').hidden = !e.target.checked;
+    });
+    $('#browseGroupsButton').addEventListener('click', openDirectory);
+    $('#closeDirectory').addEventListener('click', () => $('#directoryModal').classList.remove('open'));
+    $('#directoryModal').addEventListener('click', e => {
+      if (e.target === $('#directoryModal')) $('#directoryModal').classList.remove('open');
+    });
+    $('#directoryList').addEventListener('click', async e => {
+      const rm = e.target.closest('[data-dir-remove]');
+      if (rm) {
+        const id = rm.getAttribute('data-dir-remove');
+        try { await removeFromDirectory(id); toast('Listing removed.', 'success'); }
+        catch { toast('Could not remove the listing.', 'error'); }
+        return;
+      }
+      const j = e.target.closest('[data-dir-join]');
+      if (j) {
+        const item = j.closest('.directory-item');
+        const id = j.getAttribute('data-dir-join');
+        const g = (state.directory?.groups || []).find(x => x.id === id);
+        if (g && g.hasPassword) {
+          const pwRow = item.querySelector('.directory-pw');
+          pwRow.hidden = !pwRow.hidden;
+          if (!pwRow.hidden) item.querySelector('.directory-pw-input').focus();
+        } else {
+          try { await joinDirectoryGroup(id, ''); }
+          catch { toast('Could not join the group.', 'error'); }
+        }
+        return;
+      }
+      const go = e.target.closest('[data-dir-join-go]');
+      if (go) {
+        const item = go.closest('.directory-item');
+        const id = go.getAttribute('data-dir-join-go');
+        const pw = item.querySelector('.directory-pw-input').value;
+        const errEl = item.querySelector('.directory-error');
+        try { await joinDirectoryGroup(id, pw); }
+        catch (err) {
+          errEl.hidden = false;
+          errEl.textContent = err && err.message === 'wrong-password' ? 'Wrong password.' : 'Could not join the group.';
+        }
+      }
+    });
+  }
+  function stampAvatar(base) {
+    if (!state.avatar) return base.avatars || {};
+    const avatars = {...(base.avatars || {}), [state.userId]: state.avatar};
+    const keys = Object.keys(avatars);
+    if (keys.length > 60) keys.slice(0, keys.length - 60).forEach(k => { delete avatars[k]; });
+    return avatars;
+  }
   async function sendMessage(text) {
     const cleaned = String(text || '').trim(); if (!cleaned || !state.room) return;
-    const msg = {id:makeId(), type:'text', text:cleaned, author:state.name || 'Guest', userId:state.userId, createdAt:new Date().toISOString()};
-    const next = {...state.roomData, messages:[...(state.roomData?.messages || []), msg].slice(-600)};
+    const msg = {id:makeId(), type:'text', text:cleaned, ...(state.replyTo ? {replyTo: state.replyTo} : {}), author:state.name || 'Guest', userId:state.userId, createdAt:new Date().toISOString()};
+    const next = {...state.roomData, avatars: stampAvatar(state.roomData || {}), messages:[...(state.roomData?.messages || []), msg].slice(-600)};
     state.roomData = next; state.roomFingerprint = fingerprint(next); renderRoomData();
-    $('#messageInput').value = ''; resizeComposer(); stopTypingSignal();
-    try { await enqueueRoomMutation(base => ({...base, messages:[...base.messages.filter(m => m.id !== msg.id), msg].slice(-600)})); }
+    $('#messageInput').value = ''; resizeComposer(); cancelReply(); stopTypingSignal();
+    try { await enqueueRoomMutation(base => ({...base, avatars: stampAvatar(base), messages:[...base.messages.filter(m => m.id !== msg.id), msg].slice(-600)})); }
     catch { toast('Message could not be saved. It may disappear after a refresh.', 'error'); }
   }
   function readFileAsDataURL(file) {
@@ -1281,19 +2066,19 @@
     });
   }
   async function shareFileMessage(fileMeta) {
-    const msg = {id:makeId(), type:'file', file:fileMeta, author:state.name || 'Guest', userId:state.userId, createdAt:new Date().toISOString()};
-    const next = {...state.roomData, messages:[...(state.roomData?.messages || []), msg].slice(-600)};
-    state.roomData = next; state.roomFingerprint = fingerprint(next); renderRoomData();
-    await enqueueRoomMutation(base => ({...base, messages:[...base.messages.filter(m=>m.id!==msg.id),msg].slice(-600)}));
+    const msg = {id:makeId(), type:'file', file:fileMeta, ...(state.replyTo ? {replyTo: state.replyTo} : {}), author:state.name || 'Guest', userId:state.userId, createdAt:new Date().toISOString()};
+    const next = {...state.roomData, avatars: stampAvatar(state.roomData || {}), messages:[...(state.roomData?.messages || []), msg].slice(-600)};
+    state.roomData = next; state.roomFingerprint = fingerprint(next); renderRoomData(); cancelReply();
+    await enqueueRoomMutation(base => ({...base, avatars: stampAvatar(base), messages:[...base.messages.filter(m=>m.id!==msg.id),msg].slice(-600)}));
   }
-  function openManualUpload(file) {
-    state.pendingManualFile = {name:file.name, size:file.size, mime:file.type || ''};
+  function openManualUpload(file, caption = '') {
+    state.pendingManualFile = {name:file.name, size:file.size, mime:file.type || '', ...(caption ? {caption} : {})};
     $('#manualUploadFileLabel').textContent = `${file.name} · ${formatSize(file.size)} · Upload this file on Catbox, then paste the returned link.`;
     $('#manualFileUrl').value = '';
     $('#manualUploadModal').classList.add('open');
     $('#manualFileUrl').focus();
   }
-  async function uploadFile(file) {
+  async function uploadFile(file, caption = '') {
     if (!state.room || !file) return;
     if (file.size > MAX_FILE_BYTES) { toast('This file is larger than the 200 MB upload limit.', 'error'); return; }
     state.pendingUpload = true; $('#uploadStatus').classList.add('visible'); $('#uploadStatus').textContent = `Preparing ${file.name}…`; $('#attachButton').disabled = true; $('#sendButton').disabled = true;
@@ -1301,7 +2086,7 @@
       // A modest image can be stored in the room blob directly, avoiding third-party upload CORS.
       if (file.type.startsWith('image/') && file.size <= 350 * 1024) {
         const dataUrl = await readFileAsDataURL(file);
-        await shareFileMessage({url:'', dataUrl, name:file.name, size:file.size, mime:file.type || 'image/*'});
+        await shareFileMessage({url:'', dataUrl, name:file.name, size:file.size, mime:file.type || 'image/*', ...(caption ? {caption} : {})});
         toast('Small image shared with the room.');
         return;
       }
@@ -1309,7 +2094,7 @@
       let response;
       try { response = await fetch(CATBOX_API, {method:'POST',body:form}); }
       catch (error) {
-        openManualUpload(file);
+        openManualUpload(file, caption);
         return;
       }
       const urlText = (await response.text()).trim();
@@ -1317,7 +2102,7 @@
       if (!response.ok || !url || !/^https:\/\/files\.catbox\.moe\//i.test(url)) {
         throw new Error(`Catbox could not upload this file. ${urlText.slice(0,120)}`);
       }
-      await shareFileMessage({url, name:file.name, size:file.size, mime:file.type || ''});
+      await shareFileMessage({url, name:file.name, size:file.size, mime:file.type || '', ...(caption ? {caption} : {})});
       toast('File shared with the room.');
     } catch (error) { toast(error.message || 'Upload failed.', 'error'); }
     finally { state.pendingUpload = false; $('#uploadStatus').classList.remove('visible'); $('#attachButton').disabled = false; $('#sendButton').disabled = false; $('#fileInput').value = ''; }
@@ -1391,7 +2176,28 @@
     if (!name) { status('Add a display name first.', 'error'); $('#displayName').focus(); return; }
     state.name = name; store.set('run_display_name', name);
     const button = $('#createRoomButton'); setBusy(button, true, 'Making your room…'); status('Creating your room…');
-    try { await createRoom($('#newRoomName').value.trim()); status(''); }
+    try {
+      const roomLabel = $('#newRoomName').value.trim();
+      let forcedCode = null, dirEntry = null;
+      if ($('#publicGroupCheck') && $('#publicGroupCheck').checked) {
+        const pw = $('#publicGroupPassword').value.trim();
+        const nowIso = new Date().toISOString();
+        const label = roomLabel.slice(0, 60) || 'A new room';
+        if (pw) {
+          const seed = randomGroupSeed();
+          forcedCode = groupKeyFromHash(await sha256hex(seed + '::pw::' + pw), 12);
+          dirEntry = {id: makeId(), name: label, hasPassword: true, seed, verifier: (await sha256hex(seed + '::' + pw)).slice(0, 12), createdAt: nowIso, by: state.userId};
+        } else {
+          forcedCode = groupKeyFromHash(await sha256hex(randomGroupSeed()), 12);
+          dirEntry = {id: makeId(), name: label, hasPassword: false, key: forcedCode, createdAt: nowIso, by: state.userId};
+        }
+      }
+      await createRoom(roomLabel, forcedCode);
+      if (dirEntry) {
+        try { await addToDirectory(dirEntry); status('Public group created and listed.', 'success'); }
+        catch (err) { status('Room created, but the public listing failed.', 'error'); }
+      } else status('');
+    }
     catch (error) { status(error.message || 'Could not create a room.', 'error'); }
     finally { setBusy(button, false); }
   }
@@ -1409,7 +2215,7 @@
     $('#brandHome').addEventListener('click', () => showLanding());
     $('#backHome').addEventListener('click', () => showLanding());
     $('#leaveRoomButton').addEventListener('click', () => showLanding());
-    $('#themeToggle').addEventListener('click', () => $('#settingsModal').classList.add('open'));
+    $('#themeToggle').addEventListener('click', () => { bindProfile(); populateProfileForm(); bindNotify(); bindTranslate(); $('#settingsModal').classList.add('open'); });
     $('#closeSettings').addEventListener('click', () => $('#settingsModal').classList.remove('open'));
   const closeClearChatModal = () => $('#clearChatModal').classList.remove('open');
   $('#clearChatButton').addEventListener('click', () => $('#clearChatModal').classList.add('open'));
@@ -1454,7 +2260,10 @@
     $('#messageInput').addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); if (!state.pendingUpload) sendMessage($('#messageInput').value); } });
     $('#messageInput').addEventListener('input', () => { resizeComposer(); noteTypingActivity(); });
     $('#attachButton').addEventListener('click', () => $('#fileInput').click());
-    $('#fileInput').addEventListener('change', event => { const file = event.target.files?.[0]; if (file) uploadFile(file); });
+    $('#fileInput').addEventListener('change', event => { const file = event.target.files?.[0]; if (file) stageFileForCaption(file); });
+    bindCaption();
+    bindReply();
+    bindVoice(); bindVoicePlayback(); bindDirectory();
     $('#taskForm').addEventListener('submit', event => { event.preventDefault(); addTask($('#newTaskInput').value); });
     $('#tasksList').addEventListener('click', event => {
       const button = event.target.closest('[data-task-action]'); if (!button) return;
