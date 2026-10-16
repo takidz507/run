@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111218">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="description" content="Run — lightweight rooms for conversations, shared tasks, and files. No accounts. Just connect.">
 <title>Run — make room for good work</title>
 <style>
@@ -641,6 +646,16 @@
   .typing-dots i:nth-child(2) { animation-delay: .15s; }
   .typing-dots i:nth-child(3) { animation-delay: .3s; }
   @keyframes typing-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+/* HUMAN-STYLE: paper grain + marker accents */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.05;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");}
+.marker{position:relative;display:inline-block;z-index:0;}
+.marker::before{content:"";position:absolute;z-index:-1;left:-4px;right:-4px;top:52%;bottom:-2px;
+background:linear-gradient(100deg,rgba(200,241,105,.85),rgba(200,241,105,.55));
+transform:rotate(-1.2deg) skewX(-8deg);border-radius:3px 8px 4px 9px;}
+.hand-note{font-style:italic;color:var(--subtle);}
+
 </style>
 </head>
 <body>
@@ -674,7 +689,7 @@
         <div class="hero-side">
           <div class="access-card">
             <div class="access-head">
-              <div><h2 class="access-title">Your rooms</h2><p class="access-subtitle">Create a room or join with a code.</p></div><p class="app-presence"><span class="presence-dot"></span><span><strong id="appPresenceCount">…</strong> online now</span></p>
+              <div><h2 class="access-title">Your rooms</h2><p class="access-subtitle">Make one — or punch in a code.</p></div><p class="app-presence"><span class="presence-dot"></span><span><strong id="appPresenceCount">…</strong> online now</span></p>
             </div>
             <form id="createRoomForm">
               <div class="field">
@@ -709,7 +724,7 @@
             <div class="browse-groups-wrap"><button type="button" class="link-button" id="browseGroupsButton">Browse public groups</button></div>
             <p class="status-text" id="landingStatus" aria-live="polite"></p>
             <div class="recent-rooms" id="recentRooms" hidden>
-              <div class="recent-rooms-head"><span>Recent rooms</span><span class="recent-hint">Jump back in anytime</span></div>
+              <div class="recent-rooms-head"><span>Recent rooms</span><span class="recent-hint">Pick up where you left off</span></div>
               <div class="recent-list" id="recentRoomsList"></div>
             </div>
           </div>
@@ -737,13 +752,13 @@
     <section class="room-screen" id="roomScreen" aria-label="Room workspace">
       <div class="room-toolbar">
         <button class="back-button" id="backHome" aria-label="Back to home" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
-        <div class="room-heading"><div class="room-title-line"><h2 id="roomTitle">Room</h2><span class="room-code-badge" id="roomCodeLabel">ABC123</span></div><div class="room-subtitle"><span class="pulse-dot"></span><span id="roomSubline">Your shared space</span></div></div>
+        <div class="room-heading"><div class="room-title-line"><h2 id="roomTitle"><span class="marker">Room</span></h2><span class="room-code-badge" id="roomCodeLabel">ABC123</span></div><div class="room-subtitle"><span class="pulse-dot"></span><span id="roomSubline">Your shared space</span></div></div>
         <div class="sync-state" id="syncState"><span class="sync-indicator"></span><span id="syncLabel">Synced</span></div>
         <div class="room-actions"><div class="presence-pill" id="roomPresence" title="Online in this room"><span class="presence-dot"></span><span id="roomPresenceCount">1</span></div><button class="clear-chat-button" id="clearChatButton" type="button" aria-label="Delete room" title="Delete room"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg></button><button class="share-button" id="shareRoomButton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg> Share room</button></div>
       </div>
       <div class="room-grid" id="roomGrid" data-mobile-view="chat">
         <section class="chat-panel" aria-label="Room chat">
-          <div class="panel-head"><div class="panel-title-wrap"><span class="panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg></span><div><h3>Room chat</h3><p>Say the thing. Move the work forward.</p></div></div><span class="message-count" id="messageCount">0 messages</span></div>
+          <div class="panel-head"><div class="panel-title-wrap"><span class="panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg></span><div><h3>Room chat</h3><p>Just talk. It all gets done here.</p></div></div><span class="message-count" id="messageCount">0 messages</span></div>
           <div class="mobile-tabs"><button class="mobile-tab active" data-mobile-tab="chat">Chat</button><button class="mobile-tab" data-mobile-tab="tasks">Shared tasks <span id="mobileTaskCount">0</span></button></div>
           <div class="messages" id="messagesList" aria-live="polite"></div>
           <div class="composer-wrap">
@@ -767,16 +782,16 @@
               <input type="file" id="fileInput" class="sr-only" aria-label="Choose a file to share">
               <button class="attach-button" id="attachButton" type="button" aria-label="Attach file" title="Attach a file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button><button class="attach-button voice-button" id="voiceButton" type="button" aria-label="Record voice message" title="Record voice message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg></button>
               <label class="sr-only" for="messageInput">Message</label>
-              <textarea id="messageInput" rows="1" maxlength="5000" placeholder="Write a message…"></textarea>
+              <textarea id="messageInput" rows="1" maxlength="5000" placeholder="Say something…"></textarea>
               <button class="send-button" id="sendButton" type="submit" aria-label="Send message" title="Send message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
             </form>
-            <div class="composer-hint"><span><kbd>Enter</kbd> to send · <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line</span><span>Files shared with this room</span></div>
+            <div class="composer-hint"><span><kbd>Enter</kbd> to send · <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line</span><span>Shared in this room</span></div>
           </div>
         </section>
         <aside class="tasks-panel" aria-label="Shared tasks">
-          <div class="panel-head"><div class="panel-title-wrap"><span class="panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div><h3>Shared tasks</h3><p>Small steps, done together.</p></div></div></div>
+          <div class="panel-head"><div class="panel-title-wrap"><span class="panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div><h3>Shared tasks</h3><p>One list. Everyone ticks it off.</p></div></div></div>
           <div class="task-progress"><div class="progress-ring-card"><div class="ring-wrap"><svg class="progress-ring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" class="ring-bg"/><circle cx="22" cy="22" r="19" class="ring-fill" id="taskProgressRing"/></svg><span class="ring-pct" id="taskProgressPct">0%</span></div><div class="progress-info"><strong id="taskProgressText">0 / 0</strong><span>tasks completed</span></div></div></div>
-          <form class="task-form" id="taskForm"><label for="newTaskInput" class="sr-only">New task</label><input id="newTaskInput" maxlength="180" placeholder="Add a task…"><button class="add-task-button" type="submit" aria-label="Add task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button></form>
+          <form class="task-form" id="taskForm"><label for="newTaskInput" class="sr-only">New task</label><input id="newTaskInput" maxlength="180" placeholder="New task…"><button class="add-task-button" type="submit" aria-label="Add task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button></form>
           <div class="tasks-list" id="tasksList"></div>
           <div class="tasks-footer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg><span>Every task is shared with everyone using this room. No separate task app needed.</span></div>
         </aside>
@@ -790,7 +805,7 @@
 <div class="fab-menu" id="fabMenu" aria-label="Room actions"><button type="button" data-fab-action="create"><span class="fab-menu-icon">＋</span><span><strong>Create a room</strong><small>Start a new shared space</small></span></button><button type="button" data-fab-action="join"><span class="fab-menu-icon">↗</span><span><strong>Join a room</strong><small>Enter a room code or invite</small></span></button></div>
 <div class="modal-backdrop" id="joinModal" role="dialog" aria-modal="true" aria-labelledby="joinModalTitle"><div class="modal"><div class="modal-head"><div><h3 id="joinModalTitle">Join a room</h3><p>Enter a six-character room code or paste an invite link.</p></div><button class="icon-button" id="closeJoinModal" aria-label="Close join dialog">×</button></div><div id="joinModalContent"></div><div class="modal-actions"><button class="primary-button" id="joinModalSubmit" type="button">Join room</button></div></div></div>
 <div class="modal-backdrop" id="deleteRoomModal" role="dialog" aria-modal="true" aria-labelledby="deleteRoomTitle"><div class="modal"><div class="modal-head"><div><h3 id="deleteRoomTitle">Delete room?</h3><p>This permanently deletes the <strong>entire room</strong> — everything in it: messages, tasks, and shared files — for <strong>everyone</strong>. The room code will stop working. This cannot be undone.</p></div><button class="icon-button" id="closeDeleteRoomModal" aria-label="Close delete room dialog">×</button></div><div class="modal-actions"><button class="secondary-button" id="cancelDeleteRoom" type="button">Keep room</button><button class="danger-button" id="confirmDeleteRoom" type="button">Delete room</button></div></div></div> <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-  <div class="modal settings-modal"><div class="modal-head"><div><h3 id="settingsTitle">Appearance</h3><p>Make Run feel right for you.</p></div><button class="icon-button" id="closeSettings" aria-label="Close settings">×</button></div>
+  <div class="modal settings-modal"><div class="modal-head"><div><h3 id="settingsTitle">Appearance</h3><p>Your colors, your rules.</p></div><button class="icon-button" id="closeSettings" aria-label="Close settings">×</button></div>
     <div class="settings-label">PROFILE</div>
     <div class="profile-editor">
       <button type="button" class="profile-avatar" id="profileAvatarBtn" aria-label="Change profile photo">
@@ -802,7 +817,7 @@
         <label class="label" for="profileName">Display name</label>
         <input id="profileName" class="text-input" type="text" maxlength="32" autocomplete="off">
         <label class="label" for="profileBio">Bio</label>
-        <input id="profileBio" class="text-input" type="text" maxlength="80" placeholder="A line about you…" autocomplete="off">
+        <input id="profileBio" class="text-input" type="text" maxlength="80" placeholder="You, in one line…" autocomplete="off">
         <label class="label" for="profileLang">My language</label>
         <select id="profileLang" class="text-input"></select>
       </div>
@@ -811,7 +826,7 @@
     <div class="settings-label">NOTIFICATIONS</div>
     <label class="notify-row"><span><strong>New message alerts</strong><small>Sound + notification when the tab is in the background</small></span><button type="button" class="switch" id="notifyToggle" role="switch" aria-checked="false" aria-label="Toggle notifications"><span class="switch-knob"></span></button></label>
     <div class="settings-label">TRANSLATION</div>
-    <label class="notify-row"><span><strong>Auto-translate messages</strong><small>Everyone reads in their own language</small></span><button type="button" class="switch" id="translateToggle" role="switch" aria-checked="false" aria-label="Toggle auto-translate"><span class="switch-knob"></span></button></label>
+    <label class="notify-row"><span><strong>Auto-translate messages</strong><small>Read everything in your language</small></span><button type="button" class="switch" id="translateToggle" role="switch" aria-checked="false" aria-label="Toggle auto-translate"><span class="switch-knob"></span></button></label>
     <div class="settings-label">THEME</div>
     <div class="theme-options">
       <button type="button" class="theme-option" data-theme-choice="dark"><span class="theme-swatch swatch-default"><i></i><i></i><i></i></span><span><strong>Default</strong><small>Dark with lime accent</small></span><span class="theme-check">✓</span></button>
@@ -821,7 +836,7 @@
   </div>
 </div>
 <div class="modal-backdrop" id="directoryModal" role="dialog" aria-modal="true" aria-labelledby="directoryTitle">
-  <div class="modal"><div class="modal-head"><div><h3 id="directoryTitle">Public groups</h3><p>Find a study group and jump in.</p></div><button class="icon-button" id="closeDirectory" aria-label="Close directory">×</button></div>
+  <div class="modal"><div class="modal-head"><div><h3 id="directoryTitle">Public groups</h3><p>Someone's group is waiting. Jump in.</p></div><button class="icon-button" id="closeDirectory" aria-label="Close directory">×</button></div>
     <div class="directory-list" id="directoryList"></div>
   </div>
 </div>
@@ -1415,7 +1430,7 @@
     $('#taskProgressRing').style.strokeDashoffset = String(119.4 * (1 - pct));
     $('#mobileTaskCount').textContent = String(tasks.length - done);
     if (!sorted.length) {
-      list.innerHTML = '<div class="empty-tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>No tasks yet.<br>Add the first little step above.</div>';
+      list.innerHTML = '<div class="empty-tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Empty for now.<br>Throw the first task up there.</div>';
       return;
     }
     const card = task => `<div class="task-item${task.done ? ' done' : ''}" data-task-id="${escapeHTML(task.id)}"><button class="task-check" data-task-action="toggle" aria-label="${task.done ? 'Mark as not done' : 'Mark as done'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></button><div class="task-text">${escapeHTML(task.text)}<span class="task-sub">Added by ${escapeHTML(task.author || 'Guest')}</span></div><button class="delete-task" data-task-action="delete" aria-label="Delete task" title="Delete task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg></button></div>`;
@@ -1955,7 +1970,7 @@
     if (!list) return;
     const groups = state.directory?.groups || [];
     if (!groups.length) {
-      list.innerHTML = '<div class="directory-empty">No public groups yet.<br>Be the first — tick “List as public group” when creating a room.</div>';
+      list.innerHTML = '<div class="directory-empty">Quiet in here.<br>Start one — tick “List as public group” and you are live.</div>';
       return;
     }
     list.innerHTML = groups.map(g => {
@@ -2382,6 +2397,14 @@
   // without having to enter a room first. Silent if the network is blocked.
   try { mqttEnsureConnected().catch(() => {}); } catch {}
 })();
+</script>
+<script>
+// PWA: register the app-shell service worker (secure contexts only).
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
