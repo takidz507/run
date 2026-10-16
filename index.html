@@ -411,7 +411,8 @@
   @keyframes toast-in {from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
   .modal-backdrop {position:fixed;inset:0;z-index:30;background:rgba(4,5,8,.68);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:20px;}
   .modal-backdrop.open {display:flex;animation:enter .18s ease;}
-  .modal {width:min(480px,100%);border:1px solid var(--line-strong);border-radius:23px;background:var(--bg-elevated);box-shadow:0 30px 100px rgba(0,0,0,.35);padding:24px;}
+  .modal {width:min(480px,100%);max-height:calc(100dvh - 40px);overflow-y:auto;overscroll-behavior:contain;border:1px solid var(--line-strong);border-radius:23px;background:var(--bg-elevated);box-shadow:0 30px 100px rgba(0,0,0,.35);padding:24px;}
+  body:has(.modal-backdrop.open) #runFab, body:has(.modal-backdrop.open) #fabMenu, body:has(.modal-backdrop.open) #fabScrim {display:none !important;}
   .modal-head {display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:17px;}
   .modal-head h3 {font-size:18px;letter-spacing:-.6px;margin:0 0 4px;}
   .modal-head p {margin:0;color:var(--muted);font-size:11px;line-height:1.8;}
@@ -738,7 +739,7 @@
         <button class="back-button" id="backHome" aria-label="Back to home" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
         <div class="room-heading"><div class="room-title-line"><h2 id="roomTitle">Room</h2><span class="room-code-badge" id="roomCodeLabel">ABC123</span></div><div class="room-subtitle"><span class="pulse-dot"></span><span id="roomSubline">Your shared space</span></div></div>
         <div class="sync-state" id="syncState"><span class="sync-indicator"></span><span id="syncLabel">Synced</span></div>
-        <div class="room-actions"><div class="presence-pill" id="roomPresence" title="Online in this room"><span class="presence-dot"></span><span id="roomPresenceCount">1</span></div><button class="clear-chat-button" id="clearChatButton" type="button" aria-label="Clear chat" title="Clear chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg></button><button class="share-button" id="shareRoomButton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg> Share room</button></div>
+        <div class="room-actions"><div class="presence-pill" id="roomPresence" title="Online in this room"><span class="presence-dot"></span><span id="roomPresenceCount">1</span></div><button class="clear-chat-button" id="clearChatButton" type="button" aria-label="Delete room" title="Delete room"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg></button><button class="share-button" id="shareRoomButton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg> Share room</button></div>
       </div>
       <div class="room-grid" id="roomGrid" data-mobile-view="chat">
         <section class="chat-panel" aria-label="Room chat">
@@ -788,7 +789,7 @@
 <div class="fab-scrim" id="fabScrim"></div>
 <div class="fab-menu" id="fabMenu" aria-label="Room actions"><button type="button" data-fab-action="create"><span class="fab-menu-icon">＋</span><span><strong>Create a room</strong><small>Start a new shared space</small></span></button><button type="button" data-fab-action="join"><span class="fab-menu-icon">↗</span><span><strong>Join a room</strong><small>Enter a room code or invite</small></span></button></div>
 <div class="modal-backdrop" id="joinModal" role="dialog" aria-modal="true" aria-labelledby="joinModalTitle"><div class="modal"><div class="modal-head"><div><h3 id="joinModalTitle">Join a room</h3><p>Enter a six-character room code or paste an invite link.</p></div><button class="icon-button" id="closeJoinModal" aria-label="Close join dialog">×</button></div><div id="joinModalContent"></div><div class="modal-actions"><button class="primary-button" id="joinModalSubmit" type="button">Join room</button></div></div></div>
-<div class="modal-backdrop" id="clearChatModal" role="dialog" aria-modal="true" aria-labelledby="clearChatTitle"><div class="modal"><div class="modal-head"><div><h3 id="clearChatTitle">Clear chat</h3><p>Delete messages for <strong>everyone</strong> in this room. This cannot be undone. Shared files stay on the file host.</p></div><button class="icon-button" id="closeClearChatModal" aria-label="Close clear chat dialog">×</button></div><div class="modal-actions" style="flex-direction:column;align-items:stretch;gap:8px;"><button class="secondary-button" id="clearOldMessages" type="button">Delete messages older than 7 days</button><button class="danger-button" id="clearAllMessages" type="button">Delete all messages</button></div></div></div> <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+<div class="modal-backdrop" id="deleteRoomModal" role="dialog" aria-modal="true" aria-labelledby="deleteRoomTitle"><div class="modal"><div class="modal-head"><div><h3 id="deleteRoomTitle">Delete room?</h3><p>This permanently deletes the <strong>entire room</strong> — everything in it: messages, tasks, and shared files — for <strong>everyone</strong>. The room code will stop working. This cannot be undone.</p></div><button class="icon-button" id="closeDeleteRoomModal" aria-label="Close delete room dialog">×</button></div><div class="modal-actions"><button class="secondary-button" id="cancelDeleteRoom" type="button">Keep room</button><button class="danger-button" id="confirmDeleteRoom" type="button">Delete room</button></div></div></div> <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
   <div class="modal settings-modal"><div class="modal-head"><div><h3 id="settingsTitle">Appearance</h3><p>Make Run feel right for you.</p></div><button class="icon-button" id="closeSettings" aria-label="Close settings">×</button></div>
     <div class="settings-label">PROFILE</div>
     <div class="profile-editor">
@@ -1264,7 +1265,7 @@
     if (!data || typeof data !== 'object') throw new Error('This room has invalid or missing data.');
     return {
       kind: 'run-room', version: 1,
-      meta: {code: String(data.meta?.code || code || '').toUpperCase(), name: String(data.meta?.name || 'Untitled room'), createdAt: data.meta?.createdAt || new Date().toISOString()},
+      meta: {code: String(data.meta?.code || code || '').toUpperCase(), name: String(data.meta?.name || 'Untitled room'), createdAt: data.meta?.createdAt || new Date().toISOString(), dirId: data.meta?.dirId || ''},
       messages: Array.isArray(data.messages) ? data.messages.filter(m => m && typeof m === 'object' && m.id).slice(-600) : [],
       tasks: Array.isArray(data.tasks) ? data.tasks.filter(t => t && typeof t === 'object' && t.id).slice(-300) : [],
       avatars: (data.avatars && typeof data.avatars === 'object' && !Array.isArray(data.avatars)) ? data.avatars : {}
@@ -2194,7 +2195,7 @@
       }
       await createRoom(roomLabel, forcedCode);
       if (dirEntry) {
-        try { await addToDirectory(dirEntry); status('Public group created and listed.', 'success'); }
+        try { await addToDirectory(dirEntry); state.roomData.meta.dirId = dirEntry.id; await publishRoomState(); status('Public group created and listed.', 'success'); }
         catch (err) { status('Room created, but the public listing failed.', 'error'); }
       } else status('');
     }
@@ -2217,27 +2218,54 @@
     $('#leaveRoomButton').addEventListener('click', () => showLanding());
     $('#themeToggle').addEventListener('click', () => { bindProfile(); populateProfileForm(); bindNotify(); bindTranslate(); $('#settingsModal').classList.add('open'); });
     $('#closeSettings').addEventListener('click', () => $('#settingsModal').classList.remove('open'));
-  const closeClearChatModal = () => $('#clearChatModal').classList.remove('open');
-  $('#clearChatButton').addEventListener('click', () => $('#clearChatModal').classList.add('open'));
-  $('#closeClearChatModal').addEventListener('click', closeClearChatModal);
-  $('#clearChatModal').addEventListener('click', e => { if (e.target === $('#clearChatModal')) closeClearChatModal(); });
-  $('#clearOldMessages').addEventListener('click', () => clearChatMessages('old'));
-  $('#clearAllMessages').addEventListener('click', () => clearChatMessages('all'));
-  async function clearChatMessages(mode) {
-    const before = (state.roomData?.messages || []).length;
-    if (!before) { closeClearChatModal(); toast('Nothing to delete.', ''); return; }
-    const cutoff = Date.now() - 7 * 24 * 3600 * 1000;
+  /* ---------- Delete room ---------- */
+  const closeDeleteRoomModal = () => $('#deleteRoomModal').classList.remove('open');
+  $('#clearChatButton').addEventListener('click', () => $('#deleteRoomModal').classList.add('open'));
+  $('#closeDeleteRoomModal').addEventListener('click', closeDeleteRoomModal);
+  $('#cancelDeleteRoom').addEventListener('click', closeDeleteRoomModal);
+  $('#deleteRoomModal').addEventListener('click', e => { if (e.target === $('#deleteRoomModal')) closeDeleteRoomModal(); });
+  $('#confirmDeleteRoom').addEventListener('click', deleteRoom);
+  async function deleteRoom() {
+    if (!state.room || !state.mqttClient || !state.mqttClient.connected) { toast('Not connected.', 'error'); return; }
+    const code = state.room.code;
+    const btn = $('#confirmDeleteRoom');
+    setBusy(btn, true, 'Deleting…');
     try {
-      await enqueueRoomMutation(base => {
-        const msgs = base.messages || [];
-        const kept = mode === 'all' ? [] : msgs.filter(m => { const t = new Date(m.createdAt).getTime(); return Number.isFinite(t) && t >= cutoff; });
-        return {...base, messages: kept};
+      await new Promise((resolve, reject) => {
+        try { state.mqttClient.publish(state.roomTopic, '', {qos: 1, retain: true}, err => err ? reject(err) : resolve()); }
+        catch (err) { reject(err); }
       });
-    } catch (err) { closeClearChatModal(); try { renderRoomData(); } catch (_) {} return; }
-    const after = (state.roomData?.messages || []).length;
-    closeClearChatModal();
-    const n = before - after;
-    toast(n ? `Deleted ${n} message${n === 1 ? '' : 's'} for everyone.` : 'Nothing to delete.', n ? 'success' : '');
+      clearPresence();
+      try {
+        const dirId = state.roomData?.meta?.dirId;
+        if (dirId) {
+          await removeFromDirectory(dirId);
+        } else {
+          // Fallback for listings made before the room stored its directory id.
+          // (Open groups match by key; older password-protected listings can be
+          // removed manually from the directory with the × button.)
+          const groups = state.directory?.groups || [];
+          const kept = groups.filter(g => g.key !== code);
+          if (kept.length !== groups.length) {
+            await publishDirectory(kept);
+            state.directory = {kind: 'run-directory', version: 1, groups: kept};
+            renderDirectory();
+          }
+        }
+      } catch {}
+      try {
+        const recents = getRecentRooms().filter(r => r && r.code !== code);
+        localStorage.setItem(RECENT_ROOMS_KEY, JSON.stringify(recents));
+      } catch {}
+      closeDeleteRoomModal();
+      showLanding();
+      renderRecentRooms();
+      toast('Room deleted.', 'success');
+    } catch (err) {
+      toast('Could not delete the room.', 'error');
+    } finally {
+      setBusy(btn, false);
+    }
   }
     $('#settingsModal').addEventListener('click', event => { if (event.target === $('#settingsModal')) $('#settingsModal').classList.remove('open'); });
     $$('[data-theme-choice]').forEach(button => button.addEventListener('click', () => setTheme(button.dataset.themeChoice)));
