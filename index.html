@@ -2204,14 +2204,32 @@
     catch (error) { status(error.message || 'Could not create a room.', 'error'); }
     finally { setBusy(button, false); }
   }
+  function removeRecentRoom(code) {
+    try {
+      const normalized = String(code || '').toUpperCase();
+      const rooms = getRecentRooms().filter(r => r && r.code !== normalized);
+      localStorage.setItem(RECENT_ROOMS_KEY, JSON.stringify(rooms));
+      renderRecentRooms();
+    } catch {}
+  }
   async function handleJoin(event) {
     event.preventDefault();
     const name = $('#displayName').value.trim().slice(0,32);
     if (!name) { status('Add a display name first so people know who is talking.', 'error'); $('#displayName').focus(); return; }
     state.name = name; store.set('run_display_name', name);
     status('Looking for your room…');
-    try { await joinRoom($('#joinCode').value); status(''); $('#joinCode').value = ''; }
-    catch (error) { status(error.message || 'Could not join this room.', 'error'); }
+    const attempted = $('#joinCode').value;
+    try { await joinRoom(attempted); status(''); $('#joinCode').value = ''; }
+    catch (error) {
+      // If the room is gone (deleted by its owner), drop it from recents too —
+      // no dead entries, no need for a per-room delete button.
+      if (error && /was not found/i.test(error.message || '')) {
+        removeRecentRoom(attempted);
+        status('That room no longer exists — removed from your recent rooms.', 'error');
+      } else {
+        status(error.message || 'Could not join this room.', 'error');
+      }
+    }
     finally {}
   }
   function bindEvents() {
@@ -2346,7 +2364,14 @@
       if (!state.name) { status('Choose a display name, then press Join room to enter this invite.'); }
       else {
         try { await joinRoom(code); }
-        catch (error) { status(error.message || 'Could not open this invite.', 'error'); }
+        catch (error) {
+          if (error && /was not found/i.test(error.message || '')) {
+            removeRecentRoom(code);
+            status('That room no longer exists — removed from your recent rooms.', 'error');
+          } else {
+            status(error.message || 'Could not open this invite.', 'error');
+          }
+        }
       }
     }
   }
