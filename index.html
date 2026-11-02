@@ -324,6 +324,25 @@ body.in-room .segmented-tabs{border:0;border-radius:0;background:var(--bg);borde
 .room-grid[data-room-tab="chat"] .chat-panel{margin:0;min-height:calc(100dvh - 104px)}
 .room-grid[data-room-tab="chat"] .panel-head{display:none}
 }
+
+/* Room menu (phone room screens): one header, options inside the menu */
+.room-menu-wrap{display:none}
+.room-menu-button{width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--muted);flex:0 0 auto}
+.room-menu-button svg{width:20px;height:20px}
+.room-menu{position:absolute;top:calc(100% + 8px);inset-inline-end:0;min-width:220px;background:var(--bg-elevated);border:1px solid var(--line-strong);border-radius:16px;box-shadow:var(--shadow);padding:6px;z-index:60;display:none;flex-direction:column}
+.room-menu.open{display:flex}
+.room-menu button{width:100%;text-align:start;padding:11px 12px;border:0;border-radius:10px;background:transparent;color:var(--text);font-size:14px;font-weight:600;cursor:pointer}
+.room-menu button:hover{background:var(--panel-soft)}
+.room-menu button.active{color:var(--accent)}
+.room-menu button.danger{color:var(--danger)}
+.room-menu-sep{height:1px;background:var(--line);margin:6px 4px}
+@media (max-width:767px){
+body.in-room .room-menu-wrap{display:block;position:relative}
+body.in-room .room-tabs-bar{display:none}
+body.in-room .room-bottom{display:none}
+body.in-room .room-actions #shareRoomButton,body.in-room .room-actions #clearChatButton{display:none}
+.room-grid[data-room-tab="chat"] .chat-panel{min-height:calc(100dvh - 58px)}
+}
 </style>
 </head><body><div class="app-shell"><div class="ambient"></div>
 <header class="topbar"><button class="brand" id="brandHome" type="button" aria-label="Run home"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18V6h8a5 5 0 0 1 0 10H9"/><path d="M13 16l4 4"/></svg></span><span class="brand-name">ru<span>n</span></span><span class="brand-badge">v2 Pro</span></button><div class="topbar-right"><button class="pill-button" id="onlineUsersBtn" type="button" title="Online Users Directory"><span class="presence-dot"></span><span><strong id="appPresenceCount">1</strong> <span data-i18n="online_now">online now</span></span><span class="badge-dot" id="signalsBadge" hidden>0</span></button><button class="pill-button" id="topFeedbackBtn" type="button" title="Public Feedback Board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg><span class="hide-sm" data-i18n="feedback_btn">Feedback</span></button><button class="icon-button lang-button" id="uiLangToggle" type="button" title="Switch UI Language (EN / AR)" aria-label="Switch UI language"><span id="uiLangLabel">عربي</span></button><button class="icon-button" id="themeToggle" type="button" aria-label="Profile & Settings" title="Profile & Appearance"><svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 15.4A8.6 8.6 0 0 1 8.6 3.8 8.8 8.8 0 1 0 20.2 15.4Z"/></svg></button></div>
@@ -349,7 +368,7 @@ body.in-room .segmented-tabs{border:0;border-radius:0;background:var(--bg);borde
 <section class="room-screen" id="roomScreen" aria-label="Room workspace"><div class="room-toolbar"><button class="back-button" id="backHome" type="button" aria-label="Back to home" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><div class="room-heading"><div class="room-title-line"><h2 id="roomTitle">Room</h2><span class="room-code-badge" id="roomCodeLabel" title="Click to copy code">ABC123</span></div>
 <div class="room-subtitle"><span class="presence-dot" style="width:6px;height:6px"></span><span id="roomSubline">Your shared space</span></div></div>
 <div class="sync-state" id="syncState"><span class="sync-indicator"></span><span id="syncLabel" data-i18n="synced">Synced</span></div>
-<div class="room-actions"><button class="presence-pill" id="roomPresence" type="button" title="Online Users & Room Invites"><span class="presence-dot"></span><span id="roomPresenceCount">1</span></button><button class="clear-chat-button" id="clearChatButton" type="button" aria-label="Delete room" title="Delete room"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg></button><button class="share-button" id="shareRoomButton" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg><span data-i18n="share_room">Share</span></button></div>
+<div class="room-actions"><button class="presence-pill" id="roomPresence" type="button" title="Online Users & Room Invites"><span class="presence-dot"></span><span id="roomPresenceCount">1</span></button><button class="clear-chat-button" id="clearChatButton" type="button" aria-label="Delete room" title="Delete room"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg></button><button class="share-button" id="shareRoomButton" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg><span data-i18n="share_room">Share</span></button></div><div class="room-menu-wrap"><button class="room-menu-button" id="roomMenuButton" type="button" aria-label="Room menu" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button><div class="room-menu" id="roomMenu" role="menu"><button type="button" role="menuitem" data-menu-tab="chat"></button><button type="button" role="menuitem" data-menu-tab="tasks"></button><button type="button" role="menuitem" data-menu-tab="notes"></button><button type="button" role="menuitem" data-menu-tab="directory"></button><div class="room-menu-sep"></div><button type="button" role="menuitem" data-menu-action="share"></button><button type="button" role="menuitem" data-menu-action="delete" class="danger"></button><button type="button" role="menuitem" data-menu-action="leave" class="danger"></button></div></div>
 </div>
 <div class="room-tabs-bar"><div class="segmented-tabs" role="tablist"><button type="button" class="seg-tab active" data-room-tab-btn="chat"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg><span data-i18n="tab_chat">Chat</span></button><button type="button" class="seg-tab" data-room-tab-btn="tasks"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span data-i18n="tab_tasks">Tasks</span><span class="tab-pill" id="mobileTaskCount">0</span></button><button type="button" class="seg-tab" data-room-tab-btn="notes"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg><span data-i18n="tab_notes">Shared Notes</span><span class="tab-pill" id="noteVersionBadge">v1</span></button><button type="button" class="seg-tab" data-room-tab-btn="directory"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="tab_directory">Directory</span><span class="tab-pill" id="roomDirOnlineBadge">1</span></button></div>
 </div>
@@ -1339,6 +1358,67 @@ status(error.message || 'Could not open this invite.', 'error'); } } } } } setTh
 bindEvents(); ensureOwnPresenceInMap(); renderPresence(); bootstrapInvite();try { mqttEnsureConnected().catch(() => {}); } catch {} })();
 </script>
 
+<script>
+(function(){
+  var btn = document.getElementById('roomMenuButton');
+  var menu = document.getElementById('roomMenu');
+  if(!btn || !menu) return;
+  function tabLabel(key){
+    var b = document.querySelector('[data-room-tab-btn="'+key+'"]');
+    if(!b) return key;
+    var s = b.querySelector('span');
+    return ((s ? s.textContent : b.textContent) || key).trim();
+  }
+  function actionLabel(id, fallback){
+    var el = document.getElementById(id);
+    if(!el) return fallback;
+    if(id === 'clearChatButton') return (el.getAttribute('title') || el.getAttribute('aria-label') || fallback);
+    return (el.textContent || fallback).trim() || fallback;
+  }
+  function refreshLabels(){
+    menu.querySelectorAll('[data-menu-tab]').forEach(function(it){
+      it.textContent = tabLabel(it.getAttribute('data-menu-tab'));
+    });
+    var share = menu.querySelector('[data-menu-action="share"]');
+    var del = menu.querySelector('[data-menu-action="delete"]');
+    var leave = menu.querySelector('[data-menu-action="leave"]');
+    if(share) share.textContent = actionLabel('shareRoomButton', 'Share');
+    if(del) del.textContent = actionLabel('clearChatButton', 'Delete room');
+    if(leave) leave.textContent = actionLabel('leaveRoomButton', 'Leave this room');
+    var grid = document.querySelector('.room-grid');
+    var current = grid ? grid.getAttribute('data-room-tab') : 'chat';
+    menu.querySelectorAll('[data-menu-tab]').forEach(function(it){
+      it.classList.toggle('active', it.getAttribute('data-menu-tab') === current);
+    });
+  }
+  function openMenu(){ refreshLabels(); menu.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
+  function closeMenu(){ menu.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+  btn.addEventListener('click', function(ev){
+    ev.stopPropagation();
+    if(menu.classList.contains('open')) closeMenu(); else openMenu();
+  });
+  menu.addEventListener('click', function(ev){
+    var item = ev.target.closest('[data-menu-tab],[data-menu-action]');
+    if(!item) return;
+    closeMenu();
+    var tab = item.getAttribute('data-menu-tab');
+    if(tab){
+      var b = document.querySelector('[data-room-tab-btn="'+tab+'"]');
+      if(b) b.click();
+      return;
+    }
+    var map = {share:'shareRoomButton', delete:'clearChatButton', leave:'leaveRoomButton'};
+    var orig = document.getElementById(map[item.getAttribute('data-menu-action')]);
+    if(orig) orig.click();
+  });
+  document.addEventListener('click', function(ev){
+    if(menu.classList.contains('open') && !menu.contains(ev.target) && !btn.contains(ev.target)) closeMenu();
+  });
+  document.addEventListener('keydown', function(ev){
+    if(ev.key === 'Escape') closeMenu();
+  });
+})();
+</script>
 <script>
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => {
