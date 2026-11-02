@@ -303,6 +303,16 @@ body.in-room .room-grid[data-room-tab="notes"] .tasks-panel,body.in-room .room-g
 .quick-actions-grid{grid-template-columns:1fr}.room-screen{padding:10px 10px 16px;gap:10px}.room-toolbar{padding:10px 12px;gap:8px}.room-title-line h2{font-size:15.5px}#syncLabel{display:none}
 .sync-state{padding:6px}.share-button span{display:none}.share-button{padding:0 10px}#messageInput,.text-input,#newTaskInput,#sharedNoteInput{font-size:16px}
 .messages{max-height:calc(100dvh - 295px);padding:18px 16px}}
+
+/* Full-screen chat (design 3): frameless chat panel, composer pinned at the bottom */
+.room-grid .chat-panel{border:0;border-radius:0;box-shadow:none;background:var(--bg)}
+.chat-panel .composer-wrap{background:var(--bg)}
+@media (max-width:767px){
+.room-grid[data-room-tab="chat"] .chat-panel{margin:-10px -10px 0;min-height:calc(100dvh - 210px)}
+.room-grid[data-room-tab="chat"] .messages{min-height:0;max-height:none}
+.room-grid[data-room-tab="chat"] .composer-wrap{position:sticky;bottom:0;z-index:3}
+.room-grid[data-room-tab="chat"] .panel-head{padding:12px 16px;min-height:56px}
+}
 </style>
 </head><body><div class="app-shell"><div class="ambient"></div>
 <header class="topbar"><button class="brand" id="brandHome" type="button" aria-label="Run home"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18V6h8a5 5 0 0 1 0 10H9"/><path d="M13 16l4 4"/></svg></span><span class="brand-name">ru<span>n</span></span><span class="brand-badge">v2 Pro</span></button><div class="topbar-right"><button class="pill-button" id="onlineUsersBtn" type="button" title="Online Users Directory"><span class="presence-dot"></span><span><strong id="appPresenceCount">1</strong> <span data-i18n="online_now">online now</span></span><span class="badge-dot" id="signalsBadge" hidden>0</span></button><button class="pill-button" id="topFeedbackBtn" type="button" title="Public Feedback Board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg><span class="hide-sm" data-i18n="feedback_btn">Feedback</span></button><button class="icon-button lang-button" id="uiLangToggle" type="button" title="Switch UI Language (EN / AR)" aria-label="Switch UI language"><span id="uiLangLabel">عربي</span></button><button class="icon-button" id="themeToggle" type="button" aria-label="Profile & Settings" title="Profile & Appearance"><svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 15.4A8.6 8.6 0 0 1 8.6 3.8 8.8 8.8 0 1 0 20.2 15.4Z"/></svg></button></div>
