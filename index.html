@@ -380,6 +380,179 @@ body.in-room .room-bottom{display:none}
 body.in-room .room-actions #shareRoomButton,body.in-room .room-actions #clearChatButton{display:none}
 .room-grid[data-room-tab="chat"] .chat-panel{min-height:calc(100dvh - 58px)}
 }
+
+/* ============ Runa Transfer — separate screen (not chat) ============ */
+.transfer-screen{width:100%;max-width:1080px;margin:0 auto;padding:14px 18px 20px;display:none;flex-direction:column;gap:14px;flex:1;min-width:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.transfer-screen.active{display:flex;animation:enter .24s ease}
+#rtTransferScreen [hidden]{display:none !important}
+#rtTransferScreen .rt-hero{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm);padding:22px 20px 20px}
+#rtTransferScreen .rt-hero-top{display:flex;align-items:flex-start;gap:10px}
+#rtTransferScreen .rt-hero-titles{flex:1;min-width:0}
+#rtTransferScreen .rt-hero h1{margin:0 0 4px;font-size:clamp(24px,4.5vw,34px);font-weight:700;letter-spacing:-.01em;line-height:1.3}
+#rtTransferScreen .rt-hero h1 .rt-hero-en{font-size:.52em;font-weight:600;color:var(--muted);letter-spacing:.04em}
+#rtTransferScreen .rt-hero p{margin:0;color:var(--muted);font-size:14px;max-width:60ch}
+#rtTransferScreen .rt-bridge{margin-top:20px;display:flex;align-items:center;gap:10px;max-width:560px}
+#rtTransferScreen .rt-device{flex:0 0 auto;width:86px;text-align:center}
+#rtTransferScreen .rt-device .rt-glyph{height:58px;display:flex;align-items:flex-end;justify-content:center;color:var(--text)}
+#rtTransferScreen .rt-device .rt-glyph svg{display:block}
+#rtTransferScreen .rt-device .rt-lbl{font-size:12.5px;color:var(--muted);margin-top:6px}
+#rtTransferScreen .rt-wire{flex:1 1 auto;position:relative;height:2px;background:repeating-linear-gradient(to left,var(--muted) 0 7px,transparent 7px 14px);opacity:.55;margin-bottom:30px;min-width:40px}
+#rtTransferScreen .rt-wire .rt-pulse{position:absolute;top:50%;width:9px;height:9px;border-radius:50%;background:var(--accent);transform:translateY(-50%);right:0;opacity:0}
+body.rt-linked #rtTransferScreen .rt-wire{opacity:1;background:var(--accent);height:3px}
+body.rt-linked #rtTransferScreen .rt-wire .rt-pulse{opacity:1;animation:rt-travel 1.6s linear infinite}
+@keyframes rt-travel{from{right:0}to{right:calc(100% - 9px)}}
+#rtTransferScreen .rt-conn-status{margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--muted);border:1px solid var(--line-strong);padding:5px 12px;border-radius:999px}
+#rtTransferScreen .rt-conn-status .rt-dot{width:8px;height:8px;border-radius:50%;background:var(--subtle);flex:0 0 auto}
+#rtTransferScreen .rt-conn-status.on{color:var(--success);border-color:var(--accent-border)}
+#rtTransferScreen .rt-conn-status.on .rt-dot{background:var(--success);box-shadow:0 0 0 4px var(--accent-soft)}
+#rtTransferScreen .rt-conn-status.wait{color:var(--accent);border-color:var(--accent-border)}
+#rtTransferScreen .rt-conn-status.wait .rt-dot{background:var(--accent)}
+#rtTransferScreen .rt-conn-status.err{color:var(--danger);border-color:var(--danger-soft)}
+#rtTransferScreen .rt-conn-status.err .rt-dot{background:var(--danger)}
+body.rt-seeking #rtTransferScreen .rt-wire{background:repeating-linear-gradient(to left,var(--muted) 0 8px,transparent 8px 16px);background-size:16px 2px;animation:rt-dashmove .7s linear infinite;opacity:.95}
+#rtTransferScreen .rt-wire .rt-pulse.rt-p2,#rtTransferScreen .rt-wire .rt-pulse.rt-p3{display:none}
+body.rt-transferring #rtTransferScreen .rt-wire .rt-pulse.rt-p2,body.rt-transferring #rtTransferScreen .rt-wire .rt-pulse.rt-p3{display:block}
+body.rt-transferring #rtTransferScreen .rt-wire .rt-pulse{animation-duration:.85s}
+body.rt-transferring #rtTransferScreen .rt-wire .rt-pulse.rt-p2{animation-delay:.28s}
+body.rt-transferring #rtTransferScreen .rt-wire .rt-pulse.rt-p3{animation-delay:.56s}
+/* pairing animation */
+#rtTransferScreen .rt-pair-anim{display:flex;align-items:center;gap:8px;padding:16px 6px 6px}
+#rtTransferScreen .rt-pa-device{position:relative;flex:0 0 auto;width:52px;height:52px;border-radius:14px;background:var(--panel-soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--subtle);transition:color .3s,border-color .3s,background .3s}
+#rtTransferScreen .rt-pa-device::before,#rtTransferScreen .rt-pa-device::after{content:"";position:absolute;inset:-1px;border-radius:14px;border:1.5px solid var(--accent);opacity:0;pointer-events:none}
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] .rt-pa-device{color:var(--accent);border-color:var(--accent)}
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] .rt-pa-device::before{animation:rt-sonar 1.8s ease-out infinite}
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] .rt-pa-device::after{animation:rt-sonar 1.8s ease-out .9s infinite}
+@keyframes rt-sonar{0%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(1.55)}}
+#rtTransferScreen .rt-pair-anim[data-state="linked"] .rt-pa-device{color:var(--accent-ink);background:var(--accent);border-color:var(--accent)}
+#rtTransferScreen .rt-pa-link{position:relative;flex:1;height:2px;min-width:30px;background:var(--line-strong);border-radius:2px}
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] .rt-pa-link{background:repeating-linear-gradient(to left,var(--accent) 0 8px,transparent 8px 16px);background-size:16px 2px;animation:rt-dashmove .7s linear infinite}
+@keyframes rt-dashmove{from{background-position:0 0}to{background-position:16px 0}}
+#rtTransferScreen .rt-pair-anim[data-state="linked"] .rt-pa-link{background:var(--accent);height:3px}
+#rtTransferScreen .rt-pa-packet{position:absolute;top:50%;width:8px;height:8px;border-radius:50%;background:var(--accent);transform:translateY(-50%);right:0;opacity:0;pointer-events:none}
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] .rt-pa-packet{opacity:1;animation:rt-packet 1.5s linear infinite}
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] .rt-pa-packet.rt-p2{animation-delay:.5s}
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] .rt-pa-packet.rt-p3{animation-delay:1s}
+@keyframes rt-packet{0%{right:0;opacity:0}12%{opacity:1}88%{opacity:1}100%{right:calc(100% - 8px);opacity:0}}
+#rtTransferScreen .rt-pa-check{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.4);width:30px;height:30px;border-radius:50%;background:var(--panel);box-shadow:0 2px 8px rgba(0,0,0,.18);opacity:0;pointer-events:none}
+#rtTransferScreen .rt-pair-anim[data-state="linked"] .rt-pa-check{opacity:1;transform:translate(-50%,-50%) scale(1);transition:opacity .25s ease,transform .35s cubic-bezier(.34,1.56,.64,1)}
+#rtTransferScreen .rt-pa-check svg{display:block}
+#rtTransferScreen .rt-pa-check circle,#rtTransferScreen .rt-pa-check path{stroke:var(--accent);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#rtTransferScreen .rt-pa-check circle{stroke-dasharray:98;stroke-dashoffset:98}
+#rtTransferScreen .rt-pa-check path{stroke-dasharray:26;stroke-dashoffset:26}
+#rtTransferScreen .rt-pair-anim[data-state="linked"] .rt-pa-check circle{animation:rt-draw .5s ease forwards}
+#rtTransferScreen .rt-pair-anim[data-state="linked"] .rt-pa-check path{animation:rt-draw .35s ease .4s forwards}
+@keyframes rt-draw{to{stroke-dashoffset:0}}
+#rtTransferScreen .rt-pa-label{margin:2px 0 14px;text-align:center;font-size:13px;color:var(--subtle);min-height:1.4em}
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] + .rt-pa-label,#rtTransferScreen .rt-pair-anim[data-state="linked"] + .rt-pa-label{color:var(--accent);font-weight:600}
+/* transfer animation */
+#rtTransferScreen .rt-fitem.active .rt-ic{animation:rt-iconPulse 1.1s ease-in-out infinite}
+@keyframes rt-iconPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+#rtTransferScreen .rt-fitem.active .rt-bar i{background-color:var(--accent);background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.35) 0 10px,transparent 10px 20px);animation:rt-barber .7s linear infinite}
+@keyframes rt-barber{from{background-position:0 0}to{background-position:28px 0}}
+#rtTransferScreen .rt-fitem.done-pop{animation:rt-donePop .45s ease}
+@keyframes rt-donePop{0%{transform:scale(1)}35%{transform:scale(1.025)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){
+body.rt-seeking #rtTransferScreen .rt-wire,body.rt-linked #rtTransferScreen .rt-wire .rt-pulse,
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] .rt-pa-device::before,
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] .rt-pa-device::after,
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] .rt-pa-link,
+#rtTransferScreen .rt-pair-anim[data-state="seeking"] .rt-pa-packet,
+#rtTransferScreen .rt-fitem.active .rt-ic,#rtTransferScreen .rt-fitem.active .rt-bar i,#rtTransferScreen .rt-fitem.done-pop{animation:none}
+#rtTransferScreen .rt-pa-check circle,#rtTransferScreen .rt-pa-check path{stroke-dashoffset:0}
+}
+/* layout */
+#rtTransferScreen .rt-grid{display:grid;grid-template-columns:380px 1fr;gap:18px;align-items:start}
+@media (max-width:860px){#rtTransferScreen .rt-grid{grid-template-columns:1fr}}
+#rtTransferScreen .rt-card{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:20px}
+#rtTransferScreen .rt-card + .rt-card{margin-top:18px}
+#rtTransferScreen .rt-col-stack > .rt-card:first-child{margin-top:0}
+#rtTransferScreen .rt-card h2{margin:0 0 4px;font-size:18px;font-weight:700;display:flex;align-items:center;gap:9px}
+#rtTransferScreen .rt-card h2 svg{color:var(--accent);flex:0 0 auto}
+#rtTransferScreen .rt-sub{margin:0 0 16px;color:var(--muted);font-size:13.5px}
+#rtTransferScreen .rt-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--panel-soft);border:1px solid var(--line);border-radius:10px;padding:4px;gap:4px;margin-bottom:18px}
+#rtTransferScreen .rt-tabs button{border:0;background:transparent;color:var(--muted);padding:9px 6px;border-radius:7px;font-size:14.5px;font-weight:600;font-family:inherit;cursor:pointer}
+#rtTransferScreen .rt-tabs button[aria-selected="true"]{background:var(--panel);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.14)}
+#rtTransferScreen .rt-code-display{text-align:center;background:var(--panel-soft);border:1.5px dashed var(--line-strong);border-radius:12px;padding:20px 10px 14px}
+#rtTransferScreen .rt-code-display .rt-code{font-size:40px;font-weight:600;letter-spacing:.22em;direction:ltr;color:var(--text);padding-inline-start:.22em;font-family:var(--font-mono)}
+#rtTransferScreen .rt-code-display .rt-hint{font-size:12.5px;color:var(--subtle);margin-top:4px}
+#rtTransferScreen .rt-row-btns{display:flex;gap:8px;margin-top:12px}
+#rtTransferScreen .rt-btn{border:1px solid var(--line-strong);background:var(--bg-elevated);color:var(--text);border-radius:9px;padding:10px 14px;font-size:14.5px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;font-family:inherit;cursor:pointer}
+#rtTransferScreen .rt-btn:hover{border-color:var(--accent-border);color:var(--accent)}
+#rtTransferScreen .rt-btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);flex:1}
+#rtTransferScreen .rt-btn.primary:hover{filter:brightness(1.07);color:var(--accent-ink)}
+#rtTransferScreen .rt-btn.block{width:100%}
+#rtTransferScreen .rt-btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+#rtTransferScreen .rt-btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+#rtTransferScreen .rt-join-row{display:flex;gap:8px}
+#rtTransferScreen .rt-join-input{flex:1;min-width:0;border:1.5px solid var(--line-strong);background:var(--panel-soft);border-radius:9px;padding:10px 12px;font-size:22px;font-weight:600;letter-spacing:.3em;text-align:center;text-transform:uppercase;direction:ltr;color:var(--text);min-height:48px;font-family:var(--font-mono)}
+#rtTransferScreen .rt-join-input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+#rtTransferScreen .rt-join-input::placeholder{letter-spacing:.1em;font-size:15px;font-weight:400;color:var(--subtle)}
+#rtTransferScreen .rt-peer-note{margin-top:14px;font-size:13.5px;color:var(--muted);background:var(--accent-soft);border-radius:9px;padding:10px 12px;display:none}
+#rtTransferScreen .rt-peer-note.show{display:block}
+#rtTransferScreen .rt-err-note{margin-top:12px;font-size:13.5px;color:var(--danger);background:var(--danger-soft);border-radius:9px;padding:10px 12px;display:none}
+#rtTransferScreen .rt-err-note.show{display:block}
+#rtTransferScreen .rt-drop{border:2px dashed var(--line-strong);border-radius:12px;padding:30px 16px;text-align:center;background:var(--panel-soft);transition:border-color .15s,background .15s}
+#rtTransferScreen .rt-drop.drag{border-color:var(--accent);background:var(--accent-soft)}
+#rtTransferScreen .rt-drop svg{color:var(--accent)}
+#rtTransferScreen .rt-drop .rt-big{font-size:16.5px;font-weight:600;margin:8px 0 2px}
+#rtTransferScreen .rt-drop .rt-small{font-size:13px;color:var(--subtle);margin:0 0 14px}
+#rtTransferScreen .rt-drop input[type=file]{display:none}
+#rtTransferScreen .rt-flist{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+#rtTransferScreen .rt-flist:empty{margin:0}
+#rtTransferScreen .rt-fitem{border:1px solid var(--line);border-radius:10px;padding:11px 13px;background:var(--panel)}
+#rtTransferScreen .rt-fitem .rt-top{display:flex;align-items:center;gap:10px}
+#rtTransferScreen .rt-fitem .rt-ic{flex:0 0 auto;width:38px;height:38px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;direction:ltr}
+#rtTransferScreen .rt-fitem .rt-meta{flex:1;min-width:0}
+#rtTransferScreen .rt-fitem .rt-name{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rtTransferScreen .rt-fitem .rt-size{font-size:12.5px;color:var(--subtle)}
+#rtTransferScreen .rt-fitem .rt-detail{font-size:12px;color:var(--subtle);margin-top:2px}
+#rtTransferScreen .rt-fitem .rt-detail:empty{display:none}
+#rtTransferScreen .rt-fitem .rt-state{font-size:12.5px;font-weight:600;color:var(--muted);flex:0 0 auto;text-align:left}
+#rtTransferScreen .rt-fitem .rt-state.done{color:var(--accent)}
+#rtTransferScreen .rt-fitem .rt-state.fail{color:var(--danger)}
+#rtTransferScreen .rt-fitem .rt-state.paused{color:var(--accent)}
+#rtTransferScreen .rt-bar{height:7px;border-radius:99px;background:var(--panel-soft);margin-top:10px;overflow:hidden;display:none}
+#rtTransferScreen .rt-bar.show{display:block}
+#rtTransferScreen .rt-bar i{display:block;height:100%;width:0%;background:var(--accent);border-radius:99px;transition:width .18s ease}
+#rtTransferScreen .rt-fitem .rt-dl{flex:0 0 auto;background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:8px 14px;font-size:13.5px;font-weight:600;min-height:38px;font-family:inherit;cursor:pointer}
+#rtTransferScreen .rt-fitem .rt-mini{flex:0 0 auto;background:transparent;color:var(--muted);border:1px solid var(--line-strong);border-radius:8px;padding:7px 11px;font-size:12.5px;font-weight:600;min-height:38px;font-family:inherit;cursor:pointer}
+#rtTransferScreen .rt-empty-note{color:var(--subtle);font-size:13.5px;text-align:center;padding:14px 0 4px}
+#rtTransferScreen .rt-set-block{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}
+#rtTransferScreen .rt-set-block:first-of-type{border-top:0;padding-top:2px;margin-top:0}
+#rtTransferScreen .rt-set-head{display:flex;align-items:flex-start;gap:12px}
+#rtTransferScreen .rt-set-head .rt-txt{flex:1;min-width:0}
+#rtTransferScreen .rt-set-head h3{margin:0 0 2px;font-size:15.5px;font-weight:700}
+#rtTransferScreen .rt-set-head p{margin:0;font-size:13px;color:var(--muted)}
+#rtTransferScreen .rt-roster{margin-top:16px;border:1px solid var(--line);border-radius:10px;padding:13px 14px;background:var(--panel-soft)}
+#rtTransferScreen .rt-roster-head{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:8px}
+#rtTransferScreen .rt-roster-head svg{color:var(--accent)}
+#rtTransferScreen .rt-roster-count{color:var(--accent)}
+#rtTransferScreen .rt-roster ul{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:7px}
+#rtTransferScreen .rt-roster li{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--muted)}
+#rtTransferScreen .rt-roster li .rt-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:0 0 auto;box-shadow:0 0 0 3px var(--accent-soft)}
+#rtTransferScreen .rt-roster li.me{color:var(--text);font-weight:600}
+#rtTransferScreen .rt-roster li .rt-tag{font-size:11.5px;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:1px 8px}
+#rtTransferScreen .rt-roster-hint{margin:10px 0 0;font-size:12.5px;color:var(--subtle)}
+#rtTransferScreen .rt-set-body{margin-top:12px}
+#rtTransferScreen .rt-set-status{font-size:13px;color:var(--muted);margin-top:10px}
+#rtTransferScreen .rt-set-status.ok{color:var(--success);font-weight:600}
+#rtTransferScreen .rt-set-status.bad{color:var(--danger)}
+#rtTransferScreen .rt-folder-box{background:var(--panel-soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+#rtTransferScreen .rt-folder-box .rt-fname{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
+#rtTransferScreen .rt-folder-box .rt-fname svg{color:var(--accent);flex:0 0 auto}
+#rtTransferScreen .rt-folder-box .rt-fpath{font-size:12.5px;color:var(--subtle)}
+#rtTransferScreen .rt-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+@media (max-width:700px){#rtTransferScreen .rt-steps{grid-template-columns:1fr}}
+#rtTransferScreen .rt-step{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--radius-lg);padding:16px 18px}
+#rtTransferScreen .rt-step .rt-n{width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+#rtTransferScreen .rt-step h3{margin:0 0 3px;font-size:15.5px}
+#rtTransferScreen .rt-step p{margin:0;font-size:13.5px;color:var(--muted)}
+#rtTransferScreen .rt-limits{margin-top:18px;background:var(--accent-soft);color:var(--muted);border-radius:var(--radius-lg);padding:14px 18px;font-size:13.5px}
+#rtTransferScreen .rt-limits strong{font-weight:700;color:var(--text)}
+#rtTransferScreen .rt-limits ul{margin:6px 0 0;padding-inline-start:18px}
+#rtTransferScreen .rt-limits li{margin:2px 0}
+#rtTransferScreen .rt-foot{color:var(--subtle);font-size:12.5px;text-align:center;margin:4px 0 0}
+@media (max-width:767px){#rtTransferScreen{padding:10px 10px 16px;gap:10px}#rtTransferScreen .rt-hero{padding:18px 16px}#rtTransferScreen .rt-card{padding:16px}}
 </style>
 </head><body><div class="app-shell"><div class="ambient"></div>
 <header class="topbar"><button class="brand" id="brandHome" type="button" aria-label="Runa home"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18V6h8a5 5 0 0 1 0 10H9"/><path d="M13 16l4 4"/></svg></span><span class="brand-name">ru<span>na</span></span></button><div class="topbar-right"><button class="pill-button" id="onlineUsersBtn" type="button" title="Online Users Directory"><span class="presence-dot"></span><span><strong id="appPresenceCount">1</strong> <span data-i18n="online_now">online now</span></span><span class="badge-dot" id="signalsBadge" hidden>0</span></button><button class="pill-button" id="topFeedbackBtn" type="button" title="Public Feedback Board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg><span class="hide-sm" data-i18n="feedback_btn">Feedback</span></button><button class="icon-button lang-button" id="uiLangToggle" type="button" title="Switch UI Language (EN / AR)" aria-label="Switch UI language"><span id="uiLangLabel">عربي</span></button><button class="icon-button" id="themeToggle" type="button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div>
@@ -399,7 +572,7 @@ body.in-room .room-actions #shareRoomButton,body.in-room .room-actions #clearCha
 <div id="heroJoinPane" hidden><form id="joinRoomForm"><div class="field"><label class="label" for="joinCode" data-i18n="room_code_or_link">Room code or invite link</label><input class="text-input join-code-input" id="joinCode" maxlength="500" placeholder="ABC123 or https://..." data-i18n-placeholder="join_code_placeholder" autocomplete="off" spellcheck="false" required></div>
 <button class="primary-button" id="joinRoomSubmitBtn" type="submit" style="width:100%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span data-i18n="join_room_btn">Join room now</span></button></form>
 </div><p class="status-text" id="landingStatus" aria-live="polite"></p></div>
-<div class="quick-actions-grid"><button type="button" class="quick-card" id="browseGroupsButton"><span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="quick-card-body"><strong data-i18n="public_groups_title">Public Groups</strong><span data-i18n="public_groups_sub">Browse & join open rooms</span></span></button><button type="button" class="quick-card" id="openFeedbackCardBtn"><span class="quick-card-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span><span class="quick-card-body"><strong data-i18n="feedback_board_title">Feedback Board</strong><span data-i18n="feedback_board_sub">Vote on ideas & features</span></span></button></div>
+<div class="quick-actions-grid"><button type="button" class="quick-card" id="browseGroupsButton"><span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="quick-card-body"><strong data-i18n="public_groups_title">Public Groups</strong><span data-i18n="public_groups_sub">Browse & join open rooms</span></span></button><button type="button" class="quick-card" id="openFeedbackCardBtn"><span class="quick-card-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span><span class="quick-card-body"><strong data-i18n="feedback_board_title">Feedback Board</strong><span data-i18n="feedback_board_sub">Vote on ideas & features</span></span></button><button type="button" class="quick-card" id="openTransferCardBtn"><span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></span><span class="quick-card-body"><strong data-i18n="transfer_card_title">نقل الملفات</strong><span data-i18n="transfer_card_sub">أرسل ملفات لأي جهاز</span></span></button></div>
 <div class="recent-rooms-card" id="recentRooms" hidden><div class="recent-rooms-head"><strong data-i18n="recent_rooms_title">Recent rooms</strong><span class="recent-count-badge" id="recentRoomsCount">0</span></div><input type="search" class="text-input recent-rooms-search" id="recentRoomsSearch" placeholder="Search rooms…" data-i18n-placeholder="recent_search_placeholder" autocomplete="off">
 <div class="recent-list" id="recentRoomsList"></div></div></section>
 <section class="room-screen" id="roomScreen" aria-label="Room workspace"><div class="room-toolbar"><button class="back-button" id="backHome" type="button" aria-label="Back to home" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><div class="room-heading"><div class="room-title-line"><h2 id="roomTitle">Room</h2><span class="room-code-badge" id="roomCodeLabel" title="Click to copy code">ABC123</span></div>
@@ -441,6 +614,59 @@ body.in-room .room-actions #shareRoomButton,body.in-room .room-actions #clearCha
 <input type="search" class="text-input" id="dockUserSearchInput" placeholder="Search online users…" data-i18n-placeholder="search_users_placeholder" style="min-height:40px;padding:8px 12px"><div class="online-list" id="dockOnlineUsersList" style="flex:1;max-height:calc(100dvh - 390px)"></div>
 </div></aside><aside class="details-panel" id="detailsPanel" aria-label="Room details"><div class="panel-head"><div class="panel-title-wrap"><span class="panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span><div><h3 data-i18n="details_title">Room details</h3><p data-i18n="details_sub">Members, code & shared files</p></div></div></div><div class="details-body" id="detailsBody"></div></aside></div>
 <div class="room-bottom"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span data-i18n="room_bottom_note">Live MQTT sync compatible with Run Android v2 Pro.</span></span><button id="leaveRoomButton" type="button" data-i18n="leave_room_btn">Leave this room</button></div>
+<section class="transfer-screen" id="rtTransferScreen" aria-label="Runa Transfer">
+<div class="rt-hero">
+<div class="rt-hero-top"><button class="back-button" id="rtBackHome" type="button" aria-label="Back to home" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><div class="rt-hero-titles"><h1>Runa Transfer <span class="rt-hero-en">ANY DEVICE ⇄ ANY DEVICE · WEBTORRENT</span></h1><p data-i18n="rt_hero_sub">انقل ملفاتك بين أي جهازين — هاتف، بيسي، تابلت — من أي مكان عبر الإنترنت. بلا رفع لأي سيرفر تخزين وبلا حدّ عملي للحجم. صفحة مستقلة عن الشات، مصممة للنقل فقط.</p></div></div>
+<div class="rt-bridge" aria-hidden="true"><div class="rt-device"><div class="rt-glyph"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="14.5" height="11" rx="1.8"/><line x1="5" y1="19" x2="14" y2="19"/><line x1="9.5" y1="15" x2="9.5" y2="19"/><rect x="15.8" y="10.5" width="5.8" height="10.5" rx="1.6"/><line x1="17.8" y1="18.6" x2="19.6" y2="18.6"/></svg></div><div class="rt-lbl" data-i18n="rt_any_device">أي جهاز</div></div><div class="rt-wire"><span class="rt-pulse"></span><span class="rt-pulse rt-p2"></span><span class="rt-pulse rt-p3"></span></div><div class="rt-device"><div class="rt-glyph"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="scale(-1,1) translate(-24,0)"><rect x="2.5" y="4" width="14.5" height="11" rx="1.8"/><line x1="5" y1="19" x2="14" y2="19"/><line x1="9.5" y1="15" x2="9.5" y2="19"/><rect x="15.8" y="10.5" width="5.8" height="10.5" rx="1.6"/><line x1="17.8" y1="18.6" x2="19.6" y2="18.6"/></svg></div><div class="rt-lbl" data-i18n="rt_all_devices">وكل الأجهزة المنضمة</div></div></div>
+<div><span class="rt-conn-status" id="rtConnStatus"><span class="rt-dot"></span><span id="rtConnStatusText">غير مرتبط — أنشئ جلسة أو انضم بكود</span></span></div>
+</div>
+<div class="rt-grid">
+<div class="rt-col-stack">
+<section class="rt-card" aria-labelledby="rtPairTitle">
+<h2 id="rtPairTitle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span data-i18n="rt_pair_title">ربط الجهازين</span></h2>
+<p class="rt-sub" data-i18n="rt_pair_sub">افتح هذه الصفحة على أي عدد من الأجهزة: جهاز ينشئ كود الجلسة، وكل جهاز آخر يدخل نفس الكود فينضم إلى نفس الجلسة — أي ملف يرسله أي جهاز يصل إلى كل الأجهزة المنضمة في نفس الوقت، وأجزاؤه تتوزع بينها جميعاً (سرب تورنت). الكود يمرّر رابط المغناطيس (Magnet) الخاص بكل ملف عبر قناة إشارة صغيرة، ثم تنتقل الأجزاء نفسها بين الأجهزة عبر متتبّعات WebTorrent العامة.</p>
+<div class="rt-tabs" role="tablist" aria-label="طريقة الربط"><button id="rtTabCreate" role="tab" aria-selected="true" data-i18n="rt_create_tab">إنشاء جلسة</button><button id="rtTabJoin" role="tab" aria-selected="false" data-i18n="rt_join_tab">الانضمام بكود</button></div>
+<div class="rt-pair-anim" id="rtPairAnim" data-state="idle" aria-hidden="true"><div class="rt-pa-device"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="14.5" height="11" rx="1.8"/><line x1="5" y1="19" x2="14" y2="19"/><line x1="9.5" y1="15" x2="9.5" y2="19"/><rect x="15.8" y="10.5" width="5.8" height="10.5" rx="1.6"/></svg></div><div class="rt-pa-link"><span class="rt-pa-packet rt-p1"></span><span class="rt-pa-packet rt-p2"></span><span class="rt-pa-packet rt-p3"></span><span class="rt-pa-check"><svg width="30" height="30" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5"/><path d="M11 18.5 16 23.5 25.5 13.5"/></svg></span></div><div class="rt-pa-device"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="3.2"/><circle cx="17" cy="7" r="3.2"/><circle cx="12" cy="17" r="3.2"/><path d="M9.8 8.6 10.6 14M14.2 8.6 13.4 14M10.2 7h3.6"/></svg></div></div>
+<p class="rt-pa-label" id="rtPairAnimLabel">لا توجد جلسة بعد — أنشئ كوداً أو انضم بكود</p>
+<div id="rtPaneCreate"><div class="rt-code-display"><div class="rt-code" id="rtMyCode">––––––</div><div class="rt-hint" data-i18n="rt_code_hint">أدخل هذا الكود في الأجهزة الأخرى لتنضم إلى الجلسة</div></div><div class="rt-row-btns"><button class="rt-btn primary" id="rtBtnCreate" data-i18n="rt_create_btn">إنشاء كود جديد</button><button class="rt-btn" id="rtBtnCopy" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> <span data-i18n="rt_copy_btn">نسخ</span></button></div></div>
+<div id="rtPaneJoin" hidden><div class="rt-join-row"><input class="rt-join-input" id="rtJoinInput" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC123" aria-label="كود الجلسة" /></div><div class="rt-row-btns"><button class="rt-btn primary" id="rtBtnJoin" data-i18n="rt_join_btn">انضم واربط</button></div></div>
+<div class="rt-peer-note" id="rtPeerNote"></div>
+<div class="rt-err-note" id="rtErrNote"></div>
+<div class="rt-roster" id="rtRosterBox" hidden><div class="rt-roster-head"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="rt_roster_title">الأجهزة في هذه الجلسة</span> <span class="rt-roster-count" id="rtRosterCount"></span></div><ul id="rtRosterList"></ul><p class="rt-roster-hint" data-i18n="rt_roster_hint">أي ملف يرسله أي جهاز هنا يصل إلى كل هذه الأجهزة في نفس الوقت، وأجزاؤه تتوزع بينها.</p></div>
+<div class="rt-row-btns" id="rtDisconnectRow" hidden><button class="rt-btn ghost block" id="rtBtnDisconnect" data-i18n="rt_disconnect">قطع الربط وإنهاء الجلسة</button></div>
+</section>
+<section class="rt-card" aria-labelledby="rtSettingsTitle">
+<h2 id="rtSettingsTitle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0-.33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="rt_settings_title">الإعدادات</span></h2>
+<p class="rt-sub" data-i18n="rt_settings_sub">حفظ الجلسات على جهازك — الملفات المستلمة تبقى محفوظة في مجلد على جهازك.</p>
+<div class="rt-set-block"><div class="rt-set-head"><div class="rt-txt"><h3 data-i18n="rt_save_title">وضع حفظ الجلسات</h3><p data-i18n="rt_save_sub">عند تفعيله، كل ملف يصلك يُكتب مباشرة في مجلد على جهازك، فيبقى عندك بعد انتهاء الجلسة وبعد إغلاق الصفحة — وتجده هنا في «ملفات محفوظة».</p></div><button type="button" class="switch" id="rtSaveToggle" role="switch" aria-checked="false" aria-label="تفعيل وضع حفظ الجلسات"><span class="switch-knob"></span></button></div>
+<div class="rt-set-body" id="rtSaveBody" hidden><div class="rt-folder-box"><div class="rt-fname"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="rt_saved_title">ملفات محفوظة</span></div><div class="rt-fpath" id="rtSaveFolderPath" data-i18n="rt_folder_none">لم يُختر مجلد بعد — على الحاسوب وفي كروم يمكنك اختيار مجلد حقيقي على القرص؛ وإلا تُحفظ الملفات تلقائياً في تنزيلات الجهاز.</div><div class="rt-row-btns"><button class="rt-btn" id="rtBtnPickFolder" style="flex:1" data-i18n="rt_pick_folder">اختيار مجلد الحفظ</button><button class="rt-btn" id="rtBtnOpenFolder" style="flex:1" data-i18n="rt_view_folder">عرض محتويات المجلد</button></div></div>
+<ul class="rt-flist" id="rtSavedList"></ul><p class="rt-empty-note" id="rtSavedEmpty" data-i18n="rt_saved_empty">المجلد فارغ — الملفات التي تصلك أثناء تفعيل الحفظ ستظهر هنا.</p><p class="rt-set-status" id="rtSaveStatus"></p></div></div>
+</section>
+</div>
+<div class="rt-col-stack">
+<section class="rt-card" aria-labelledby="rtSendTitle">
+<h2 id="rtSendTitle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg><span data-i18n="rt_send_title">إرسال ملفات</span></h2>
+<p class="rt-sub" data-i18n="rt_send_sub">كل ملف تختاره يصبح تورنت مستقلاً تُبذره (Seed) من جهازك، ويُبثّ رابطه لكل أجهزة الجلسة فتستلمه كلها في نفس الوقت وتتشارك أجزاءه. يمكنك إضافة الملفات قبل الانضمام — تُبذر فوراً وتُرسل روابطها عند دخول الجلسة.</p>
+<div class="rt-drop" id="rtDrop"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg><p class="rt-big" data-i18n="rt_drop_big">اسحب ملفاتك هنا وأفلتها</p><p class="rt-small" data-i18n="rt_drop_small">أي نوع وأي حجم — التورنت مصمم للملفات الضخمة: أجزاء موثّقة واستئناف تلقائي</p><button class="rt-btn primary" id="rtBtnPick" style="flex:none;padding-inline:22px" data-i18n="rt_pick_btn">اختيار ملفات</button><input type="file" id="rtFileInput" multiple /></div>
+<ul class="rt-flist" id="rtSendList"></ul>
+<p class="rt-empty-note" id="rtSendEmpty" data-i18n="rt_send_empty">لا توجد ملفات في قائمة الإرسال بعد.</p>
+</section>
+<section class="rt-card" aria-labelledby="rtRecvTitle">
+<h2 id="rtRecvTitle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg><span data-i18n="rt_recv_title">ملفات وصلتك</span></h2>
+<p class="rt-sub" data-i18n="rt_recv_sub">ما يبذره أي جهاز في الجلسة يظهر هنا جزءاً جزءاً — تحمل أجزاءه من كل الباذرين معاً. حمّل الملف عند اكتماله — أو فعّل «حفظ الجلسات» من الإعدادات ليُحفظ على جهازك تلقائياً.</p>
+<ul class="rt-flist" id="rtRecvList"></ul>
+<p class="rt-empty-note" id="rtRecvEmpty" data-i18n="rt_recv_empty">لا شيء بعد — بانتظار أول ملف.</p>
+</section>
+</div>
+</div>
+<div class="rt-steps">
+<div class="rt-step"><div class="rt-n">1</div><h3 data-i18n="rt_step1_t">اجتمعوا</h3><p data-i18n="rt_step1_p">أنشئ كوداً على جهاز، وأدخله في أي عدد من الأجهزة الأخرى — الكود يجمعها كلها في جلسة واحدة ويمرّر روابط المغناطيس بينها.</p></div>
+<div class="rt-step"><div class="rt-n">2</div><h3 data-i18n="rt_step2_t">ابذر</h3><p data-i18n="rt_step2_p">اختر ملفاتك: كل ملف يتحول إلى تورنت ويتقسم إلى أجزاء صغيرة، كل جزء ببصمة تحقق خاصة.</p></div>
+<div class="rt-step"><div class="rt-n">3</div><h3 data-i18n="rt_step3_t">انقل واستأنف</h3><p data-i18n="rt_step3_p">الأجزاء الموثّقة تُحفظ تقدمها؛ لو انقطع الاتصال يكمل التحميل من وين توقف، لا من الصفر.</p></div>
+</div>
+<div class="rt-limits"><strong data-i18n="rt_limits_title">قبل ما تبدأ — حدود صادقة:</strong><ul><li data-i18n="rt_lim1"></li><li data-i18n="rt_lim2"></li><li data-i18n="rt_lim3"></li><li data-i18n="rt_lim4"></li><li data-i18n="rt_lim5"></li><li data-i18n="rt_lim6"></li><li data-i18n="rt_lim7"></li><li data-i18n="rt_lim8"></li></ul></div>
+<p class="rt-foot">Runa Transfer — أداة نقل مرافقة لـ Runa، منفصلة عن الشات. النقل بتقنية التورنت (WebTorrent) بين جهازيك مباشرة.</p>
+</section>
 </section></main></div>
 <button class="run-fab" id="runFab" type="button" aria-label="Create or join a room" aria-expanded="false"><span class="fab-plus">＋</span></button><div class="fab-scrim" id="fabScrim"></div>
 <div class="fab-menu" id="fabMenu" aria-label="Room actions"><button type="button" data-fab-action="create"><span class="fab-menu-icon">＋</span><span><strong data-i18n="tab_create_room">Create a room</strong><small data-i18n="fab_create_sub">Start a new shared space</small></span></button><button type="button" data-fab-action="join"><span class="fab-menu-icon">↗</span><span><strong data-i18n="tab_join_room">Join a room</strong><small data-i18n="fab_join_sub">Enter a 6-character code</small></span></button><button type="button" data-fab-action="online"><span class="fab-menu-icon">👥</span><span><strong data-i18n="online_dir_title">Online Directory</strong><small data-i18n="fab_online_sub">See who is online now</small></span></button></div>
@@ -565,7 +791,58 @@ delete_room_desc:'This permanently deletes the entire room — messages, tasks, 
 keep_room_btn:'Keep room',delete_room_confirm:'Delete room',you_badge:'You',friend_badge:'Friend',
 add_friend_btn:'+ Friend',request_sent_btn:'Requested',invite_to_room_btn:'Invite to room',accept_btn:'Accept',
 decline_btn:'Decline',join_btn:'Join',remove_friend_btn:'Remove',last_edited_by:'Last edited by',
-owner_response_label:'Owner Response',set_your_name_prompt:'Tap to set your display name'
+owner_response_label:'Owner Response',set_your_name_prompt:'Tap to set your display name',
+transfer_card_title:'Transfer files',
+transfer_card_sub:'Send files to any device',
+rt_hero_sub:'Move files between any devices — phone, PC, tablet — from anywhere on the internet. No server storage, no size limit that matters. A separate screen, built only for transfer.',
+rt_any_device:'Any device',
+rt_all_devices:'Every joined device',
+rt_pair_title:'Link devices',
+rt_pair_sub:'Open this screen on any number of devices: one device creates a session code, every other device enters the same code and joins the same session. Any file sent by any device reaches all joined devices at the same time, and its pieces swarm among them.',
+rt_create_tab:'Create session',
+rt_join_tab:'Join with code',
+rt_code_hint:'Enter this code on the other devices to join the session',
+rt_create_btn:'Create a new code',
+rt_copy_btn:'Copy',
+rt_copied:'Copied',
+rt_join_btn:'Join & link',
+rt_send_title:'Send files',
+rt_send_sub:'Each file you pick becomes its own torrent that you seed from your device, and its magnet link is broadcast to every device in the session so they all receive it at the same time and share its pieces. You can add files before joining — they seed right away and their links are sent when you enter the session.',
+rt_drop_big:'Drop your files here',
+rt_drop_small:'Any type, any size — torrent is built for huge files: verified pieces and automatic resume',
+rt_pick_btn:'Choose files',
+rt_recv_title:'Files you received',
+rt_recv_sub:'Whatever any device in the session seeds shows up here piece by piece — pieces come from all seeders together. Download a file when it completes — or turn on “Save sessions” in Settings to save it on your device automatically.',
+rt_settings_title:'Settings',
+rt_settings_sub:'Save sessions on your device — received files stay saved in a folder on your device.',
+rt_save_title:'Save sessions mode',
+rt_save_sub:'When on, every file you receive is written straight into a folder on your device, so it stays with you after the session ends and after you close the page — find it under “Saved files”.',
+rt_saved_title:'Saved files',
+rt_pick_folder:'Choose save folder',
+rt_view_folder:'Show folder contents',
+rt_saved_empty:'Folder is empty — files you receive while saving is on will show up here.',
+rt_roster_hint:'Any file sent by any device here reaches all these devices at the same time, and its pieces swarm among them.',
+rt_roster_title:'Devices in this session',
+rt_disconnect:'Disconnect & end session',
+rt_step1_t:'Meet up',
+rt_step1_p:'Create a code on one device, enter it on any number of others — the code gathers them all into one session and passes magnet links between them.',
+rt_step2_t:'Seed',
+rt_step2_p:'Pick your files: each file becomes a torrent split into small pieces, each piece with its own verification fingerprint.',
+rt_step3_t:'Transfer & resume',
+rt_step3_p:'Verified pieces keep their progress; if the connection drops, the download resumes where it stopped, not from zero.',
+rt_limits_title:'Before you start — honest limits:',
+rt_back_home:'Back',
+rt_send_empty:'No files in the send list yet.',
+rt_recv_empty:'Nothing yet — waiting for the first file.',
+rt_folder_none:'No folder picked yet — on desktop Chrome you can pick a real folder on disk; otherwise files are saved automatically to the device Downloads folder.',
+rt_lim1:'Transfer runs on the torrent protocol via WebTorrent: devices connect to each other over WebRTC, and public trackers (tracker.openwebtorrent.com, btorrent.xyz, webtorrent.dev) only help them find each other.',
+rt_lim2:'The tracker sees only the torrent fingerprint and its metadata (name and size) — the file content itself moves encrypted directly between your devices and never passes through any server.',
+rt_lim3:'A small signaling channel (MQTT) still exists for one purpose: passing the magnet link for the short code — because the code alone cannot generate the link.',
+rt_lim4:'Transfer also works remotely over the internet — devices do not need to be on the same network or in the same place; joining with the same code is enough. On some strict networks (strict NAT or firewall) a direct connection between two far devices may fail — try another network.',
+rt_lim5:'The session is group-based: any number of devices join with the same code, and any file sent reaches everyone at the same time — and every device that completed a piece becomes a source for it for the rest, so speed grows as the session grows.',
+rt_lim6:'Participating devices must stay connected and open on this page for the whole transfer. Torrent stores the file nowhere: if every seeder of a file leaves, its download stops at the last verified piece and resumes when a seeder returns.',
+rt_lim7:'Resume works while the page stays open (verified pieces in session memory); closing the page wipes them, so reopen it with a seeder present to start again — and turn on “Save sessions” to keep what completed on your disk.',
+rt_lim8:'Session saving writes into a folder you pick on your device (or the device Downloads) — your files stay with you, they are uploaded to no server.'
 },ar:{online_now:'متصل الآن',feedback_btn:'المقترحات',profile_card_sub:'اضغط لتخصيص الصورة، النبذة، اللغة والمظهر',
 edit_btn:'تعديل',your_rooms:'غرفك الخاصة',access_sub:'أنشئ مساحة عمل مشتركة أو أدخل رمز الغرفة المكون من 6 أحرف.',
 tab_create_room:'إنشاء غرفة',tab_join_room:'انضمام برمز',your_name_label:'اسم العرض الخاص بك',
@@ -629,7 +906,58 @@ delete_room_desc:'سيؤدي هذا إلى حذف الغرفة بالكامل �
 keep_room_btn:'الإبقاء على الغرفة',delete_room_confirm:'حذف الغرفة',you_badge:'أنت',friend_badge:'صديق',
 add_friend_btn:'+ صداقة',request_sent_btn:'تم الإرسال',invite_to_room_btn:'دعوة للغرفة',accept_btn:'قبول',
 decline_btn:'رفض',join_btn:'انضمام',remove_friend_btn:'إزالة',last_edited_by:'آخر تعديل بواسطة',
-owner_response_label:'رد المطور',set_your_name_prompt:'اضغط لتعيين اسم العرض الخاص بك'
+owner_response_label:'رد المطور',set_your_name_prompt:'اضغط لتعيين اسم العرض الخاص بك',
+transfer_card_title:'نقل الملفات',
+transfer_card_sub:'أرسل ملفات لأي جهاز',
+rt_hero_sub:'انقل ملفاتك بين أي جهازين — هاتف، بيسي، تابلت — من أي مكان عبر الإنترنت. بلا رفع لأي سيرفر تخزين وبلا حدّ عملي للحجم. صفحة مستقلة عن الشات، مصممة للنقل فقط.',
+rt_any_device:'أي جهاز',
+rt_all_devices:'وكل الأجهزة المنضمة',
+rt_pair_title:'ربط الجهازين',
+rt_pair_sub:'افتح هذه الصفحة على أي عدد من الأجهزة: جهاز ينشئ كود الجلسة، وكل جهاز آخر يدخل نفس الكود فينضم إلى نفس الجلسة — أي ملف يرسله أي جهاز يصل إلى كل الأجهزة المنضمة في نفس الوقت، وأجزاؤه تتوزع بينها جميعاً (سرب تورنت). الكود يمرّر رابط المغناطيس (Magnet) الخاص بكل ملف عبر قناة إشارة صغيرة، ثم تنتقل الأجزاء نفسها بين الأجهزة عبر متتبّعات WebTorrent العامة.',
+rt_create_tab:'إنشاء جلسة',
+rt_join_tab:'الانضمام بكود',
+rt_code_hint:'أدخل هذا الكود في الأجهزة الأخرى لتنضم إلى الجلسة',
+rt_create_btn:'إنشاء كود جديد',
+rt_copy_btn:'نسخ',
+rt_copied:'تم النسخ',
+rt_join_btn:'انضم واربط',
+rt_send_title:'إرسال ملفات',
+rt_send_sub:'كل ملف تختاره يصبح تورنت مستقلاً تُبذره (Seed) من جهازك، ويُبثّ رابطه لكل أجهزة الجلسة فتستلمه كلها في نفس الوقت وتتشارك أجزاءه. يمكنك إضافة الملفات قبل الانضمام — تُبذر فوراً وتُرسل روابطها عند دخول الجلسة.',
+rt_drop_big:'اسحب ملفاتك هنا وأفلتها',
+rt_drop_small:'أي نوع وأي حجم — التورنت مصمم للملفات الضخمة: أجزاء موثّقة واستئناف تلقائي',
+rt_pick_btn:'اختيار ملفات',
+rt_recv_title:'ملفات وصلتك',
+rt_recv_sub:'ما يبذره أي جهاز في الجلسة يظهر هنا جزءاً جزءاً — تحمل أجزاءه من كل الباذرين معاً. حمّل الملف عند اكتماله — أو فعّل «حفظ الجلسات» من الإعدادات ليُحفظ على جهازك تلقائياً.',
+rt_settings_title:'الإعدادات',
+rt_settings_sub:'حفظ الجلسات على جهازك — الملفات المستلمة تبقى محفوظة في مجلد على جهازك.',
+rt_save_title:'وضع حفظ الجلسات',
+rt_save_sub:'عند تفعيله، كل ملف يصلك يُكتب مباشرة في مجلد على جهازك، فيبقى عندك بعد انتهاء الجلسة وبعد إغلاق الصفحة — وتجده هنا في «ملفات محفوظة».',
+rt_saved_title:'ملفات محفوظة',
+rt_pick_folder:'اختيار مجلد الحفظ',
+rt_view_folder:'عرض محتويات المجلد',
+rt_saved_empty:'المجلد فارغ — الملفات التي تصلك أثناء تفعيل الحفظ ستظهر هنا.',
+rt_roster_hint:'أي ملف يرسله أي جهاز هنا يصل إلى كل هذه الأجهزة في نفس الوقت، وأجزاؤه تتوزع بينها.',
+rt_roster_title:'الأجهزة في هذه الجلسة',
+rt_disconnect:'قطع الربط وإنهاء الجلسة',
+rt_step1_t:'اجتمعوا',
+rt_step1_p:'أنشئ كوداً على جهاز، وأدخله في أي عدد من الأجهزة الأخرى — الكود يجمعها كلها في جلسة واحدة ويمرّر روابط المغناطيس بينها.',
+rt_step2_t:'ابذر',
+rt_step2_p:'اختر ملفاتك: كل ملف يتحول إلى تورنت ويتقسم إلى أجزاء صغيرة، كل جزء ببصمة تحقق خاصة.',
+rt_step3_t:'انقل واستأنف',
+rt_step3_p:'الأجزاء الموثّقة تُحفظ تقدمها؛ لو انقطع الاتصال يكمل التحميل من وين توقف، لا من الصفر.',
+rt_limits_title:'قبل ما تبدأ — حدود صادقة:',
+rt_back_home:'رجوع',
+rt_send_empty:'لا توجد ملفات في قائمة الإرسال بعد.',
+rt_recv_empty:'لا شيء بعد — بانتظار أول ملف.',
+rt_folder_none:'لم يُختر مجلد بعد — على الحاسوب وفي كروم يمكنك اختيار مجلد حقيقي على القرص؛ وإلا تُحفظ الملفات تلقائياً في تنزيلات الجهاز.',
+rt_lim1:'النقل الآن ببروتوكول التورنت عبر WebTorrent: الأجهزة تتصل ببعضها عبر WebRTC، ومتتبّعات عامة (tracker.openwebtorrent.com وbtorrent.xyz وwebtorrent.dev) تساعدها على إيجاد بعضها فقط.',
+rt_lim2:'المتتبّع يرى بصمة التورنت وبياناته الوصفية (الاسم والحجم) فقط — محتوى الملف نفسه ينتقل مشفّراً بين جهازيك مباشرة ولا يمرّ على أي سيرفر.',
+rt_lim3:'قناة إشارة صغيرة (MQTT) ما زالت موجودة لغرض واحد: تمرير رابط المغناطيس مقابل الكود القصير — لأن الكود وحده لا يمكن أن يولّد الرابط.',
+rt_lim4:'النقل يعمل عن بُعد عبر الإنترنت أيضاً — الأجهزة ليست مضطرة أن تكون على نفس الشبكة أو في نفس المكان؛ يكفي أن تنضم بنفس الكود. على بعض الشبكات الصارمة (NAT مشدد أو جدار ناري) قد يتعذّر الاتصال المباشر بين جهازين بعيدين، فجرّب شبكة أخرى.',
+rt_lim5:'الجلسة جماعية: أي عدد من الأجهزة ينضم بنفس الكود، وأي ملف يُرسل يصل إلى الجميع في نفس الوقت — وكل جهاز أكمل جزءاً يصبح مصدراً له لباقي الأجهزة، فتزيد السرعة كلما كبرت الجلسة.',
+rt_lim6:'الأجهزة المشاركة لازم تبقى متصلة ومفتوحة على هذه الصفحة طوال النقل. التورنت لا يخزّن الملف في أي مكان: إذا غادر كل الباذرين لملف ما، يتوقف تحميله عند آخر جزء موثّق ويُستأنف متى عاد باذر.',
+rt_lim7:'الاستئناف يعمل ما دامت الصفحة مفتوحة (الأجزاء الموثّقة في ذاكرة الجلسة)؛ إغلاق الصفحة يمسحها، فأعد فتحها والباذر موجود ليبدأ من جديد — وفعّل «حفظ الجلسات» لحفظ ما اكتمل على قرصك.',
+rt_lim8:'حفظ الجلسات يكتب في مجلد تختاره على جهازك (أو تنزيلات الجهاز) — ملفاتك تبقى عندك، لا تُرفع لأي سيرفر.'
 }};function makeId(){if(window.crypto&&typeof window.crypto.randomUUID==='function')return window.crypto.randomUUID();
 return Date.now().toString(36)+Math.random().toString(36).slice(2);}const state={name:store.get('run_display_name',''),
 userId:store.get('run_user_id',makeId()),mqttClient:null,mqttConnectPromise:null,roomTopic:'',typingTopic:'',
@@ -1512,6 +1840,627 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {});
   });
 }
+</script>
+<script>
+
+/* ============ Runa Transfer — separate screen (WebTorrent + MQTT signaling) ============ */
+(function(){
+'use strict';
+function $(id){return document.getElementById(id);}
+var RT={
+  session:null,peerId:Math.random().toString(16).slice(2,10),deviceKey:'pc',
+  client:null,torrentClient:null,engineLoading:false,
+  peers:{},sent:{},received:{},
+  save:{on:false,dir:null,saved:[]},
+  statusKey:'rt_status_idle',labelKey:'rt_pair_idle',pairState:'idle',
+  brokerIdx:0,mqttConnected:false,mqttEverConnected:false,
+  hbTimer:null,pruneTimer:null,noteTimer:null,
+  brokers:['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt'],
+  topic:function(){return 'runapp/v1/transfer/'+(RT.session||'');}
+};
+var RT_TRACKERS=['wss://tracker.openwebtorrent.com','wss://tracker.btorrent.xyz','wss://tracker.webtorrent.dev'];
+var RT_I18N={
+en:{
+ rt_status_idle:'Not linked — create a session or join with a code',
+ rt_status_seeking:'Waiting for another device to join…',
+ rt_status_linked:'Linked — {n} device(s) in this session',
+ rt_status_engine:'Loading the transfer engine…',
+ rt_status_engine_fail:'Could not load the transfer engine — check your connection and try again',
+ rt_status_no_peers:'Session open — waiting for another device…',
+ rt_pair_idle:'No session yet — create a code or join with one',
+ rt_pair_seeking:'Waiting for another device to join…',
+ rt_pair_linked:'Linked — devices in this session can send and receive',
+ rt_folder_none:'No folder chosen yet — on desktop Chrome you can pick a real folder on disk; otherwise files are saved automatically to the device Downloads folder.',
+ rt_save_on:'Saving is ON — received files will be saved to the chosen folder.',
+ rt_save_off:'Saving is OFF — received files are only downloaded when you tap Download.',
+ rt_saved_to_folder:'Saved to the folder: ',
+ rt_saved_to_downloads:'Saved to Downloads: ',
+ rt_save_failed:'Could not save: ',
+ rt_folder_picked:'Folder chosen: ',
+ rt_folder_list:'Files in the folder:',
+ rt_no_folder_support:'This browser cannot pick a folder — files will be saved to Downloads.',
+ rt_join_invalid:'Enter a valid 6-character session code.',
+ rt_copy_done:'Code copied',
+ rt_copy_fail:'Could not copy the code',
+ rt_peer_joined:'joined the session',
+ rt_peer_left:'left the session',
+ rt_hashing:'Hashing…',
+ rt_hashing_sub:'Splitting the file into pieces and building the torrent…',
+ rt_seeding:'Seeding',
+ rt_seeding_peers:'Seeding — {n} peer(s)',
+ rt_pieces:'Pieces: {n} × {s}',
+ rt_uploaded:'Uploaded {s}',
+ rt_waiting_peers:'— waiting for session devices',
+ rt_connecting:'Connecting to seeders…',
+ rt_searching:'Looking for seeders via trackers…',
+ rt_stalled:'Stalled — {p}% saved',
+ rt_stalled_sub:'The seeder disconnected — verified pieces ({v}/{t}) are saved. It will resume automatically from {p}% when a seeder returns, not from zero.',
+ rt_waiting_seeder:'Waiting for a seeder…',
+ rt_resumed:'Resumed — ',
+ rt_peers:'Peers: {n}',
+ rt_verified:'Verified pieces: {v}/{t}',
+ rt_all_verified:'All pieces verified ({n}/{n}).',
+ rt_resume_from:'Resuming from {p}%',
+ rt_resume_sub:'This file was already downloading in this session — verified pieces ({p}%) are saved and it continues from there.',
+ rt_wt_error:'Torrent client error: ',
+ rt_done:'Done',
+ rt_paused:'Paused',
+ rt_failed:'Failed',
+ rt_cancelled:'Cancelled',
+ rt_pause:'Pause',
+ rt_resume:'Resume',
+ rt_cancel:'Cancel',
+ rt_download:'Download',
+ rt_seeding:'Seeding',
+ rt_saved:'Saved',
+ rt_you:'You',
+ rt_peer_note:'A device joined the session — its files will appear below, and your files are now visible to it.',
+ rt_dev_phone:'Phone',rt_dev_pc:'PC',rt_dev_tablet:'Tablet'
+},
+ar:{
+ rt_status_idle:'غير مرتبط — أنشئ جلسة أو انضم بكود',
+ rt_status_seeking:'بانتظار انضمام جهاز آخر…',
+ rt_status_linked:'متصل — {n} جهاز في هذه الجلسة',
+ rt_status_engine:'جارٍ تحميل محرك النقل…',
+ rt_status_engine_fail:'تعذّر تحميل محرك النقل — تحقق من الاتصال وحاول مجدداً',
+ rt_status_no_peers:'الجلسة مفتوحة — بانتظار جهاز آخر…',
+ rt_pair_idle:'لا توجد جلسة بعد — أنشئ كوداً أو انضم بكود',
+ rt_pair_seeking:'بانتظار انضمام جهاز آخر…',
+ rt_pair_linked:'متصل — الأجهزة في هذه الجلسة يمكنها الإرسال والاستلام',
+ rt_folder_none:'لم يُختر مجلد بعد — على الحاسوب وفي كروم يمكنك اختيار مجلد حقيقي على القرص؛ وإلا تُحفظ الملفات تلقائياً في تنزيلات الجهاز.',
+ rt_save_on:'الحفظ مفعّل — الملفات المستلمة ستُحفظ في المجلد المختار.',
+ rt_save_off:'الحفظ متوقف — الملفات المستلمة تُنزَّل فقط عندما تضغط «تنزيل».',
+ rt_saved_to_folder:'حُفظ في المجلد: ',
+ rt_saved_to_downloads:'حُفظ في التنزيلات: ',
+ rt_save_failed:'تعذّر الحفظ: ',
+ rt_folder_picked:'تم اختيار المجلد: ',
+ rt_folder_list:'الملفات في المجلد:',
+ rt_no_folder_support:'هذا المتصفح لا يدعم اختيار مجلد — ستُحفظ الملفات في التنزيلات.',
+ rt_join_invalid:'أدخل كود جلسة صحيحاً من 6 أحرف.',
+ rt_copy_done:'تم نسخ الكود',
+ rt_copy_fail:'تعذّر نسخ الكود',
+ rt_peer_joined:'انضم إلى الجلسة',
+ rt_peer_left:'غادر الجلسة',
+ rt_hashing:'جارٍ التجزئة…',
+ rt_hashing_sub:'تقسيم الملف إلى أجزاء وبناء التورنت…',
+ rt_seeding:'يبذر',
+ rt_seeding_peers:'يبذر — {n} نظير',
+ rt_pieces:'أجزاء: {n} جزءاً × {s}',
+ rt_uploaded:'رُفع {s}',
+ rt_waiting_peers:'— بانتظار أجهزة الجلسة',
+ rt_connecting:'جارٍ الاتصال بالناشرين…',
+ rt_searching:'البحث عن ناشرين عبر المتتبّعات…',
+ rt_stalled:'متوقف — محفوظ {p}%',
+ rt_stalled_sub:'انقطع الناشر — الأجزاء الموثّقة محفوظة ({v}/{t}). سيُستأنف تلقائياً من {p}% متى عاد ناشر، لا من الصفر.',
+ rt_waiting_seeder:'بانتظار ناشر…',
+ rt_resumed:'تم الاستئناف — ',
+ rt_peers:'نظير: {n}',
+ rt_verified:'أجزاء موثّقة: {v}/{t}',
+ rt_all_verified:'كل الأجزاء موثّقة ({n}/{n}).',
+ rt_resume_from:'استئناف من {p}%',
+ rt_resume_sub:'هذا الملف كان يُحمَّل في هذه الجلسة — الأجزاء الموثّقة ({p}%) محفوظة ويُكمل منها.',
+ rt_wt_error:'خطأ في عميل التورنت: ',
+ rt_done:'اكتمل',
+ rt_paused:'متوقف مؤقتاً',
+ rt_failed:'فشل',
+ rt_cancelled:'أُلغي',
+ rt_pause:'إيقاف مؤقت',
+ rt_resume:'استئناف',
+ rt_cancel:'إلغاء',
+ rt_download:'تنزيل',
+ rt_seeding:'بذّر',
+ rt_saved:'محفوظ',
+ rt_you:'أنت',
+ rt_peer_note:'انضم جهاز إلى الجلسة — ملفاته ستظهر أدناه، وملفاتك أصبحت مرئية له الآن.',
+ rt_dev_phone:'هاتف',rt_dev_pc:'بيسي',rt_dev_tablet:'تابلت'
+}};
+function rtLang(){var l=document.documentElement.lang||'ar';return l.indexOf('ar')===0?'ar':'en';}
+function rtT(k){var d=RT_I18N[rtLang()]||RT_I18N.en;var v=d[k];if(v==null)v=RT_I18N.en[k];return v==null?k:v;}
+function rtFmtSize(b){if(b==null||isNaN(b))return '—';if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';if(b<1073741824)return (b/1048576).toFixed(1)+' MB';return (b/1073741824).toFixed(2)+' GB';}
+function rtFmtSpeed(b){if(!b||b<=0)return '0 KB/s';return rtFmtSize(b)+'/s';}
+function rtDetectDeviceKey(){var ua=navigator.userAgent||'';if(/iPad|Tablet/i.test(ua))return 'tablet';if(/Mobi|Android|iPhone/i.test(ua))return 'phone';return 'pc';}
+var RT_CHAR='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+function rtGenCode(){var c='';for(var i=0;i<6;i++)c+=RT_CHAR[Math.floor(Math.random()*RT_CHAR.length)];return c;}
+function rtPeerCount(){return Object.keys(RT.peers).length;}
+/* ---- status / pairing animation ---- */
+function rtSetStatus(key,params){RT.statusKey=key;var el=$('rtConnStatus'),txt=$('rtConnStatusText');if(!el||!txt)return;var t=rtT(key);if(params&&params.n!=null)t=t.replace('{n}',String(params.n));txt.textContent=t;el.classList.remove('on','wait','err');if(key==='rt_status_linked')el.classList.add('on');else if(key==='rt_status_seeking'||key==='rt_status_no_peers'||key==='rt_status_engine')el.classList.add('wait');else if(key==='rt_status_engine_fail')el.classList.add('err');}
+function rtSetPairAnim(state,key){RT.pairState=state;RT.labelKey=key;var anim=$('rtPairAnim');if(anim)anim.dataset.state=state;var lab=$('rtPairAnimLabel');if(lab)lab.textContent=rtT(key);}
+function rtRefreshSessionUI(){
+  var total=rtPeerCount()+1;
+  var cnt=$('rtRosterCount');if(cnt)cnt.textContent='('+total+')';
+  var box=$('rtRosterBox');if(box)box.hidden=!RT.session;
+  var disc=$('rtDisconnectRow');if(disc)disc.hidden=!RT.session;
+  var copy=$('rtBtnCopy');if(copy)copy.disabled=!RT.session;
+  if(RT.session){
+    if(rtPeerCount()>0){rtSetStatus('rt_status_linked',{n:total});rtSetPairAnim('linked','rt_pair_linked');document.body.classList.add('rt-linked');document.body.classList.remove('rt-seeking');}
+    else{rtSetStatus('rt_status_no_peers');rtSetPairAnim('seeking','rt_pair_seeking');document.body.classList.remove('rt-linked');document.body.classList.add('rt-seeking');}
+  }else{
+    rtSetStatus('rt_status_idle');rtSetPairAnim('idle','rt_pair_idle');
+    document.body.classList.remove('rt-linked','rt-seeking','rt-transferring');
+  }
+  rtRenderRoster();rtRefreshTransferring();
+}
+function rtRenderRoster(){
+  var ul=$('rtRosterList');if(!ul)return;ul.innerHTML='';
+  var me=document.createElement('li');me.className='me';
+  var dot=document.createElement('span');dot.className='rt-dot';me.appendChild(dot);
+  me.appendChild(document.createTextNode(rtT('rt_dev_'+RT.deviceKey)+' '));
+  var tag=document.createElement('span');tag.className='rt-tag';tag.textContent=rtT('rt_you');me.appendChild(tag);
+  ul.appendChild(me);
+  Object.keys(RT.peers).forEach(function(pid){
+    var p=RT.peers[pid];var li=document.createElement('li');
+    var d=document.createElement('span');d.className='rt-dot';li.appendChild(d);
+    li.appendChild(document.createTextNode(rtT('rt_dev_'+(p.labelKey||'pc'))));
+    ul.appendChild(li);
+  });
+}
+function rtRefreshTransferring(){
+  var active=false;
+  Object.keys(RT.received).forEach(function(k){if(RT.received[k].state==='receiving')active=true;});
+  Object.keys(RT.sent).forEach(function(k){var e=RT.sent[k];if(e.state==='seeding'&&e.torrent&&(e.torrent.uploadSpeed||0)>0)active=true;});
+  document.body.classList.toggle('rt-transferring',active);
+}
+/* ---- notes ---- */
+function rtShowErr(t){var el=$('rtErrNote');if(!el)return;el.textContent=t;el.classList.add('show');}
+function rtHideErr(){var el=$('rtErrNote');if(!el)return;el.textContent='';el.classList.remove('show');}
+function rtShowPeerNote(t){var el=$('rtPeerNote');if(!el)return;el.textContent=t;el.classList.add('show');if(RT.noteTimer)clearTimeout(RT.noteTimer);RT.noteTimer=setTimeout(rtHidePeerNote,8000);}
+function rtHidePeerNote(){var el=$('rtPeerNote');if(!el)return;el.textContent='';el.classList.remove('show');}
+function rtSaveStatus(text,cls){var el=$('rtSaveStatus');if(!el)return;el.textContent=text||'';el.className='rt-set-status'+(cls?' '+cls:'');}
+function rtSaveFolderText(name){var el=$('rtSaveFolderPath');if(!el)return;el.textContent=name||rtT('rt_folder_none');}
+/* ---- WebTorrent engine (lazy-loaded, same CDN pattern as mqtt) ---- */
+function rtMakeClient(){
+  var c=new WebTorrent();
+  c.on('error',function(err){rtShowErr(rtT('rt_wt_error')+(err&&err.message?err.message:''));});
+  return c;
+}
+function rtLoadEngine(){
+  if(RT.torrentClient)return Promise.resolve(RT.torrentClient);
+  if(window.WebTorrent){try{RT.torrentClient=rtMakeClient();return Promise.resolve(RT.torrentClient);}catch(e){return Promise.reject(e);}}
+  if(RT.engineLoading)return RT.engineLoading;
+  RT.engineLoading=new Promise(function(res,rej){
+    var s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/webtorrent@2.6.0/dist/webtorrent.min.js';
+    s.onload=function(){try{RT.torrentClient=rtMakeClient();res(RT.torrentClient);}catch(e){rej(e);}};
+    s.onerror=function(){rej(new Error('webtorrent load failed'));};
+    document.head.appendChild(s);
+  });
+  RT.engineLoading.then(function(){RT.engineLoading=false;}).catch(function(){RT.engineLoading=false;});
+  return RT.engineLoading;
+}
+/* ---- MQTT signaling (existing brokers, transfer session topic) ---- */
+function rtMqttPublish(obj){
+  if(!RT.client||!RT.mqttConnected||!RT.session)return;
+  try{RT.client.publish(RT.topic(),JSON.stringify(obj));}catch(e){}
+}
+function rtMqttConnect(){
+  if(RT.client||!RT.session)return;
+  if(typeof mqtt==='undefined'){rtSetStatus('rt_status_engine_fail');return;}
+  var url=RT.brokers[RT.brokerIdx];
+  var client=mqtt.connect(url,{clientId:'runa-rt-'+RT.peerId+'-'+Math.random().toString(16).slice(2,6),clean:true,connectTimeout:8000,reconnectPeriod:4000});
+  RT.client=client;
+  client.on('connect',function(){
+    RT.mqttConnected=true;RT.mqttEverConnected=true;
+    client.subscribe(RT.topic(),function(err){
+      if(err){rtShowErr(rtT('rt_status_engine_fail'));return;}
+      rtMqttPublish({type:'hello',from:RT.peerId,labelKey:RT.deviceKey,ts:Date.now()});
+      rtPublishMagnets();
+    });
+    rtStartHeartbeat();
+  });
+  client.on('message',function(topic,msg){rtOnSignal(msg);});
+  client.on('error',function(){});
+  client.on('close',function(){
+    RT.mqttConnected=false;
+    if(!RT.mqttEverConnected&&RT.brokerIdx<RT.brokers.length-1){
+      try{client.end(true);}catch(e){}
+      RT.client=null;RT.brokerIdx++;rtMqttConnect();
+    }
+  });
+}
+function rtStartHeartbeat(){
+  rtStopHeartbeat();
+  RT.hbTimer=setInterval(function(){if(RT.session)rtMqttPublish({type:'presence',from:RT.peerId,labelKey:RT.deviceKey,ts:Date.now()});},15000);
+  RT.pruneTimer=setInterval(rtPrunePeers,10000);
+}
+function rtStopHeartbeat(){if(RT.hbTimer){clearInterval(RT.hbTimer);RT.hbTimer=null;}if(RT.pruneTimer){clearInterval(RT.pruneTimer);RT.pruneTimer=null;}}
+function rtPrunePeers(){
+  var now=Date.now(),changed=false;
+  Object.keys(RT.peers).forEach(function(pid){if(now-(RT.peers[pid].lastSeen||0)>45000){delete RT.peers[pid];changed=true;}});
+  if(changed)rtRefreshSessionUI();
+}
+function rtOnSignal(msg){
+  var d;try{d=JSON.parse(msg.toString());}catch(e){return;}
+  if(!d||d.from===RT.peerId)return;
+  if(d.type==='hello'||d.type==='presence'){
+    var isNew=!RT.peers[d.from];
+    RT.peers[d.from]={labelKey:d.labelKey||'pc',lastSeen:Date.now()};
+    if(d.type==='hello')rtMqttPublish({type:'presence',from:RT.peerId,labelKey:RT.deviceKey,ts:Date.now()});
+    if(isNew){rtShowPeerNote(rtT('rt_dev_'+(d.labelKey||'pc'))+' '+rtT('rt_peer_joined')+' — '+rtT('rt_peer_note'));rtPublishMagnets();rtRefreshSessionUI();}
+    else rtRenderRoster();
+  }else if(d.type==='magnet'){
+    if(d.infoHash&&RT.sent[d.infoHash])return;
+    if(d.infoHash&&RT.received[d.infoHash]){
+      var ex=RT.received[d.infoHash];
+      ex.resumeNoteUntil=Date.now()+8000;
+      rtUpdateRecvRow(ex);
+      return;
+    }
+    rtAddRemoteTorrent(d);
+  }else if(d.type==='bye'){
+    if(RT.peers[d.from]){var lk=RT.peers[d.from].labelKey||'pc';delete RT.peers[d.from];rtShowPeerNote(rtT('rt_dev_'+lk)+' '+rtT('rt_peer_left'));rtRefreshSessionUI();}
+  }
+}
+function rtPublishMagnets(){
+  if(!RT.session)return;
+  Object.keys(RT.sent).forEach(function(ih){
+    var s=RT.sent[ih];if(!s||!s.magnet)return;
+    rtMqttPublish({type:'magnet',from:RT.peerId,labelKey:RT.deviceKey,infoHash:ih,magnet:s.magnet,name:s.name,size:s.size,ts:Date.now()});
+  });
+}
+/* ---- sessions ---- */
+function rtStartSession(code){
+  RT.session=code;RT.peers={};
+  var mc=$('rtMyCode');if(mc)mc.textContent=code;
+  rtHideErr();
+  rtRefreshSessionUI();
+  rtMqttConnect();
+  rtLoadEngine().catch(function(){rtSetStatus('rt_status_engine_fail');});
+}
+function rtCreateSession(){rtStartSession(rtGenCode());}
+function rtJoinSession(){
+  var inp=$('rtJoinInput');var code=(inp?inp.value:'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(code.length!==6){rtShowErr(rtT('rt_join_invalid'));return;}
+  rtHideErr();
+  rtStartSession(code);
+}
+function rtDisconnect(){
+  if(RT.session)rtMqttPublish({type:'bye',from:RT.peerId,ts:Date.now()});
+  RT.session=null;RT.peers={};
+  if(RT.client){try{RT.client.end(true);}catch(e){}RT.client=null;RT.mqttConnected=false;}
+  rtStopHeartbeat();
+  var mc=$('rtMyCode');if(mc)mc.textContent='––––––';
+  var ji=$('rtJoinInput');if(ji)ji.value='';
+  rtHideErr();rtHidePeerNote();
+  rtRefreshSessionUI();
+}
+function rtCopyCode(){
+  var code=RT.session||'';if(!code)return;
+  function done(ok){rtShowPeerNote(ok?rtT('rt_copy_done'):rtT('rt_copy_fail'));}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(function(){done(true);},function(){done(false);});}
+  else{var ta=document.createElement('textarea');ta.value=code;document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(ta);done(ok);}
+}
+/* ---- file rows ---- */
+function rtExt(name){var m=/\.([a-z0-9]{1,5})$/i.exec(name||'');return m?m[1].toUpperCase():'FILE';}
+function rtBuildRow(kind,entry){
+  var li=document.createElement('li');li.className='rt-fitem';
+  var top=document.createElement('div');top.className='rt-top';
+  var ic=document.createElement('div');ic.className='rt-ic';ic.textContent=rtExt(entry.name);top.appendChild(ic);
+  var meta=document.createElement('div');meta.className='rt-meta';
+  var nm=document.createElement('div');nm.className='rt-name';nm.textContent=entry.name;nm.title=entry.name;meta.appendChild(nm);
+  var sz=document.createElement('div');sz.className='rt-size';sz.textContent=rtFmtSize(entry.size);meta.appendChild(sz);
+  var det=document.createElement('div');det.className='rt-detail';meta.appendChild(det);
+  top.appendChild(meta);
+  var st=document.createElement('div');st.className='rt-state';top.appendChild(st);
+  var pauseBtn=document.createElement('button');pauseBtn.type='button';pauseBtn.className='rt-mini';pauseBtn.textContent=rtT('rt_pause');
+  pauseBtn.addEventListener('click',function(){rtTogglePause(entry);});
+  top.appendChild(pauseBtn);entry.pauseBtn=pauseBtn;
+  var cancelBtn=document.createElement('button');cancelBtn.type='button';cancelBtn.className='rt-mini';cancelBtn.textContent=rtT('rt_cancel');
+  cancelBtn.addEventListener('click',function(){rtCancelEntry(entry);});
+  top.appendChild(cancelBtn);entry.cancelBtn=cancelBtn;
+  if(kind==='recv'){
+    var dlBtn=document.createElement('button');dlBtn.type='button';dlBtn.className='rt-dl';dlBtn.textContent=rtT('rt_download');dlBtn.style.display='none';
+    dlBtn.addEventListener('click',function(){rtDownloadEntry(entry);});
+    top.appendChild(dlBtn);entry.dlBtn=dlBtn;
+  }
+  li.appendChild(top);
+  var bar=document.createElement('div');bar.className='rt-bar';var fill=document.createElement('i');bar.appendChild(fill);li.appendChild(bar);
+  var list=$(kind==='send'?'rtSendList':'rtRecvList');
+  if(list)list.appendChild(li);
+  var empty=$(kind==='send'?'rtSendEmpty':'rtRecvEmpty');if(empty)empty.style.display='none';
+  entry.row=li;
+  return li;
+}
+function rtCheckEmpty(kind){
+  var list=$(kind==='send'?'rtSendList':'rtRecvList');var empty=$(kind==='send'?'rtSendEmpty':'rtRecvEmpty');
+  if(list&&empty)empty.style.display=list.children.length?'none':'';
+}
+function rtTogglePause(entry){
+  if(!entry||!entry.torrent)return;
+  if(entry.state==='paused'){entry.torrent.resume();entry.state=entry.kind==='send'?'seeding':'receiving';}
+  else{entry.torrent.pause();entry.state='paused';}
+  if(entry.pauseBtn)entry.pauseBtn.textContent=rtT(entry.state==='paused'?'rt_resume':'rt_pause');
+  if(entry.kind==='send')rtUpdateSendRow(entry);else rtUpdateRecvRow(entry);
+}
+function rtCancelEntry(entry){
+  if(!entry)return;
+  if(entry.torrent){try{entry.torrent.destroy();}catch(e){}}
+  if(entry.kind==='send'&&entry.infoHash)delete RT.sent[entry.infoHash];
+  if(entry.kind==='recv'&&entry.infoHash)delete RT.received[entry.infoHash];
+  if(entry.row&&entry.row.parentNode)entry.row.parentNode.removeChild(entry.row);
+  rtCheckEmpty(entry.kind);rtRefreshTransferring();
+}
+/* ---- send (seed) ---- */
+function rtAddFiles(fileList){
+  if(!fileList||!fileList.length)return;
+  rtLoadEngine().then(function(client){
+    Array.prototype.forEach.call(fileList,function(file){rtSeedFile(client,file);});
+  }).catch(function(){rtShowErr(rtT('rt_status_engine_fail'));});
+}
+function rtSeedFile(client,file){
+  var entry={kind:'send',name:file.name,size:file.size,state:'seeding',torrent:null,magnet:null,infoHash:null,row:null,pauseBtn:null,cancelBtn:null};
+  rtBuildRow('send',entry);
+  rtUpdateSendRow(entry);
+  client.seed(file,{announce:RT_TRACKERS},function(torrent){
+    entry.torrent=torrent;entry.infoHash=torrent.infoHash;entry.magnet=torrent.magnetURI;
+    RT.sent[torrent.infoHash]=entry;
+    rtPublishMagnets();
+    rtUpdateSendRow(entry);
+    torrent.on('upload',function(){rtUpdateSendRow(entry);});
+    torrent.on('error',function(){entry.state='failed';rtUpdateSendRow(entry);});
+  });
+}
+function rtUpdateSendRow(e){
+  if(!e||!e.row)return;
+  var bar=e.row.querySelector('.rt-bar'),fill=e.row.querySelector('.rt-bar i'),
+      stateEl=e.row.querySelector('.rt-state'),det=e.row.querySelector('.rt-detail');
+  if(e.state==='failed'){stateEl.textContent=rtT('rt_failed');stateEl.className='rt-state fail';if(bar)bar.classList.remove('show');e.row.classList.remove('active');rtRefreshTransferring();return;}
+  if(e.state==='paused'){stateEl.textContent=rtT('rt_paused');stateEl.className='rt-state paused';e.row.classList.remove('active');rtRefreshTransferring();return;}
+  var t=e.torrent;
+  if(!t){
+    stateEl.textContent=rtT('rt_hashing');stateEl.className='rt-state';
+    if(det)det.textContent=rtT('rt_hashing_sub');
+    if(bar)bar.classList.add('show');if(fill)fill.style.width='0%';
+    e.row.classList.remove('active');rtRefreshTransferring();return;
+  }
+  var pieces=t.pieces?t.pieces.length:0,pieceSize=t.pieceLength||0;
+  var uploaded=t.uploaded||0,speed=t.uploadSpeed||0,numPeers=t.numPeers||0;
+  if(bar)bar.classList.add('show');if(fill)fill.style.width='100%';
+  stateEl.textContent=numPeers>0?rtT('rt_seeding_peers').replace('{n}',String(numPeers)):rtT('rt_seeding');
+  stateEl.className='rt-state done';
+  if(det)det.textContent=rtT('rt_pieces').replace('{n}',String(pieces)).replace('{s}',rtFmtSize(pieceSize))+(numPeers>0?' · '+rtT('rt_uploaded').replace('{s}',rtFmtSize(uploaded))+(speed>0?' · '+rtFmtSpeed(speed):''):' · '+rtT('rt_waiting_peers'));
+  e.row.classList.toggle('active',speed>0);
+  rtRefreshTransferring();
+}
+/* ---- receive ---- */
+function rtAddRemoteTorrent(d){
+  if(!d||!d.magnet||!d.infoHash)return;
+  rtLoadEngine().then(function(client){
+    if(RT.received[d.infoHash])return;
+    var entry={kind:'recv',name:d.name||'file',size:d.size||0,infoHash:d.infoHash,magnet:d.magnet,state:'receiving',torrent:null,row:null,pauseBtn:null,cancelBtn:null,dlBtn:null,from:d.from,stalled:false,resumeNoteUntil:0};
+    RT.received[d.infoHash]=entry;
+    rtBuildRow('recv',entry);
+    var torrent=client.add(d.magnet,{announce:RT_TRACKERS},function(){rtUpdateRecvRow(entry);});
+    entry.torrent=torrent;
+    torrent.on('download',function(){rtUpdateRecvRow(entry);});
+    torrent.on('done',function(){entry.state='done';rtUpdateRecvRow(entry);rtOnRecvDone(entry);});
+    torrent.on('error',function(){entry.state='failed';rtUpdateRecvRow(entry);});
+    rtUpdateRecvRow(entry);
+  }).catch(function(){rtShowErr(rtT('rt_status_engine_fail'));});
+}
+function rtVerifiedPieces(t){if(!t||!t.pieces)return 0;return Math.floor((t.progress||0)*t.pieces.length);}
+function rtUpdateRecvRow(e){
+  if(!e||!e.row)return;
+  var bar=e.row.querySelector('.rt-bar'),fill=e.row.querySelector('.rt-bar i'),
+      stateEl=e.row.querySelector('.rt-state'),det=e.row.querySelector('.rt-detail');
+  if(e.state==='failed'){stateEl.textContent=rtT('rt_failed');stateEl.className='rt-state fail';if(bar)bar.classList.remove('show');e.row.classList.remove('active');rtRefreshTransferring();return;}
+  if(e.state==='paused'){stateEl.textContent=rtT('rt_paused');stateEl.className='rt-state paused';e.row.classList.remove('active');rtRefreshTransferring();return;}
+  var t=e.torrent;
+  if(e.state==='done'){
+    stateEl.textContent=rtT('rt_done');stateEl.className='rt-state done';
+    var pc=t&&t.pieces?t.pieces.length:0;
+    if(det)det.textContent=rtT('rt_all_verified').replace(/\{n\}/g,String(pc));
+    if(bar)bar.classList.add('show');if(fill)fill.style.width='100%';
+    e.row.classList.remove('active');
+    if(e.dlBtn)e.dlBtn.style.display='';
+    if(e.pauseBtn)e.pauseBtn.style.display='none';
+    rtRefreshTransferring();return;
+  }
+  if(!t){
+    stateEl.textContent=rtT('rt_connecting');stateEl.className='rt-state';
+    if(det)det.textContent=rtT('rt_searching');
+    if(bar)bar.classList.add('show');if(fill)fill.style.width='0%';
+    e.row.classList.add('active');rtRefreshTransferring();return;
+  }
+  var prog=t.progress||0,pct=Math.round(prog*100);
+  var totalPieces=t.pieces?t.pieces.length:0,verified=rtVerifiedPieces(t);
+  var speed=t.downloadSpeed||0,numPeers=t.numPeers||0;
+  if(e.resumeNoteUntil&&Date.now()<e.resumeNoteUntil){
+    stateEl.textContent=rtT('rt_resume_from').replace('{p}',String(pct));stateEl.className='rt-state';
+    if(det)det.textContent=rtT('rt_resume_sub').replace('{p}',String(pct));
+  }else if(numPeers===0&&prog>0){
+    if(!e.stalled)e.stalled=true;
+    stateEl.textContent=rtT('rt_stalled').replace('{p}',String(pct));stateEl.className='rt-state paused';
+    if(det)det.textContent=rtT('rt_stalled_sub').replace('{v}',String(verified)).replace('{t}',String(totalPieces)).replace('{p}',String(pct));
+  }else if(numPeers>0){
+    var resumed=e.stalled;e.stalled=false;
+    stateEl.textContent=pct+'%';stateEl.className='rt-state';
+    if(det)det.textContent=(resumed?rtT('rt_resumed'):'')+rtT('rt_peers').replace('{n}',String(numPeers))+' · '+rtT('rt_verified').replace('{v}',String(verified)).replace('{t}',String(totalPieces))+(speed>0?' · '+rtFmtSpeed(speed):'');
+  }else{
+    stateEl.textContent=rtT('rt_waiting_seeder');stateEl.className='rt-state';
+    if(det)det.textContent=rtT('rt_searching');
+  }
+  if(bar)bar.classList.add('show');if(fill)fill.style.width=pct+'%';
+  e.row.classList.toggle('active',speed>0||numPeers>0);
+  rtRefreshTransferring();
+}
+function rtOnRecvDone(entry){
+  if(entry.row)entry.row.classList.add('done-pop');
+  if(RT.save.on)rtSaveEntry(entry);
+}
+function rtDownloadEntry(entry){
+  var t=entry.torrent;if(!t||!t.files||!t.files.length)return;
+  t.files[0].getBlobURL(function(err,url){
+    if(err||!url)return;
+    var a=document.createElement('a');a.href=url;a.download=entry.name;document.body.appendChild(a);a.click();
+    setTimeout(function(){document.body.removeChild(a);},4000);
+  });
+}
+/* ---- session saving (real folder on device, Downloads fallback) ---- */
+function rtSaveEntry(entry){
+  var t=entry.torrent;if(!t||!t.files||!t.files.length)return;
+  t.files[0].getBlob(function(err,blob){
+    if(err||!blob){rtSaveStatus(rtT('rt_save_failed')+entry.name,'bad');return;}
+    if(RT.save.dir)rtWriteToFolder(entry,blob);
+    else{rtDownloadBlob(blob,entry.name);rtNoteSaved(entry,'downloads');}
+  });
+}
+function rtWriteToFolder(entry,blob){
+  var dir=RT.save.dir;
+  dir.getFileHandle(entry.name,{create:true}).then(function(handle){
+    return handle.createWritable().then(function(w){return w.write(blob).then(function(){return w.close();});});
+  }).then(function(){rtNoteSaved(entry,'folder');}).catch(function(){
+    rtDownloadBlob(blob,entry.name);rtNoteSaved(entry,'downloads');
+  });
+}
+function rtDownloadBlob(blob,name){
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},4000);
+}
+function rtNoteSaved(entry,where){
+  RT.save.saved.push({name:entry.name,size:entry.size,when:Date.now(),where:where});
+  rtRenderSaved();
+  rtSaveStatus((where==='folder'?rtT('rt_saved_to_folder'):rtT('rt_saved_to_downloads'))+entry.name,'ok');
+}
+function rtRenderSaved(){
+  var list=$('rtSavedList');if(!list)return;list.innerHTML='';
+  RT.save.saved.forEach(function(s){
+    var li=document.createElement('li');li.className='rt-fitem';
+    var top=document.createElement('div');top.className='rt-top';
+    var ic=document.createElement('div');ic.className='rt-ic';ic.textContent=rtExt(s.name);top.appendChild(ic);
+    var meta=document.createElement('div');meta.className='rt-meta';
+    var nm=document.createElement('div');nm.className='rt-name';nm.textContent=s.name;nm.title=s.name;meta.appendChild(nm);
+    var sz=document.createElement('div');sz.className='rt-size';sz.textContent=rtFmtSize(s.size);meta.appendChild(sz);
+    top.appendChild(meta);
+    var st=document.createElement('div');st.className='rt-state done';st.textContent=rtT('rt_saved');top.appendChild(st);
+    li.appendChild(top);list.appendChild(li);
+  });
+  var empty=$('rtSavedEmpty');if(empty)empty.style.display=RT.save.saved.length?'none':'';
+}
+function rtToggleSave(){
+  RT.save.on=!RT.save.on;
+  var sw=$('rtSaveToggle');if(sw)sw.setAttribute('aria-checked',String(RT.save.on));
+  var body=$('rtSaveBody');if(body)body.hidden=!RT.save.on;
+  try{localStorage.setItem('run_rt_save_on',RT.save.on?'1':'0');}catch(e){}
+  rtSaveStatus(RT.save.on?rtT('rt_save_on'):rtT('rt_save_off'),RT.save.on?'ok':'');
+  if(RT.save.on)rtRenderSaved();
+}
+function rtPickFolder(){
+  if(!('showDirectoryPicker'in window)){rtSaveStatus(rtT('rt_no_folder_support'),'bad');return;}
+  window.showDirectoryPicker({mode:'readwrite'}).then(function(dir){
+    RT.save.dir=dir;
+    rtSaveFolderText(dir.name);
+    rtSaveStatus(rtT('rt_folder_picked')+dir.name,'ok');
+  }).catch(function(){});
+}
+async function rtViewFolder(){
+  if(!RT.save.dir){rtPickFolder();return;}
+  try{
+    var names=[];
+    for await (var h of RT.save.dir.values()){names.push(h.name);}
+    rtSaveStatus(rtT('rt_folder_list')+' '+(names.length?names.join('، '):'—'),'');
+  }catch(e){rtSaveStatus(rtT('rt_save_failed'),'bad');}
+}
+/* ---- navigation / language ---- */
+function rtOpenTransfer(){
+  var landing=$('landingScreen'),room=$('roomScreen');
+  if(landing)landing.classList.add('hidden');
+  if(room)room.classList.remove('active');
+  var ts=$('rtTransferScreen');if(ts)ts.classList.add('active');
+  document.body.classList.remove('in-room');
+  document.body.classList.add('in-transfer');
+  ['runFab','fabMenu','fabScrim'].forEach(function(id){var el=$(id);if(el)el.classList.add('fab-hidden');});
+  window.scrollTo(0,0);
+  rtApplyLang();
+  rtLoadEngine().catch(function(){rtSetStatus('rt_status_engine_fail');});
+}
+function rtGoHome(){
+  var ts=$('rtTransferScreen');if(ts)ts.classList.remove('active');
+  document.body.classList.remove('in-transfer','rt-linked','rt-seeking','rt-transferring');
+  var landing=$('landingScreen'),room=$('roomScreen');
+  if(landing)landing.classList.remove('hidden');
+  if(room)room.classList.remove('active');
+  document.body.classList.remove('in-room');
+  ['runFab','fabMenu','fabScrim'].forEach(function(id){var el=$(id);if(el)el.classList.remove('fab-hidden');});
+  window.scrollTo(0,0);
+}
+function rtApplyLang(){
+  rtSetStatus(RT.statusKey,RT.statusKey==='rt_status_linked'?{n:rtPeerCount()+1}:null);
+  rtSetPairAnim(RT.pairState,RT.labelKey);
+  rtSaveFolderText(RT.save.dir?RT.save.dir.name:null);
+  Object.keys(RT.sent).forEach(function(k){var e=RT.sent[k];if(e.pauseBtn)e.pauseBtn.textContent=rtT(e.state==='paused'?'rt_resume':'rt_pause');if(e.cancelBtn)e.cancelBtn.textContent=rtT('rt_cancel');rtUpdateSendRow(e);});
+  Object.keys(RT.received).forEach(function(k){var e=RT.received[k];if(e.pauseBtn)e.pauseBtn.textContent=rtT(e.state==='paused'?'rt_resume':'rt_pause');if(e.cancelBtn)e.cancelBtn.textContent=rtT('rt_cancel');if(e.dlBtn)e.dlBtn.textContent=rtT('rt_download');rtUpdateRecvRow(e);});
+  rtRenderRoster();rtRenderSaved();
+  if(RT.save.on)rtSaveStatus(rtT('rt_save_on'),'ok');
+}
+function rtSetTab(which){
+  var tabC=$('rtTabCreate'),tabJ=$('rtTabJoin'),paneC=$('rtPaneCreate'),paneJ=$('rtPaneJoin');
+  if(tabC)tabC.setAttribute('aria-selected',String(which==='create'));
+  if(tabJ)tabJ.setAttribute('aria-selected',String(which==='join'));
+  if(paneC)paneC.hidden=which!=='create';
+  if(paneJ)paneJ.hidden=which!=='join';
+}
+function rtInit(){
+  RT.deviceKey=rtDetectDeviceKey();
+  try{RT.save.on=localStorage.getItem('run_rt_save_on')==='1';}catch(e){}
+  var sw=$('rtSaveToggle');if(sw)sw.setAttribute('aria-checked',String(RT.save.on));
+  var body=$('rtSaveBody');if(body)body.hidden=!RT.save.on;
+  if(sw)sw.addEventListener('click',rtToggleSave);
+  var openBtn=$('openTransferCardBtn');if(openBtn)openBtn.addEventListener('click',rtOpenTransfer);
+  var back=$('rtBackHome');if(back)back.addEventListener('click',rtGoHome);
+  var brand=$('brandHome');if(brand)brand.addEventListener('click',function(){
+    var ts=$('rtTransferScreen');if(ts)ts.classList.remove('active');
+    document.body.classList.remove('in-transfer','rt-linked','rt-seeking','rt-transferring');
+  });
+  var tabC=$('rtTabCreate'),tabJ=$('rtTabJoin');
+  if(tabC)tabC.addEventListener('click',function(){rtSetTab('create');});
+  if(tabJ)tabJ.addEventListener('click',function(){rtSetTab('join');});
+  var create=$('rtBtnCreate');if(create)create.addEventListener('click',rtCreateSession);
+  var copy=$('rtBtnCopy');if(copy)copy.addEventListener('click',rtCopyCode);
+  var join=$('rtBtnJoin');if(join)join.addEventListener('click',rtJoinSession);
+  var ji=$('rtJoinInput');if(ji)ji.addEventListener('keydown',function(e){if(e.key==='Enter')rtJoinSession();});
+  var disc=$('rtBtnDisconnect');if(disc)disc.addEventListener('click',rtDisconnect);
+  var pick=$('rtBtnPick');if(pick)pick.addEventListener('click',function(){var fi=$('rtFileInput');if(fi)fi.click();});
+  var fi=$('rtFileInput');if(fi)fi.addEventListener('change',function(){rtAddFiles(fi.files);fi.value='';});
+  var drop=$('rtDrop');
+  if(drop){
+    ['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('drag');});});
+    ['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('drag');});});
+    drop.addEventListener('drop',function(e){var files=e.dataTransfer&&e.dataTransfer.files;if(files&&files.length)rtAddFiles(files);});
+  }
+  var pf=$('rtBtnPickFolder');if(pf)pf.addEventListener('click',rtPickFolder);
+  var vf=$('rtBtnOpenFolder');if(vf)vf.addEventListener('click',rtViewFolder);
+  setInterval(function(){
+    Object.keys(RT.sent).forEach(function(k){rtUpdateSendRow(RT.sent[k]);});
+    Object.keys(RT.received).forEach(function(k){rtUpdateRecvRow(RT.received[k]);});
+  },1000);
+  if(window.MutationObserver){
+    new MutationObserver(function(){rtApplyLang();}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  }
+  rtApplyLang();
+}
+rtInit();
+})();
 </script>
 </body>
 </html>
