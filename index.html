@@ -648,7 +648,7 @@ body.rt-seeking #rtTransferScreen .rt-wire,body.rt-linked #rtTransferScreen .rt-
 <section class="rt-card" aria-labelledby="rtSendTitle">
 <h2 id="rtSendTitle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg><span data-i18n="rt_send_title">إرسال ملفات</span></h2>
 <p class="rt-sub" data-i18n="rt_send_sub">كل ملف تختاره يصبح تورنت مستقلاً تُبذره (Seed) من جهازك، ويُبثّ رابطه لكل أجهزة الجلسة فتستلمه كلها في نفس الوقت وتتشارك أجزاءه. يمكنك إضافة الملفات قبل الانضمام — تُبذر فوراً وتُرسل روابطها عند دخول الجلسة.</p>
-<div class="rt-drop" id="rtDrop"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg><p class="rt-big" data-i18n="rt_drop_big">اسحب ملفاتك هنا وأفلتها</p><p class="rt-small" data-i18n="rt_drop_small">أي نوع وأي حجم — التورنت مصمم للملفات الضخمة: أجزاء موثّقة واستئناف تلقائي</p><button class="rt-btn primary" id="rtBtnPick" style="flex:none;padding-inline:22px" data-i18n="rt_pick_btn">اختيار ملفات</button><input type="file" id="rtFileInput" multiple /></div>
+<div class="rt-drop" id="rtDrop"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg><p class="rt-big" data-i18n="rt_drop_big">اسحب ملفاتك هنا وأفلتها</p><p class="rt-small" data-i18n="rt_drop_small">أي نوع وأي حجم — التورنت مصمم للملفات الضخمة: أجزاء موثّقة واستئناف تلقائي</p><button class="rt-btn primary" id="rtBtnPick" style="flex:none;padding-inline:22px" data-i18n="rt_pick_btn">اختيار ملفات</button><input type="file" id="rtFileInput" class="sr-only" multiple /></div>
 <ul class="rt-flist" id="rtSendList"></ul>
 <p class="rt-empty-note" id="rtSendEmpty" data-i18n="rt_send_empty">لا توجد ملفات في قائمة الإرسال بعد.</p>
 </section>
@@ -1850,7 +1850,8 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 function $(id){return document.getElementById(id);}
 var RT={
   session:null,peerId:Math.random().toString(16).slice(2,10),deviceKey:'pc',
-  client:null,torrentClient:null,engineLoading:false,
+  client:null,torrentClient:null,engineLoading:false,engineUrlIdx:0,
+  pendingSend:[],pendingRecv:[],
   peers:{},sent:{},received:{},
   save:{on:false,dir:null,saved:[]},
   statusKey:'rt_status_idle',labelKey:'rt_pair_idle',pairState:'idle',
@@ -1860,6 +1861,11 @@ var RT={
   topic:function(){return 'runapp/v1/transfer/'+(RT.session||'');}
 };
 var RT_TRACKERS=['wss://tracker.openwebtorrent.com','wss://tracker.btorrent.xyz','wss://tracker.webtorrent.dev'];
+/* WebTorrent v1 UMD build (exposes window.WebTorrent). v2's dist build is ESM-only
+   (ends with `export{Qt as default}`, no window global) and can never load via a
+   classic <script> tag — that was the engine failure. Try 3 independent CDNs in order. */
+var RT_ENGINE_URLS=['https://cdn.jsdelivr.net/npm/webtorrent@1.9.7/webtorrent.min.js','https://unpkg.com/webtorrent@1.9.7/webtorrent.min.js','https://cdnjs.cloudflare.com/ajax/libs/webtorrent/1.9.7/webtorrent.min.js'];
+var RT_ENGINE_TIMEOUT_MS=20000;
 var RT_I18N={
 en:{
  rt_status_idle:'Not linked — create a session or join with a code',
@@ -1907,6 +1913,8 @@ en:{
  rt_done:'Done',
  rt_paused:'Paused',
  rt_failed:'Failed',
+ rt_queued:'Waiting for the transfer engine…',
+ rt_queued_sub:'Your file is queued — seeding starts automatically once the engine loads.',
  rt_cancelled:'Cancelled',
  rt_pause:'Pause',
  rt_resume:'Resume',
@@ -1964,6 +1972,8 @@ ar:{
  rt_done:'اكتمل',
  rt_paused:'متوقف مؤقتاً',
  rt_failed:'فشل',
+ rt_queued:'بانتظار محرك النقل…',
+ rt_queued_sub:'ملفك في الانتظار — يبدأ البذر تلقائياً فور تحميل المحرك.',
  rt_cancelled:'أُلغي',
  rt_pause:'إيقاف مؤقت',
  rt_resume:'استئناف',
@@ -2036,17 +2046,37 @@ function rtMakeClient(){
 }
 function rtLoadEngine(){
   if(RT.torrentClient)return Promise.resolve(RT.torrentClient);
-  if(window.WebTorrent){try{RT.torrentClient=rtMakeClient();return Promise.resolve(RT.torrentClient);}catch(e){return Promise.reject(e);}}
+  if(typeof window.WebTorrent==='function'){try{RT.torrentClient=rtMakeClient();rtOnEngineReady();return Promise.resolve(RT.torrentClient);}catch(e){return Promise.reject(e);}}
   if(RT.engineLoading)return RT.engineLoading;
-  RT.engineLoading=new Promise(function(res,rej){
-    var s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/npm/webtorrent@2.6.0/dist/webtorrent.min.js';
-    s.onload=function(){try{RT.torrentClient=rtMakeClient();res(RT.torrentClient);}catch(e){rej(e);}};
-    s.onerror=function(){rej(new Error('webtorrent load failed'));};
-    document.head.appendChild(s);
-  });
-  RT.engineLoading.then(function(){RT.engineLoading=false;}).catch(function(){RT.engineLoading=false;});
+  rtSetStatus('rt_status_engine');
+  var urls=RT_ENGINE_URLS,startIdx=RT.engineUrlIdx||0;
+  var order=urls.map(function(_,i){return (startIdx+i)%urls.length;});
+  var attempt=0;
+  function tryNext(){
+    if(attempt>=order.length)return Promise.reject(new Error('webtorrent load failed on all CDNs'));
+    var idx=order[attempt++],url=urls[idx];
+    return new Promise(function(res,rej){
+      var done=false;
+      var timer=setTimeout(function(){if(done)return;done=true;try{s.remove();}catch(e){}rej(new Error('webtorrent load timeout'));},RT_ENGINE_TIMEOUT_MS);
+      var s=document.createElement('script');
+      s.src=url;
+      s.onload=function(){
+        if(done)return;done=true;clearTimeout(timer);
+        try{s.remove();}catch(e){}
+        if(typeof window.WebTorrent!=='function'){rej(new Error('webtorrent global missing'));return;}
+        try{RT.torrentClient=rtMakeClient();RT.engineUrlIdx=idx;rtOnEngineReady();res(RT.torrentClient);}catch(e){rej(e);}
+      };
+      s.onerror=function(){if(done)return;done=true;clearTimeout(timer);try{s.remove();}catch(e){}rej(new Error('webtorrent load failed'));};
+      document.head.appendChild(s);
+    }).catch(function(){return tryNext();});
+  }
+  RT.engineLoading=tryNext();
+  RT.engineLoading.then(function(){RT.engineLoading=false;}).catch(function(){RT.engineLoading=false;rtSetStatus('rt_status_engine_fail');});
   return RT.engineLoading;
+}
+function rtOnEngineReady(){
+  rtFlushPending();
+  rtRefreshSessionUI();
 }
 /* ---- MQTT signaling (existing brokers, transfer session topic) ---- */
 function rtMqttPublish(obj){
@@ -2194,6 +2224,7 @@ function rtTogglePause(entry){
 }
 function rtCancelEntry(entry){
   if(!entry)return;
+  var qi=RT.pendingSend.indexOf(entry);if(qi>=0)RT.pendingSend.splice(qi,1);
   if(entry.torrent){try{entry.torrent.destroy();}catch(e){}}
   if(entry.kind==='send'&&entry.infoHash)delete RT.sent[entry.infoHash];
   if(entry.kind==='recv'&&entry.infoHash)delete RT.received[entry.infoHash];
@@ -2203,15 +2234,29 @@ function rtCancelEntry(entry){
 /* ---- send (seed) ---- */
 function rtAddFiles(fileList){
   if(!fileList||!fileList.length)return;
-  rtLoadEngine().then(function(client){
-    Array.prototype.forEach.call(fileList,function(file){rtSeedFile(client,file);});
-  }).catch(function(){rtShowErr(rtT('rt_status_engine_fail'));});
+  /* A chosen file MUST appear in the send list immediately (queued state),
+     even while the engine is still loading — never silently dropped. */
+  Array.prototype.forEach.call(fileList,function(file){
+    var entry={kind:'send',name:file.name,size:file.size,state:'queued',file:file,torrent:null,magnet:null,infoHash:null,row:null,pauseBtn:null,cancelBtn:null};
+    rtBuildRow('send',entry);
+    rtUpdateSendRow(entry);
+    RT.pendingSend.push(entry);
+  });
+  rtLoadEngine().then(function(){rtFlushPending();}).catch(function(){rtMarkPendingFailed();rtShowErr(rtT('rt_status_engine_fail'));});
 }
-function rtSeedFile(client,file){
-  var entry={kind:'send',name:file.name,size:file.size,state:'seeding',torrent:null,magnet:null,infoHash:null,row:null,pauseBtn:null,cancelBtn:null};
-  rtBuildRow('send',entry);
+function rtMarkPendingFailed(){
+  RT.pendingSend.forEach(function(e){if(e.state==='queued'){e.state='failed';rtUpdateSendRow(e);}});
+}
+function rtFlushPending(){
+  var client=RT.torrentClient;if(!client)return;
+  if(RT.pendingSend.length){var q=RT.pendingSend.slice();RT.pendingSend=[];q.forEach(function(entry){rtSeedEntry(client,entry);});}
+  if(RT.pendingRecv.length){var r=RT.pendingRecv.slice();RT.pendingRecv=[];r.forEach(function(d){rtAddRemoteTorrent(d);});}
+}
+function rtSeedEntry(client,entry){
+  if(!entry||!entry.file)return;
+  entry.state='seeding';
   rtUpdateSendRow(entry);
-  client.seed(file,{announce:RT_TRACKERS},function(torrent){
+  client.seed(entry.file,{announce:RT_TRACKERS},function(torrent){
     entry.torrent=torrent;entry.infoHash=torrent.infoHash;entry.magnet=torrent.magnetURI;
     RT.sent[torrent.infoHash]=entry;
     rtPublishMagnets();
@@ -2226,6 +2271,7 @@ function rtUpdateSendRow(e){
       stateEl=e.row.querySelector('.rt-state'),det=e.row.querySelector('.rt-detail');
   if(e.state==='failed'){stateEl.textContent=rtT('rt_failed');stateEl.className='rt-state fail';if(bar)bar.classList.remove('show');e.row.classList.remove('active');rtRefreshTransferring();return;}
   if(e.state==='paused'){stateEl.textContent=rtT('rt_paused');stateEl.className='rt-state paused';e.row.classList.remove('active');rtRefreshTransferring();return;}
+  if(e.state==='queued'){stateEl.textContent=rtT('rt_queued');stateEl.className='rt-state';if(det)det.textContent=rtT('rt_queued_sub');if(bar)bar.classList.add('show');if(fill)fill.style.width='0%';e.row.classList.remove('active');rtRefreshTransferring();return;}
   var t=e.torrent;
   if(!t){
     stateEl.textContent=rtT('rt_hashing');stateEl.className='rt-state';
@@ -2245,18 +2291,23 @@ function rtUpdateSendRow(e){
 /* ---- receive ---- */
 function rtAddRemoteTorrent(d){
   if(!d||!d.magnet||!d.infoHash)return;
-  rtLoadEngine().then(function(client){
-    if(RT.received[d.infoHash])return;
-    var entry={kind:'recv',name:d.name||'file',size:d.size||0,infoHash:d.infoHash,magnet:d.magnet,state:'receiving',torrent:null,row:null,pauseBtn:null,cancelBtn:null,dlBtn:null,from:d.from,stalled:false,resumeNoteUntil:0};
-    RT.received[d.infoHash]=entry;
-    rtBuildRow('recv',entry);
-    var torrent=client.add(d.magnet,{announce:RT_TRACKERS},function(){rtUpdateRecvRow(entry);});
-    entry.torrent=torrent;
-    torrent.on('download',function(){rtUpdateRecvRow(entry);});
-    torrent.on('done',function(){entry.state='done';rtUpdateRecvRow(entry);rtOnRecvDone(entry);});
-    torrent.on('error',function(){entry.state='failed';rtUpdateRecvRow(entry);});
-    rtUpdateRecvRow(entry);
-  }).catch(function(){rtShowErr(rtT('rt_status_engine_fail'));});
+  if(RT.received[d.infoHash])return;
+  if(RT.pendingRecv.some(function(x){return x.infoHash===d.infoHash;}))return;
+  /* Magnet arrived before the engine is ready: queue it, never drop it. */
+  if(!RT.torrentClient){RT.pendingRecv.push(d);rtLoadEngine().catch(function(){rtShowErr(rtT('rt_status_engine_fail'));});return;}
+  rtAddRemoteEntry(RT.torrentClient,d);
+}
+function rtAddRemoteEntry(client,d){
+  if(RT.received[d.infoHash])return;
+  var entry={kind:'recv',name:d.name||'file',size:d.size||0,infoHash:d.infoHash,magnet:d.magnet,state:'receiving',torrent:null,row:null,pauseBtn:null,cancelBtn:null,dlBtn:null,from:d.from,stalled:false,resumeNoteUntil:0};
+  RT.received[d.infoHash]=entry;
+  rtBuildRow('recv',entry);
+  var torrent=client.add(d.magnet,{announce:RT_TRACKERS},function(){rtUpdateRecvRow(entry);});
+  entry.torrent=torrent;
+  torrent.on('download',function(){rtUpdateRecvRow(entry);});
+  torrent.on('done',function(){entry.state='done';rtUpdateRecvRow(entry);rtOnRecvDone(entry);});
+  torrent.on('error',function(){entry.state='failed';rtUpdateRecvRow(entry);});
+  rtUpdateRecvRow(entry);
 }
 function rtVerifiedPieces(t){if(!t||!t.pieces)return 0;return Math.floor((t.progress||0)*t.pieces.length);}
 function rtUpdateRecvRow(e){
