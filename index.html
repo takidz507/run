@@ -1918,6 +1918,7 @@ en:{
  rt_cancelled:'Cancelled',
  rt_pause:'Pause',
  rt_resume:'Resume',
+ rt_start:'Start',
  rt_cancel:'Cancel',
  rt_download:'Download',
  rt_seeding:'Seeding',
@@ -1977,6 +1978,7 @@ ar:{
  rt_cancelled:'أُلغي',
  rt_pause:'إيقاف مؤقت',
  rt_resume:'استئناف',
+ rt_start:'بدء',
  rt_cancel:'إلغاء',
  rt_download:'تنزيل',
  rt_seeding:'بذّر',
@@ -2195,6 +2197,15 @@ function rtBuildRow(kind,entry){
   var pauseBtn=document.createElement('button');pauseBtn.type='button';pauseBtn.className='rt-mini';pauseBtn.textContent=rtT('rt_pause');
   pauseBtn.addEventListener('click',function(){rtTogglePause(entry);});
   top.appendChild(pauseBtn);entry.pauseBtn=pauseBtn;
+  if(kind==='send'){
+    /* Manual Start: force a fresh tracker announce + magnet re-publish, so a
+       receiver stuck on "Waiting for a seeder" gets a new chance to find us.
+       Same file + same trackers = same infoHash, so the receiver's existing
+       entry picks the peer up without re-adding anything. */
+    var startBtn=document.createElement('button');startBtn.type='button';startBtn.className='rt-mini';startBtn.textContent=rtT('rt_start');
+    startBtn.addEventListener('click',function(){rtRestartSeed(entry);});
+    top.appendChild(startBtn);entry.startBtn=startBtn;
+  }
   var cancelBtn=document.createElement('button');cancelBtn.type='button';cancelBtn.className='rt-mini';cancelBtn.textContent=rtT('rt_cancel');
   cancelBtn.addEventListener('click',function(){rtCancelEntry(entry);});
   top.appendChild(cancelBtn);entry.cancelBtn=cancelBtn;
@@ -2257,6 +2268,7 @@ function rtSeedEntry(client,entry){
   entry.state='seeding';
   rtUpdateSendRow(entry);
   client.seed(entry.file,{announce:RT_TRACKERS},function(torrent){
+    entry._restarting=false;
     entry.torrent=torrent;entry.infoHash=torrent.infoHash;entry.magnet=torrent.magnetURI;
     RT.sent[torrent.infoHash]=entry;
     rtPublishMagnets();
@@ -2264,6 +2276,26 @@ function rtSeedEntry(client,entry){
     torrent.on('upload',function(){rtUpdateSendRow(entry);});
     torrent.on('error',function(){entry.state='failed';rtUpdateSendRow(entry);});
   });
+}
+/* Manual Start (sender): destroy the current seeding torrent and seed the
+   same file again, forcing a fresh tracker announce + magnet re-publish.
+   Same file + same trackers = same infoHash, so receivers keep their entry
+   and simply find the peer on the new announce. If the engine is not ready
+   yet, this retries the engine load instead. */
+function rtRestartSeed(entry){
+  if(!entry||entry.kind!=='send')return;
+  if(entry._restarting)return;
+  if(!RT.torrentClient){rtLoadEngine().then(function(){rtFlushPending();}).catch(function(){rtShowErr(rtT('rt_status_engine_fail'));});return;}
+  if(entry.state==='queued'){rtFlushPending();return;}
+  entry._restarting=true;
+  /* Safety valve: if the re-seed callback never fires, unlock the button. */
+  setTimeout(function(){entry._restarting=false;},30000);
+  if(entry.torrent){try{entry.torrent.destroy();}catch(e){}}
+  if(entry.infoHash)delete RT.sent[entry.infoHash];
+  entry.torrent=null;entry.infoHash=null;entry.magnet=null;entry.state='seeding';
+  if(entry.pauseBtn)entry.pauseBtn.textContent=rtT('rt_pause');
+  rtUpdateSendRow(entry);
+  rtSeedEntry(RT.torrentClient,entry);
 }
 function rtUpdateSendRow(e){
   if(!e||!e.row)return;
